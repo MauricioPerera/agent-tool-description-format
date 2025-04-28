@@ -16,19 +16,25 @@ ATDF simplifies tool integration for AI agents by providing a standardized, func
 - Validation via JSON Schema.
 
 ## Installation
-```bash
+```
 git clone https://github.com/MauricioPerera/agent-tool-description-format.git
 cd agent-tool-description-format
 pip install -r tools/requirements.txt
+```
 
-Quick Start
+## Quick Start
 Validate a tool description:
+```
 python tools/validator.py schema/examples/hole_maker.json
+```
 
 Run the demo:
+```
 python tools/demo/agent_example.py
+```
 
-Example Tool Description
+## Example Tool Description
+```json
 {
   "tool_id": "hole_maker_v1",
   "description": "Permite crear agujeros en superficies sólidas",
@@ -46,16 +52,18 @@ Example Tool Description
     }
   }
 }
+```
 
-Documentation
+## Documentation
+- [Specification](docs/specification.md): Technical details of the protocol.
+- [Contributing](docs/contributing.md): How to contribute.
+- [Examples](schema/examples): Sample tool descriptions.
 
-Specification: Technical details of the protocol.
-Contributing: How to contribute.
-Examples: Sample tool descriptions.
+## Get Involved
+Have ideas or feedback? Open an [issue](https://github.com/MauricioPerera/agent-tool-description-format/issues) or join the [discussion](https://github.com/MauricioPerera/agent-tool-description-format/discussions)!
 
-Get Involved
-Have ideas or feedback? Open an issue or join the discussion!
-License
-MIT License. See LICENSE.
-Status
-Current version: 0.1.0 (Draft). Contributions welcome!```
+## License
+MIT License. See [LICENSE](LICENSE).
+
+## Status
+Current version: 0.1.0 (Draft). Contributions welcome!
