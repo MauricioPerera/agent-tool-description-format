@@ -1,0 +1,37 @@
+{
+  "tool_id": "paint_brush_v1",
+  "description": "Permite aplicar pintura sobre superficies",
+  "when_to_use": "Usar cuando necesites pintar una superficie plana o vertical, como una pared o un mueble",
+  "how_to_use": {
+    "inputs": [
+      {
+        "name": "paint_type",
+        "type": "string",
+        "description": "Tipo de pintura a usar (e.g., 'latex', 'oil')"
+      },
+      {
+        "name": "surface",
+        "type": "string",
+        "description": "Superficie a pintar (e.g., 'wall', 'wood')"
+      },
+      {
+        "name": "area",
+        "type": "number",
+        "description": "Área a pintar en metros cuadrados"
+      }
+    ],
+    "outputs": {
+      "success": "Superficie pintada con éxito",
+      "failure": [
+        {
+          "code": "invalid_paint",
+          "description": "El tipo de pintura no es compatible con la superficie"
+        },
+        {
+          "code": "insufficient_paint",
+          "description": "No hay suficiente pintura para cubrir el área especificada"
+        }
+      ]
+    }
+  }
+}
