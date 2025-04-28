@@ -10,7 +10,7 @@ ATDF is an open protocol for describing tools functionally, enabling AI agents t
 
 ## Installation
 ```bash
-git clone https://github.com/<your-username>/agent-tool-description-format.git
+git clone https://github.com/MauricioPerera/agent-tool-description-format.git
 cd agent-tool-description-format
 pip install -r tools/requirements.txt
 ```
