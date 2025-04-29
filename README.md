@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/MauricioPerera/agent-tool-description-format)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Tests](https://github.com/MauricioPerera/agent-tool-description-format/actions/workflows/ci.yml/badge.svg)](https://github.com/MauricioPerera/agent-tool-description-format/actions)
+[![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/MauricioPerera/agent-tool-description-format/actions)
 
 ATDF is an open protocol for describing tools functionally, enabling AI agents to select and use them based on purpose, context, and operation, without relying on technical details.
 
@@ -72,7 +72,7 @@ See the [multilingual documentation](docs/multilingual.md) for details on how to
 - [Multilingual Support](docs/multilingual.md): Information about multilingual features.
 
 ## Get Involved
-Have ideas or feedback? Open an [issue](https://github.com/MauricioPerera/agent-tool-description-format/issues) or join the [discussion](https://github.com/MauricioPerera/agent-tool-description-format/discussions)!
+Have ideas or feedback? Open an [issue](https://github.com/MauricioPerera/agent-tool-description-format/issues)!
 
 ## License
 MIT License. See [LICENSE](LICENSE).

@@ -66,7 +66,7 @@ We aim to maintain a respectful and inclusive community. Please adhere to the [C
 
 ## Getting Help
 If you have questions or need assistance:
-- Open a [discussion](https://github.com/MauricioPerera/agent-tool-description-format/discussions).
+- Open an [issue](https://github.com/MauricioPerera/agent-tool-description-format/issues) with the 'question' label.
 - Contact Mauricio Perera at [mauricio.perera@gmail.com](mailto:mauricio.perera@gmail.com).
 - Join the conversation in [GitHub Issues](https://github.com/MauricioPerera/agent-tool-description-format/issues).
 

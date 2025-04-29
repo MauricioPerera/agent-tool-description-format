@@ -1,0 +1,31 @@
+{
+  "ignorePatterns": [
+    {
+      "pattern": "^https://github.com/MauricioPerera/agent-tool-description-format/discussions"
+    },
+    {
+      "pattern": "^mailto:"
+    }
+  ],
+  "replacementPatterns": [
+    {
+      "pattern": "^../LICENSE",
+      "replacement": "https://github.com/MauricioPerera/agent-tool-description-format/blob/main/LICENSE"
+    },
+    {
+      "pattern": "^../schema/atdf_schema.json",
+      "replacement": "https://github.com/MauricioPerera/agent-tool-description-format/blob/main/schema/atdf_schema.json"
+    }
+  ],
+  "timeout": "10s",
+  "retryOn429": true,
+  "retryCount": 3,
+  "httpHeaders": [
+    {
+      "urls": ["https://github.com/"],
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
+      }
+    }
+  ]
+} 
