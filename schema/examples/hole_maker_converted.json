@@ -1,0 +1,88 @@
+{
+  "tool_id": "hole_maker_v1",
+  "description": "Permite crear agujeros en superficies sólidas",
+  "when_to_use": "Usar cuando necesites generar un agujero en una pared u otra superficie perforable",
+  "how_to_use": {
+    "inputs": [
+      {
+        "name": "location",
+        "type": "string",
+        "description": "Ubicación del agujero (e.g., 'x:10,y:20' o descripción textual)"
+      },
+      {
+        "name": "bit_id",
+        "type": "string",
+        "description": "Identificador de la broca a usar (e.g., 'BIT_5MM')"
+      }
+    ],
+    "outputs": {
+      "success": "Agujero creado con éxito",
+      "failure": [
+        {
+          "code": "invalid_bit",
+          "description": "La broca seleccionada no es compatible con la superficie"
+        },
+        {
+          "code": "invalid_surface",
+          "description": "La superficie no es perforable (e.g., vidrio no soportado)"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "author": "ATDF Converter",
+    "created_at": "2025-04-28",
+    "updated_at": "2025-04-28",
+    "tags": [],
+    "category": "herramientas_generales"
+  },
+  "localization": {
+    "es": {
+      "description": "Permite crear agujeros en superficies sólidas",
+      "when_to_use": "Usar cuando necesites generar un agujero en una pared u otra superficie perforable"
+    },
+    "en": {
+      "description": "Creates holes in solid surfaces",
+      "when_to_use": "[Usar cuando necesites generar un agujero en una pared u otra superficie perforable]"
+    }
+  },
+  "prerequisites": {
+    "tools": [],
+    "conditions": [
+      "entorno_seguro"
+    ],
+    "permissions": []
+  },
+  "feedback": {
+    "progress_indicators": [
+      "operacion_en_curso"
+    ],
+    "completion_signals": [
+      "operacion_completada"
+    ]
+  },
+  "examples": [
+    {
+      "title": "Ejemplo básico de uso exitoso",
+      "description": "Uso básico de la herramienta hole_maker_v1",
+      "inputs": {
+        "location": "ejemplo_location",
+        "bit_id": "ejemplo_bit_id"
+      },
+      "expected_output": "Agujero creado con éxito"
+    },
+    {
+      "title": "Ejemplo de error",
+      "description": "Ejemplo que muestra un error típico: invalid_bit",
+      "inputs": {
+        "location": "ejemplo_location",
+        "bit_id": "ejemplo_bit_id"
+      },
+      "expected_output": {
+        "error": "invalid_bit",
+        "message": "La broca seleccionada no es compatible con la superficie"
+      }
+    }
+  ]
+}

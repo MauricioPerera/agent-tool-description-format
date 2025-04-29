@@ -6,6 +6,41 @@ All notable changes to the **Agent Tool Description Format (ATDF)** project will
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2025-05-15
+
+### Added
+- Enhanced schema with extended fields (`schema/enhanced_atdf_schema.json`).
+- New optional fields in the ATDF format:
+  - `metadata`: Information about the tool (version, author, tags, category, creation date).
+  - `localization`: Support for multiple languages in a single file.
+  - `prerequisites`: Prerequisites and dependencies for tool usage.
+  - `feedback`: Progress indicators and completion signals.
+  - `examples`: Examples of tool usage with inputs and expected outputs.
+- Enhanced examples in `schema/examples/`:
+  - `enhanced_hole_maker.json`: Full example with all extended features.
+  - Multilingual examples for tools in English, Spanish, and Portuguese.
+- New functionality in the SDK:
+  - Support for tool conversion between basic and enhanced format.
+  - Advanced search functionality with multilingual support.
+  - Schema validation for both basic and enhanced formats.
+- Improved test suite:
+  - Tests for enhanced features (`tests/test_enhanced_features.py`).
+  - Trilingual agent testing (`tests/test_trilingual_agent.py`).
+  - Comprehensive tests for all functionality (`tests/test_atdf_complete.py`).
+- New documentation:
+  - Enhancement proposal for version 0.2.0.
+  - Extended multilingual support documentation.
+
+### Changed
+- SDK now provides automatic language detection.
+- Improved tool selection algorithm, now with context and language awareness.
+- Better error handling and validation feedback.
+
+### Notes
+- Version 0.2.0 is fully backwards compatible with 0.1.0.
+- Tools in basic format can be automatically converted to enhanced format.
+- The enhanced format provides significant improvements for agent-tool interaction, especially for multilingual applications.
+
 ## [0.1.0] - 2025-04-28
 
 ### Added

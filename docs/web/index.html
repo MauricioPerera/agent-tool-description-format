@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Tool Description Format (ATDF)</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Agent Tool Description Format (ATDF)</h1>
+        <p>Un protocolo abierto para describir herramientas de forma funcional</p>
+        <div class="badge-container">
+            <span class="badge badge-blue">Version 0.2.0</span>
+            <span class="badge badge-green">MIT License</span>
+        </div>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#introduction">Introducción</a></li>
+            <li><a href="#versions">Versiones</a></li>
+            <li><a href="#features">Características</a></li>
+            <li><a href="#examples">Ejemplos</a></li>
+            <li><a href="#documentation">Documentación</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <section id="introduction">
+            <h2>Introducción</h2>
+            <p>ATDF es un protocolo abierto para la descripción funcional de herramientas, que permite a los agentes de IA seleccionarlas y utilizarlas basándose en su propósito, contexto y operación, sin depender de detalles técnicos específicos.</p>
+            <p>ATDF estandariza las descripciones de herramientas en torno a tres preguntas fundamentales:</p>
+            <ul>
+                <li><strong>¿Qué</strong> hace la herramienta?</li>
+                <li><strong>¿Cuándo</strong> debe utilizarse?</li>
+                <li><strong>¿Cómo</strong> se utiliza?</li>
+            </ul>
+            <p>Este enfoque funcional permite a los agentes de IA seleccionar herramientas basadas en la tarea en cuestión, en lugar de requerir conocimientos específicos sobre nombres o APIs de herramientas.</p>
+            <a href="#documentation" class="btn">Ver documentación completa</a>
+        </section>
+        
+        <section id="versions">
+            <h2>Versiones</h2>
+            <p>ATDF está disponible en dos versiones compatibles:</p>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <h3><span class="version-badge v010">0.1.0</span> Básica</h3>
+                    <ul>
+                        <li>Funcionalidad principal con campos esenciales</li>
+                        <li>Estructura simple para descripciones básicas</li>
+                        <li>Perfecta para empezar o casos de uso simples</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h3><span class="version-badge v020">0.2.0</span> Mejorada</h3>
+                    <ul>
+                        <li>Toda la funcionalidad básica más características avanzadas opcionales</li>
+                        <li>Soporte multilingüe integrado</li>
+                        <li>Prerrequisitos y dependencias</li>
+                        <li>Ejemplos de uso con salidas esperadas</li>
+                        <li>Indicadores de progreso y finalización</li>
+                        <li>Completamente compatible con v0.1.0</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="version-comparison">
+                <h3>Comparación de versiones</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Característica</th>
+                            <th>Version 0.1.0 (Básica)</th>
+                            <th>Version 0.2.0 (Mejorada)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Estructura básica</td>
+                            <td><span class="check">✓</span> Estructura básica con campos esenciales</td>
+                            <td><span class="check">✓</span> Misma estructura básica con campos adicionales opcionales</td>
+                        </tr>
+                        <tr>
+                            <td>Campos requeridos</td>
+                            <td><span class="check">✓</span> <code>tool_id</code>, <code>description</code>, <code>when_to_use</code>, <code>how_to_use</code></td>
+                            <td><span class="check">✓</span> Mismos campos requeridos</td>
+                        </tr>
+                        <tr>
+                            <td>Metadatos</td>
+                            <td><span class="cross">✗</span> No soportado</td>
+                            <td><span class="check">✓</span> Campo opcional <code>metadata</code> con versión, autor, etiquetas, etc.</td>
+                        </tr>
+                        <tr>
+                            <td>Soporte multilingüe</td>
+                            <td><span class="warning">⚠</span> Limitado (archivos separados para cada idioma)</td>
+                            <td><span class="check">✓</span> Integrado a través del campo <code>localization</code></td>
+                        </tr>
+                        <tr>
+                            <td>Prerrequisitos</td>
+                            <td><span class="cross">✗</span> No soportado</td>
+                            <td><span class="check">✓</span> Campo opcional <code>prerequisites</code></td>
+                        </tr>
+                        <tr>
+                            <td>Mecanismos de retroalimentación</td>
+                            <td><span class="cross">✗</span> No soportado</td>
+                            <td><span class="check">✓</span> Campo opcional <code>feedback</code> con señales de progreso y finalización</td>
+                        </tr>
+                        <tr>
+                            <td>Ejemplos de uso</td>
+                            <td><span class="cross">✗</span> No soportado</td>
+                            <td><span class="check">✓</span> Campo opcional <code>examples</code> con ejemplos completos</td>
+                        </tr>
+                        <tr>
+                            <td>Tipos de entrada complejos</td>
+                            <td><span class="warning">⚠</span> Limitado (solo tipos básicos)</td>
+                            <td><span class="check">✓</span> Esquemas de objetos complejos con propiedades anidadas</td>
+                        </tr>
+                        <tr>
+                            <td>Compatibilidad hacia atrás</td>
+                            <td><span class="check">✓</span> N/A (primera versión)</td>
+                            <td><span class="check">✓</span> Totalmente compatible con 0.1.0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <section id="features">
+            <h2>Características</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <h3>Formato simple y legible</h3>
+                    <p>JSON/YAML estructurado que es fácil de entender tanto para humanos como para agentes de IA.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Agnóstico de modelo</h3>
+                    <p>Funciona con cualquier modelo de agente de IA, independientemente de su arquitectura.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Agnóstico de herramientas</h3>
+                    <p>Describe tanto herramientas físicas (p.ej., taladros) como digitales (p.ej., APIs).</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Soporte multilingüe</h3>
+                    <p>Soporte para descripciones de herramientas en múltiples idiomas (español, inglés, portugués y más).</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Metadatos</h3>
+                    <p>Organiza herramientas con información de versión, autor, etiquetas y categoría.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Ejemplos de uso</h3>
+                    <p>Incluye ejemplos reales que ayudan a los agentes a entender cómo usar las herramientas.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="examples">
+            <h2>Ejemplos</h2>
+            <div class="tab-container">
+                <div class="tabs">
+                    <div class="tab active" onclick="openTab(event, 'basic')">Versión Básica (0.1.0)</div>
+                    <div class="tab" onclick="openTab(event, 'enhanced')">Versión Mejorada (0.2.0)</div>
+                </div>
+                
+                <div id="basic" class="tab-content active">
+                    <p>Ejemplo de una herramienta básica que crea agujeros:</p>
+                    <div class="code-example">
+<pre>{
+  "tool_id": "hole_maker_v1",
+  "description": "Permite crear agujeros en superficies sólidas",
+  "when_to_use": "Usar cuando necesites generar un agujero en una pared",
+  "how_to_use": {
+    "inputs": [
+      { "name": "location", "type": "string", "description": "Ubicación del agujero" },
+      { "name": "bit_id", "type": "string", "description": "ID de la broca" }
+    ],
+    "outputs": {
+      "success": "Agujero creado con éxito",
+      "failure": [
+        { "code": "invalid_bit", "description": "Broca no compatible" }
+      ]
+    }
+  }
+}</pre>
+                    </div>
+                </div>
+                
+                <div id="enhanced" class="tab-content">
+                    <p>Ejemplo de una herramienta mejorada con características adicionales:</p>
+                    <div class="code-example">
+<pre>{
+  "tool_id": "enhanced_hole_maker_v1",
+  "metadata": {
+    "version": "1.0.0",
+    "author": "ATDF Development Team",
+    "tags": ["física", "perforación", "construcción"],
+    "category": "herramientas_físicas",
+    "created_at": "2024-06-15",
+    "updated_at": "2024-06-15"
+  },
+  "localization": {
+    "es": {
+      "description": "Permite crear agujeros en diversos tipos de superficies",
+      "when_to_use": "Usar cuando necesites realizar perforaciones precisas"
+    },
+    "en": {
+      "description": "Creates holes in various types of surfaces",
+      "when_to_use": "Use when you need to make precise holes"
+    }
+  },
+  "description": "Permite crear agujeros en diversos tipos de superficies",
+  "when_to_use": "Usar cuando necesites realizar perforaciones precisas",
+  "prerequisites": {
+    "tools": ["superficie_marcada_v1", "nivel_burbuja_v2"],
+    "conditions": ["superficie_seca", "no_circulacion_electrica"],
+    "permissions": ["manipulacion_estructural"]
+  },
+  "how_to_use": {
+    "inputs": [
+      { "name": "location", "type": "string", "description": "Ubicación del agujero" },
+      {
+        "name": "configuration",
+        "type": "object",
+        "schema": {
+          "properties": {
+            "depth": {"type": "number", "description": "Profundidad en mm"},
+            "diameter": {"type": "number", "description": "Diámetro en mm"}
+          },
+          "required": ["depth", "diameter"]
+        },
+        "description": "Configuración del agujero"
+      }
+    ],
+    "outputs": {
+      "success": "Agujero creado con éxito",
+      "failure": [
+        { "code": "invalid_configuration", "description": "Configuración no compatible" }
+      ]
+    }
+  },
+  "feedback": {
+    "progress_indicators": ["vibracion", "temperatura"],
+    "completion_signals": ["profundidad_alcanzada"]
+  },
+  "examples": [
+    {
+      "title": "Perforar pared de yeso",
+      "description": "Ejemplo básico de perforación",
+      "inputs": {
+        "location": "x:120,y:85",
+        "configuration": {
+          "depth": 35,
+          "diameter": 8
+        }
+      },
+      "expected_output": "Agujero creado con éxito"
+    }
+  ]
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="documentation">
+            <h2>Documentación</h2>
+            <p>Consulta la documentación completa para obtener más información sobre ATDF:</p>
+            <ul>
+                <li><a href="https://github.com/MauricioPerera/agent-tool-description-format/blob/main/docs/specification.md" target="_blank">Especificación</a>: Detalles técnicos del protocolo ATDF.</li>
+                <li><a href="https://github.com/MauricioPerera/agent-tool-description-format/blob/main/docs/examples.md" target="_blank">Ejemplos</a>: Ejemplos de descripciones de herramientas.</li>
+                <li><a href="https://github.com/MauricioPerera/agent-tool-description-format/blob/main/docs/multilingual.md" target="_blank">Soporte multilingüe</a>: Información sobre el uso en múltiples idiomas.</li>
+                <li><a href="https://github.com/MauricioPerera/agent-tool-description-format/blob/main/docs/version-comparison/README.md" target="_blank">Comparación de versiones</a>: Comparación detallada entre versiones de ATDF.</li>
+                <li><a href="https://github.com/MauricioPerera/agent-tool-description-format/blob/main/docs/changelog.md" target="_blank">Changelog</a>: Historial de versiones y cambios.</li>
+            </ul>
+            <p>Para comenzar a usar ATDF, puedes:</p>
+            <ol>
+                <li>Explorar los ejemplos para entender el formato.</li>
+                <li>Crear tus propias descripciones de herramientas siguiendo la especificación.</li>
+                <li>Validar tus herramientas con el validador:</li>
+            </ol>
+            <div class="code-example">
+<pre>python tools/validator.py path/to/your/tool.json</pre>
+            </div>
+            <p>Prueba la demostración para ver ATDF en acción:</p>
+            <div class="code-example">
+<pre>python tools/demo/atdf_showcase.py</pre>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 Agent Tool Description Format (ATDF)</p>
+        <p>ATDF está licenciado bajo la <a href="https://github.com/MauricioPerera/agent-tool-description-format/blob/main/LICENSE" target="_blank">Licencia MIT</a>.</p>
+        <p><a href="https://github.com/MauricioPerera/agent-tool-description-format" target="_blank">GitHub Repository</a></p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html> 
