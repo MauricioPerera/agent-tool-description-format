@@ -12,7 +12,8 @@ from tools.enhanced_loader import (
     get_tool_examples,
     get_tool_prerequisites,
     get_localized_description,
-    get_localized_when_to_use
+    get_localized_when_to_use,
+    detect_language
 )
 
 # Configuración de logging
@@ -235,7 +236,12 @@ def print_tool_info(tool, language="es", verbose=False):
 
 def test_goal(tools, goal, language=None, verbose=False):
     """Probar un objetivo y mostrar el resultado."""
-    detected_language = language or select_tool_by_goal([], goal).get('_language', 'en')
+    # Detectar idioma del objetivo
+    if language:
+        detected_language = language
+    else:
+        detected_language = detect_language(goal)
+        
     language_name = {
         'es': 'ESPAÑOL',
         'en': 'ENGLISH',
