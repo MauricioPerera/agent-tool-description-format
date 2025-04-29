@@ -1,0 +1,159 @@
+{
+  "tool_id": "enhanced_hole_maker_v1",
+  "metadata": {
+    "version": "1.0.0",
+    "author": "ATDF Development Team",
+    "tags": ["física", "perforación", "construcción", "agujeros"],
+    "category": "herramientas_físicas",
+    "created_at": "2024-06-15",
+    "updated_at": "2024-06-15"
+  },
+  "localization": {
+    "es": {
+      "description": "Permite crear agujeros en diversos tipos de superficies con configuración avanzada",
+      "when_to_use": "Usar cuando necesites realizar perforaciones precisas en paredes, madera u otras superficies compatibles"
+    },
+    "en": {
+      "description": "Creates holes in various types of surfaces with advanced configuration",
+      "when_to_use": "Use when you need to make precise holes in walls, wood, or other compatible surfaces"
+    },
+    "pt": {
+      "description": "Permite criar furos em vários tipos de superfícies com configuração avançada",
+      "when_to_use": "Use quando precisar fazer furos precisos em paredes, madeira ou outras superfícies compatíveis"
+    }
+  },
+  "description": "Permite crear agujeros en diversos tipos de superficies con configuración avanzada",
+  "when_to_use": "Usar cuando necesites realizar perforaciones precisas en paredes, madera u otras superficies compatibles",
+  "prerequisites": {
+    "tools": ["superficie_marcada_v1", "nivel_burbuja_v2"],
+    "conditions": ["superficie_seca", "no_circulacion_electrica", "area_despejada"],
+    "permissions": ["manipulacion_estructural", "generacion_ruido"]
+  },
+  "how_to_use": {
+    "inputs": [
+      {
+        "name": "location",
+        "type": "string",
+        "description": "Ubicación del agujero (e.g., 'x:10,y:20' o descripción textual)"
+      },
+      {
+        "name": "configuration",
+        "type": "object",
+        "schema": {
+          "properties": {
+            "depth": {"type": "number", "description": "Profundidad en milímetros"},
+            "diameter": {"type": "number", "description": "Diámetro en milímetros"},
+            "angle": {"type": "number", "description": "Ángulo en grados (0-90)"},
+            "mode": {"type": "string", "enum": ["normal", "percutor", "turbo"], "description": "Modo de perforación"}
+          },
+          "required": ["depth", "diameter"]
+        },
+        "description": "Configuración detallada del agujero"
+      },
+      {
+        "name": "surface_type",
+        "type": "string",
+        "description": "Tipo de superficie (e.g., 'pared_yeso', 'madera', 'hormigon')"
+      }
+    ],
+    "outputs": {
+      "success": "Agujero creado con éxito con las especificaciones proporcionadas",
+      "failure": [
+        {
+          "code": "invalid_configuration",
+          "description": "La configuración proporcionada no es compatible con el tipo de superficie"
+        },
+        {
+          "code": "invalid_surface",
+          "description": "La superficie no es perforable o no es compatible con esta herramienta"
+        },
+        {
+          "code": "safety_violation",
+          "description": "No se cumplen las condiciones de seguridad necesarias para la operación"
+        },
+        {
+          "code": "tool_failure",
+          "description": "Fallo mecánico o eléctrico de la herramienta durante la operación"
+        }
+      ]
+    }
+  },
+  "feedback": {
+    "progress_indicators": [
+      "vibracion_incrementada",
+      "temperatura_herramienta",
+      "sonido_perforacion",
+      "resistencia_material"
+    ],
+    "completion_signals": [
+      "disminucion_resistencia",
+      "profundidad_alcanzada",
+      "verificacion_visual"
+    ]
+  },
+  "examples": [
+    {
+      "title": "Perforar pared de yeso estándar",
+      "description": "Creación de un agujero simple en una pared de yeso",
+      "inputs": {
+        "location": "x:120,y:85",
+        "configuration": {
+          "depth": 35,
+          "diameter": 8,
+          "angle": 90,
+          "mode": "normal"
+        },
+        "surface_type": "pared_yeso"
+      },
+      "expected_output": "Agujero creado con éxito con las especificaciones proporcionadas"
+    },
+    {
+      "title": "Perforar pared de hormigón",
+      "description": "Creación de un agujero en pared de hormigón usando modo percutor",
+      "inputs": {
+        "location": "x:50,y:70",
+        "configuration": {
+          "depth": 75,
+          "diameter": 12,
+          "angle": 90,
+          "mode": "percutor"
+        },
+        "surface_type": "hormigon"
+      },
+      "expected_output": "Agujero creado con éxito con las especificaciones proporcionadas"
+    },
+    {
+      "title": "Perforar en ángulo en madera",
+      "description": "Creación de un agujero en ángulo en una superficie de madera",
+      "inputs": {
+        "location": "x:200,y:45",
+        "configuration": {
+          "depth": 25,
+          "diameter": 6,
+          "angle": 45,
+          "mode": "normal"
+        },
+        "surface_type": "madera"
+      },
+      "expected_output": "Agujero creado con éxito con las especificaciones proporcionadas"
+    },
+    {
+      "title": "Intento en superficie no compatible",
+      "description": "Ejemplo de error al intentar perforar vidrio",
+      "inputs": {
+        "location": "x:30,y:60",
+        "configuration": {
+          "depth": 10,
+          "diameter": 5,
+          "angle": 90,
+          "mode": "normal"
+        },
+        "surface_type": "vidrio"
+      },
+      "expected_output": {
+        "error": "invalid_surface",
+        "message": "La superficie no es perforable o no es compatible con esta herramienta"
+      }
+    }
+  ]
+} 

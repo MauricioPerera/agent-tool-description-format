@@ -1,0 +1,233 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Enhanced Agent Tool Description Format (ATDF) Schema",
+  "description": "Schema for validating Extended ATDF tool descriptions (v0.2.0), including all proposed enhancements.",
+  "type": "object",
+  "properties": {
+    "tool_id": {
+      "type": "string",
+      "description": "Unique identifier for the tool.",
+      "minLength": 1
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional metadata about the tool for organizational purposes.",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Version of the tool description."
+        },
+        "author": {
+          "type": "string",
+          "description": "Author or organization that created the tool description."
+        },
+        "tags": {
+          "type": "array",
+          "description": "Keywords related to the tool for categorization and search.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "category": {
+          "type": "string",
+          "description": "Primary category of the tool."
+        },
+        "created_at": {
+          "type": "string",
+          "description": "ISO date when the tool description was created."
+        },
+        "updated_at": {
+          "type": "string",
+          "description": "ISO date when the tool description was last updated."
+        }
+      }
+    },
+    "localization": {
+      "type": "object",
+      "description": "Translations of descriptive fields in different languages.",
+      "patternProperties": {
+        "^[a-z]{2}(-[A-Z]{2})?$": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "description": "Localized description of what the tool does."
+            },
+            "when_to_use": {
+              "type": "string",
+              "description": "Localized context for when the tool should be used."
+            }
+          },
+          "required": ["description", "when_to_use"]
+        }
+      }
+    },
+    "description": {
+      "type": "string",
+      "description": "A concise explanation of what the tool does, avoiding technical details.",
+      "minLength": 1
+    },
+    "when_to_use": {
+      "type": "string",
+      "description": "The context or conditions under which the tool should be used.",
+      "minLength": 1
+    },
+    "prerequisites": {
+      "type": "object",
+      "description": "Requirements that must be met before using the tool.",
+      "properties": {
+        "tools": {
+          "type": "array",
+          "description": "Other tools that must be available or used before using this tool.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "conditions": {
+          "type": "array",
+          "description": "Environmental or system conditions that must be met.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "permissions": {
+          "type": "array",
+          "description": "Permissions or authorizations required to use the tool.",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "how_to_use": {
+      "type": "object",
+      "description": "Details the operation of the tool, including inputs and outputs.",
+      "properties": {
+        "inputs": {
+          "type": "array",
+          "description": "List of input parameters required to use the tool.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the input parameter.",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "description": "Data type of the input (e.g., string, number, object).",
+                "minLength": 1
+              },
+              "description": {
+                "type": "string",
+                "description": "Description of the input parameter's purpose."
+              },
+              "schema": {
+                "type": "object",
+                "description": "JSON Schema for complex input types.",
+                "properties": {
+                  "properties": {
+                    "type": "object"
+                  },
+                  "required": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "required": ["name", "type"],
+            "additionalProperties": false
+          }
+        },
+        "outputs": {
+          "type": "object",
+          "description": "Possible results of using the tool.",
+          "properties": {
+            "success": {
+              "type": "string",
+              "description": "Message indicating successful operation.",
+              "minLength": 1
+            },
+            "failure": {
+              "type": "array",
+              "description": "List of possible errors.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "description": "Unique identifier for the error.",
+                    "minLength": 1
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Explanation of the error.",
+                    "minLength": 1
+                  }
+                },
+                "required": ["code", "description"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["success", "failure"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["inputs", "outputs"],
+      "additionalProperties": false
+    },
+    "feedback": {
+      "type": "object",
+      "description": "Information about how the tool provides feedback during and after operation.",
+      "properties": {
+        "progress_indicators": {
+          "type": "array",
+          "description": "Signals that indicate the tool is working or making progress.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "completion_signals": {
+          "type": "array",
+          "description": "Signals that indicate the operation has completed successfully.",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "examples": {
+      "type": "array",
+      "description": "Example uses of the tool with inputs and expected outputs.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Brief title for the example."
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of what the example demonstrates."
+          },
+          "inputs": {
+            "type": "object",
+            "description": "Input parameter values for the example."
+          },
+          "expected_output": {
+            "description": "Expected result of using the tool with these inputs."
+          }
+        },
+        "required": ["title", "inputs", "expected_output"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["tool_id", "description", "when_to_use", "how_to_use"],
+  "additionalProperties": false
+} 
