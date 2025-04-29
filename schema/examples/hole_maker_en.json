@@ -1,0 +1,32 @@
+{
+  "tool_id": "hole_maker_v1",
+  "description": "Creates holes in solid surfaces",
+  "when_to_use": "Use when you need to make a hole in a wall or other drillable surface",
+  "how_to_use": {
+    "inputs": [
+      {
+        "name": "location",
+        "type": "string",
+        "description": "Location of the hole (e.g., 'x:10,y:20' or textual description)"
+      },
+      {
+        "name": "bit_id",
+        "type": "string",
+        "description": "Identifier of the drill bit to use (e.g., 'BIT_5MM')"
+      }
+    ],
+    "outputs": {
+      "success": "Hole created successfully",
+      "failure": [
+        {
+          "code": "invalid_bit",
+          "description": "The selected drill bit is not compatible with the surface"
+        },
+        {
+          "code": "invalid_surface",
+          "description": "The surface is not drillable (e.g., unsupported glass)"
+        }
+      ]
+    }
+  }
+} 

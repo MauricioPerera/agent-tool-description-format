@@ -14,6 +14,7 @@ ATDF simplifies tool integration for AI agents by providing a standardized, func
 - Model, tool, and prompt agnostic.
 - Supports physical and digital tools.
 - Validation via JSON Schema.
+- Multilingual support (descriptions in English, Spanish, Portuguese, and more).
 
 ## Installation
 ```
@@ -31,6 +32,11 @@ python tools/validator.py schema/examples/hole_maker.json
 Run the demo:
 ```
 python tools/demo/agent_example.py
+```
+
+Run the multilingual demo:
+```
+python tools/demo/trilingual_agent.py
 ```
 
 ## Example Tool Description
@@ -54,10 +60,16 @@ python tools/demo/agent_example.py
 }
 ```
 
+## Multilingual Support
+ATDF supports tool descriptions in any language. The protocol itself is language-agnostic, allowing AI agents to work with tool descriptions in the user's preferred language. Examples are provided in English, Spanish and Portuguese.
+
+See the [multilingual documentation](docs/multilingual.md) for details on how to implement multilingual tool support.
+
 ## Documentation
 - [Specification](docs/specification.md): Technical details of the protocol.
 - [Contributing](docs/contributing.md): How to contribute.
 - [Examples](schema/examples): Sample tool descriptions.
+- [Multilingual Support](docs/multilingual.md): Information about multilingual features.
 
 ## Get Involved
 Have ideas or feedback? Open an [issue](https://github.com/MauricioPerera/agent-tool-description-format/issues) or join the [discussion](https://github.com/MauricioPerera/agent-tool-description-format/discussions)!

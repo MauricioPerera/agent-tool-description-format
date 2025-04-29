@@ -1,3 +1,5 @@
+[Home](index.md) | [Specification](specification.md) | [Examples](examples.md) | [Contributing](contributing.md) | [Multilingual](multilingual.md) | [Changelog](changelog.md) | [License](license.md)
+
 # Changelog
 
 All notable changes to the **Agent Tool Description Format (ATDF)** project will be documented in this file.

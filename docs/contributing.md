@@ -1,3 +1,5 @@
+[Home](index.md) | [Specification](specification.md) | [Examples](examples.md) | [Contributing](contributing.md) | [Multilingual](multilingual.md) | [Changelog](changelog.md) | [License](license.md)
+
 # Contributing to Agent Tool Description Format (ATDF)
 
 Thank you for your interest in contributing to the **Agent Tool Description Format (ATDF)**! We welcome contributions from the community to improve the protocol, add examples, enhance tools, or refine documentation. This guide outlines how you can get involved.
@@ -30,7 +32,7 @@ To propose changes (e.g., new tool descriptions, code improvements, or documenta
    ```
 5. In the PR description, explain:
    - What the change does.
-   - Why it’s needed.
+   - Why it's needed.
    - Any related issues (e.g., "Fixes #123").
 
 ### 3. Adding Tool Descriptions
@@ -40,7 +42,7 @@ To contribute new tool descriptions:
   ```
   python tools/validator.py schema/examples/new_tool.json
   ```
-- Include a brief description in the PR, explaining the tool’s purpose and use case.
+- Include a brief description in the PR, explaining the tool's purpose and use case.
 
 ## Contribution Guidelines
 - **Code Style**:

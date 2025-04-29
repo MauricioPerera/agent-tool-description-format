@@ -1,3 +1,5 @@
+[Home](index.md) | [Specification](specification.md) | [Examples](examples.md) | [Contributing](contributing.md) | [Multilingual](multilingual.md) | [Changelog](changelog.md) | [License](license.md)
+
 # Agent Tool Description Format (ATDF) Specification (v0.1.0)
 
 ## Introduction

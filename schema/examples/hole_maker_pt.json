@@ -1,0 +1,32 @@
+{
+  "tool_id": "hole_maker_v1",
+  "description": "Permite criar furos em superfícies sólidas",
+  "when_to_use": "Usar quando precisar fazer um furo em uma parede ou outra superfície perfurável",
+  "how_to_use": {
+    "inputs": [
+      {
+        "name": "location",
+        "type": "string",
+        "description": "Localização do furo (ex.: 'x:10,y:20' ou descrição textual)"
+      },
+      {
+        "name": "bit_id",
+        "type": "string",
+        "description": "Identificador da broca a ser usada (ex.: 'BIT_5MM')"
+      }
+    ],
+    "outputs": {
+      "success": "Furo criado com sucesso",
+      "failure": [
+        {
+          "code": "invalid_bit",
+          "description": "A broca selecionada não é compatível com a superfície"
+        },
+        {
+          "code": "invalid_surface",
+          "description": "A superfície não é perfurável (ex.: vidro não suportado)"
+        }
+      ]
+    }
+  }
+} 

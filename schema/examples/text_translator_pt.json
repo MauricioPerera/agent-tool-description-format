@@ -1,0 +1,37 @@
+{
+  "tool_id": "text_translator_v1",
+  "description": "Permite traduzir texto entre idiomas",
+  "when_to_use": "Usar quando precisar converter texto de um idioma para outro",
+  "how_to_use": {
+    "inputs": [
+      {
+        "name": "text",
+        "type": "string",
+        "description": "Texto a ser traduzido"
+      },
+      {
+        "name": "source_lang",
+        "type": "string",
+        "description": "Código do idioma de origem (ex.: 'pt', 'en')"
+      },
+      {
+        "name": "target_lang",
+        "type": "string",
+        "description": "Código do idioma de destino (ex.: 'fr', 'de')"
+      }
+    ],
+    "outputs": {
+      "success": "Texto traduzido com sucesso",
+      "failure": [
+        {
+          "code": "unsupported_language",
+          "description": "O idioma de origem ou destino não é suportado"
+        },
+        {
+          "code": "invalid_text",
+          "description": "O texto de entrada é inválido ou está vazio"
+        }
+      ]
+    }
+  }
+} 
