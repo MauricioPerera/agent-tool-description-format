@@ -11,12 +11,16 @@ Una implementación en JavaScript del formato ATDF (Agent Tool Description Forma
 - Soporte completo para herramientas multilingües
 - Validación de entradas mediante esquemas JSON
 - Funciona tanto en Node.js como en navegadores
+- Búsqueda semántica/vectorial de herramientas (opcional)
 
 ## Instalación
 
 ```bash
 # Desde npm (cuando esté disponible)
 npm install atdf-js
+
+# Para usar la búsqueda vectorial (opcional)
+npm install lancedb @xenova/transformers
 
 # O clonar el repositorio
 git clone https://github.com/MauricioPerera/agent-tool-description-format.git
@@ -71,6 +75,46 @@ if (tool.supportsLanguage('pt')) {
 const idiomas = tool.supportedLanguages;
 ```
 
+## Búsqueda vectorial (opcional)
+
+El SDK ofrece soporte opcional para búsqueda semántica avanzada utilizando bases de datos vectoriales:
+
+```javascript
+const { ATDFToolbox, ATDFVectorStore } = require('atdf-js');
+
+async function main() {
+  // Crear e inicializar el almacén vectorial
+  const vectorStore = new ATDFVectorStore();
+  await vectorStore.initialize();
+  
+  // Crear un toolbox con soporte vectorial
+  const toolbox = new ATDFToolbox({ vectorStore });
+  
+  // Cargar herramientas
+  toolbox.loadToolsFromDirectory('./tools');
+  
+  // Realizar búsqueda vectorial (captura similitud semántica)
+  const results = await toolbox.searchTools('comunicarme con alguien', { 
+    useVectorSearch: true,
+    language: 'es'
+  });
+  
+  console.log(results);
+}
+
+main().catch(console.error);
+```
+
+Esta funcionalidad requiere dependencias adicionales:
+```bash
+npm install lancedb @xenova/transformers
+```
+
+La búsqueda vectorial ofrece varias ventajas:
+- Encuentra herramientas semánticamente similares aunque usen términos diferentes
+- Funciona mejor en escenarios multilingües
+- Mejora los resultados con consultas ambiguas o incompletas
+
 ## Ejemplos
 
 El directorio `examples` contiene varios ejemplos que muestran cómo utilizar el SDK:
@@ -78,6 +122,9 @@ El directorio `examples` contiene varios ejemplos que muestran cómo utilizar el
 ```bash
 # Ejecutar el ejemplo básico
 node examples/basic_usage.js
+
+# Ejecutar el ejemplo de búsqueda vectorial
+node examples/vector_search.js
 ```
 
 ## Desarrollo
@@ -104,6 +151,9 @@ npm run build
 
 # Desarrollo con recarga automática
 npm run dev
+
+# Ejecutar el ejemplo de búsqueda vectorial
+npm run example:vector
 ```
 
 ## Compatibilidad

@@ -1,159 +1,109 @@
 {
   "tool_id": "enhanced_hole_maker_v1",
   "metadata": {
-    "version": "1.0.0",
-    "author": "ATDF Development Team",
-    "tags": ["física", "perforación", "construcción", "agujeros"],
-    "category": "herramientas_físicas",
-    "created_at": "2024-06-15",
-    "updated_at": "2024-06-15"
+    "version": "1.1.0",
+    "author": "ATDF Team",
+    "tags": ["construction", "drilling", "tool"],
+    "category": "construction",
+    "created_at": "2025-04-01",
+    "updated_at": "2025-04-15"
   },
   "localization": {
     "es": {
-      "description": "Permite crear agujeros en diversos tipos de superficies con configuración avanzada",
-      "when_to_use": "Usar cuando necesites realizar perforaciones precisas en paredes, madera u otras superficies compatibles"
-    },
-    "en": {
-      "description": "Creates holes in various types of surfaces with advanced configuration",
-      "when_to_use": "Use when you need to make precise holes in walls, wood, or other compatible surfaces"
+      "description": "Crea agujeros en diversas superficies",
+      "when_to_use": "Usar cuando necesites hacer un agujero en una pared, madera, metal u otra superficie sólida."
     },
     "pt": {
-      "description": "Permite criar furos em vários tipos de superfícies com configuração avançada",
-      "when_to_use": "Use quando precisar fazer furos precisos em paredes, madeira ou outras superfícies compatíveis"
+      "description": "Cria furos em várias superfícies",
+      "when_to_use": "Use quando precisar fazer um furo em uma parede, madeira, metal ou outra superfície sólida."
     }
   },
-  "description": "Permite crear agujeros en diversos tipos de superficies con configuración avanzada",
-  "when_to_use": "Usar cuando necesites realizar perforaciones precisas en paredes, madera u otras superficies compatibles",
+  "description": "Creates holes in various surfaces",
+  "when_to_use": "Use when you need to make a hole in a wall, wood, metal, or other solid surface.",
   "prerequisites": {
-    "tools": ["superficie_marcada_v1", "nivel_burbuja_v2"],
-    "conditions": ["superficie_seca", "no_circulacion_electrica", "area_despejada"],
-    "permissions": ["manipulacion_estructural", "generacion_ruido"]
+    "tools": ["safety_goggles", "measuring_tape"],
+    "conditions": ["stable_surface", "proper_ventilation"],
+    "permissions": ["adult_supervision_for_minors"]
   },
   "how_to_use": {
     "inputs": [
       {
-        "name": "location",
-        "type": "string",
-        "description": "Ubicación del agujero (e.g., 'x:10,y:20' o descripción textual)"
-      },
-      {
-        "name": "configuration",
-        "type": "object",
-        "schema": {
-          "properties": {
-            "depth": {"type": "number", "description": "Profundidad en milímetros"},
-            "diameter": {"type": "number", "description": "Diámetro en milímetros"},
-            "angle": {"type": "number", "description": "Ángulo en grados (0-90)"},
-            "mode": {"type": "string", "enum": ["normal", "percutor", "turbo"], "description": "Modo de perforación"}
-          },
-          "required": ["depth", "diameter"]
-        },
-        "description": "Configuración detallada del agujero"
+        "name": "diameter",
+        "type": "number",
+        "description": "The diameter of the hole in millimeters"
       },
       {
         "name": "surface_type",
         "type": "string",
-        "description": "Tipo de superficie (e.g., 'pared_yeso', 'madera', 'hormigon')"
+        "description": "Type of surface (e.g., wall, wood, metal)"
+      },
+      {
+        "name": "depth",
+        "type": "number",
+        "description": "The depth of the hole in millimeters"
+      },
+      {
+        "name": "precision",
+        "type": "string",
+        "description": "Level of precision required (standard, high, ultra)",
+        "schema": {
+          "enum": ["standard", "high", "ultra"]
+        }
       }
     ],
     "outputs": {
-      "success": "Agujero creado con éxito con las especificaciones proporcionadas",
+      "success": "The hole has been created with the specified parameters.",
       "failure": [
         {
-          "code": "invalid_configuration",
-          "description": "La configuración proporcionada no es compatible con el tipo de superficie"
+          "code": "invalid_diameter",
+          "description": "The diameter must be between 1mm and 100mm."
         },
         {
           "code": "invalid_surface",
-          "description": "La superficie no es perforable o no es compatible con esta herramienta"
+          "description": "The surface type is not supported."
         },
         {
-          "code": "safety_violation",
-          "description": "No se cumplen las condiciones de seguridad necesarias para la operación"
+          "code": "invalid_depth",
+          "description": "The depth must be between 1mm and 500mm."
         },
         {
-          "code": "tool_failure",
-          "description": "Fallo mecánico o eléctrico de la herramienta durante la operación"
+          "code": "invalid_precision",
+          "description": "The precision level is not valid."
         }
       ]
     }
   },
   "feedback": {
     "progress_indicators": [
-      "vibracion_incrementada",
-      "temperatura_herramienta",
-      "sonido_perforacion",
-      "resistencia_material"
+      "Drill sound",
+      "Visible dust or material being removed",
+      "Drill bit heating up"
     ],
     "completion_signals": [
-      "disminucion_resistencia",
-      "profundidad_alcanzada",
-      "verificacion_visual"
+      "Drill reaching set depth",
+      "Drill bit passing through material completely"
     ]
   },
   "examples": [
     {
-      "title": "Perforar pared de yeso estándar",
-      "description": "Creación de un agujero simple en una pared de yeso",
-      "inputs": {
-        "location": "x:120,y:85",
-        "configuration": {
-          "depth": 35,
-          "diameter": 8,
-          "angle": 90,
-          "mode": "normal"
-        },
-        "surface_type": "pared_yeso"
+      "goal": "Make a mounting hole for a wall shelf",
+      "input_values": {
+        "diameter": 8,
+        "surface_type": "concrete wall",
+        "depth": 50,
+        "precision": "standard"
       },
-      "expected_output": "Agujero creado con éxito con las especificaciones proporcionadas"
+      "expected_result": "An 8mm diameter hole, 50mm deep in the concrete wall"
     },
     {
-      "title": "Perforar pared de hormigón",
-      "description": "Creación de un agujero en pared de hormigón usando modo percutor",
-      "inputs": {
-        "location": "x:50,y:70",
-        "configuration": {
-          "depth": 75,
-          "diameter": 12,
-          "angle": 90,
-          "mode": "percutor"
-        },
-        "surface_type": "hormigon"
+      "goal": "Create precision hole for cabinet hinge",
+      "input_values": {
+        "diameter": 5,
+        "surface_type": "wood",
+        "depth": 12,
+        "precision": "high"
       },
-      "expected_output": "Agujero creado con éxito con las especificaciones proporcionadas"
-    },
-    {
-      "title": "Perforar en ángulo en madera",
-      "description": "Creación de un agujero en ángulo en una superficie de madera",
-      "inputs": {
-        "location": "x:200,y:45",
-        "configuration": {
-          "depth": 25,
-          "diameter": 6,
-          "angle": 45,
-          "mode": "normal"
-        },
-        "surface_type": "madera"
-      },
-      "expected_output": "Agujero creado con éxito con las especificaciones proporcionadas"
-    },
-    {
-      "title": "Intento en superficie no compatible",
-      "description": "Ejemplo de error al intentar perforar vidrio",
-      "inputs": {
-        "location": "x:30,y:60",
-        "configuration": {
-          "depth": 10,
-          "diameter": 5,
-          "angle": 90,
-          "mode": "normal"
-        },
-        "surface_type": "vidrio"
-      },
-      "expected_output": {
-        "error": "invalid_surface",
-        "message": "La superficie no es perforable o no es compatible con esta herramienta"
-      }
+      "expected_result": "A precisely positioned 5mm diameter hole, 12mm deep in the wood"
     }
   ]
 } 

@@ -1,0 +1,26 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "Herramienta de Ejemplo",
+      "description": "Una herramienta de ejemplo para mostrar la funcionalidad del SDK de ATDF",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "param1": {
+            "type": "string",
+            "description": "Un par\u00e1metro de ejemplo de tipo texto"
+          },
+          "param2": {
+            "type": "number",
+            "description": "Un par\u00e1metro de ejemplo de tipo num\u00e9rico",
+            "default": 42
+          }
+        },
+        "required": [
+          "param1"
+        ]
+      }
+    }
+  }
+]

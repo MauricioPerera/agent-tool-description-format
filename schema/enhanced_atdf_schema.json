@@ -4,9 +4,19 @@
   "description": "Schema for validating Extended ATDF tool descriptions (v0.2.0), including all proposed enhancements.",
   "type": "object",
   "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Version of the schema being used.",
+      "default": "2.0.0"
+    },
     "tool_id": {
       "type": "string",
       "description": "Unique identifier for the tool.",
+      "minLength": 1
+    },
+    "id": {
+      "type": "string",
+      "description": "Alternative identifier for the tool (alias for tool_id).",
       "minLength": 1
     },
     "metadata": {
@@ -203,31 +213,31 @@
     },
     "examples": {
       "type": "array",
-      "description": "Example uses of the tool with inputs and expected outputs.",
+      "description": "Example use cases for the tool.",
       "items": {
         "type": "object",
         "properties": {
-          "title": {
+          "goal": {
             "type": "string",
-            "description": "Brief title for the example."
+            "description": "What the example is trying to accomplish"
           },
-          "description": {
-            "type": "string",
-            "description": "Detailed description of what the example demonstrates."
-          },
-          "inputs": {
+          "input_values": {
             "type": "object",
-            "description": "Input parameter values for the example."
+            "description": "Example input values for the tool"
           },
-          "expected_output": {
-            "description": "Expected result of using the tool with these inputs."
+          "expected_result": {
+            "type": "string",
+            "description": "Expected output or result"
           }
         },
-        "required": ["title", "inputs", "expected_output"],
-        "additionalProperties": false
+        "required": ["goal", "input_values", "expected_result"]
       }
     }
   },
-  "required": ["tool_id", "description", "when_to_use", "how_to_use"],
-  "additionalProperties": false
+  "required": ["description", "when_to_use", "how_to_use"],
+  "oneOf": [
+    {"required": ["tool_id"]},
+    {"required": ["id"]}
+  ],
+  "additionalProperties": true
 } 

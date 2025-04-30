@@ -1,0 +1,12 @@
+# Core ATDF SDK Dependencies
+pydantic>=2.0.0     # Para modelado y validación de datos
+jsonschema>=4.0.0  # Para validación contra el esquema JSON ATDF
+PyYAML>=6.0        # Para cargar descripciones YAML
+
+# Dependencias opcionales para funcionalidad básica
+numpy>=1.18.0      # Operaciones numéricas, a menudo una dependencia
+pandas>=1.0.0      # Manipulación de datos, a menudo una dependencia
+
+# Requisitos opcionales para búsqueda vectorial
+lancedb>=0.1.17
+sentence-transformers>=2.2.2 

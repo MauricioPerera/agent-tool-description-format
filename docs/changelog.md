@@ -6,6 +6,26 @@ All notable changes to the **Agent Tool Description Format (ATDF)** project will
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-04-29
+
+### Added
+- Implementación de un SDK en Python (`sdk/`) para facilitar la interacción con herramientas ATDF.
+- Módulo `core` en el SDK con clases de esquema (`ATDFTool`, `ATDFToolParameter`) y funciones de utilidad para carga y validación.
+- Módulo `vector_search` en el SDK con `ATDFVectorStore` para búsqueda semántica de herramientas usando `lancedb` y `sentence-transformers`.
+- Archivo `requirements.txt` definiendo dependencias básicas y opcionales (para búsqueda vectorial).
+- Ejemplos de uso del SDK en `examples/`:
+  - `basic_usage.py`: Demuestra carga, creación, y exportación.
+  - `vector_search.py`: Demuestra la búsqueda vectorial.
+- `README.md` actualizado con instrucciones de instalación y uso del SDK.
+
+### Fixed
+- Corregido error en `ATDFVectorStore` al crear tablas en `lancedb` pasando un diccionario como esquema.
+- Eliminadas definiciones duplicadas de clases (`ATDFTool`, `ATDFToolbox`) en `sdk/atdf_sdk.py`.
+- Añadida dependencia faltante `pandas` a `requirements.txt` (requerida por `lancedb`).
+
+### Changed
+- Refactorización del código relacionado con ATDF en un paquete SDK estructurado.
+
 ## [0.2.0] - 2025-05-15
 
 ### Added

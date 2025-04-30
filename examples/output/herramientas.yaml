@@ -1,0 +1,20 @@
+- category: utilidades
+  description: Una herramienta de ejemplo para mostrar la funcionalidad del SDK de
+    ATDF
+  id: herramienta_de_ejemplo_57209136
+  name: Herramienta de Ejemplo
+  parameters:
+  - description: "Un par\xE1metro de ejemplo de tipo texto"
+    name: param1
+    required: true
+    type: string
+  - default: 42
+    description: "Un par\xE1metro de ejemplo de tipo num\xE9rico"
+    name: param2
+    required: false
+    type: number
+  tags:
+  - ejemplo
+  - demo
+  - sdk
+  version: 1.0.0

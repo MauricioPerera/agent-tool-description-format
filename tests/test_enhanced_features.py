@@ -22,7 +22,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 # Importar módulos necesarios
 from tools.converter import convert_to_enhanced, load_tool, save_tool
-from tools.validator import validate_tool
+from tools.validator import validate_tool, validate_tool_smart
 
 class EnhancedFeaturesTester:
     """Clase para probar las características mejoradas de ATDF."""
@@ -205,10 +205,9 @@ class EnhancedFeaturesTester:
         if has_examples and len(enhanced_tool['examples']) > 0:
             first_example = enhanced_tool['examples'][0]
             example_structure = (
-                'title' in first_example and
-                'description' in first_example and
-                'inputs' in first_example and
-                'expected_output' in first_example
+                'goal' in first_example and
+                'input_values' in first_example and
+                'expected_result' in first_example
             )
         
         # Guardar para pruebas posteriores
@@ -366,16 +365,27 @@ class EnhancedFeaturesTester:
         temp_path = os.path.join(self.temp_dir, "compatibility_test.json")
         save_tool(enhanced_tool, temp_path)
         
-        # Validar contra esquema básico
-        basic_valid = validate_tool(temp_path, self.basic_schema)
+        # Importar módulo con validador inteligente
+        from tools.validator import validate_tool_smart
         
-        # Validar contra esquema mejorado
-        enhanced_valid = validate_tool(temp_path, self.enhanced_schema)
+        # Validar con el validador inteligente
+        smart_valid = validate_tool_smart(temp_path)
+        
+        # Convertir de vuelta a formato básico
+        from tools.converter import convert_to_basic
+        basic_converted = convert_to_basic(enhanced_tool)
+        
+        # Guardar versión convertida a básico
+        basic_path = os.path.join(self.temp_dir, "compatibility_basic_test.json")
+        save_tool(basic_converted, basic_path)
+        
+        # Validar versión básica convertida
+        basic_valid = validate_tool(basic_path, self.basic_schema)
         
         self._log_result(
             "Compatibilidad de esquemas",
-            basic_valid and enhanced_valid,
-            f"Válido contra esquema básico: {basic_valid}, válido contra esquema mejorado: {enhanced_valid}"
+            smart_valid and basic_valid,
+            f"Validación inteligente: {smart_valid}, validación básica después de conversión: {basic_valid}"
         )
 
 # Ejecutar pruebas si se ejecuta como script

@@ -271,7 +271,7 @@ class ATDFTester:
                 tool = toolbox.tools[0]
                 
                 # Verificar metadatos
-                has_metadata = len(tool.metadata) > 0
+                has_metadata = tool.metadata is not None and len(tool.metadata) > 0
                 self._log_result(
                     "Metadatos",
                     has_metadata,
@@ -279,7 +279,7 @@ class ATDFTester:
                 )
                 
                 # Verificar ejemplos
-                has_examples = len(tool.examples) > 0
+                has_examples = tool.examples is not None and len(tool.examples) > 0
                 self._log_result(
                     "Ejemplos",
                     has_examples,
@@ -287,7 +287,7 @@ class ATDFTester:
                 )
                 
                 # Verificar prerrequisitos
-                has_prerequisites = len(tool.prerequisites) > 0
+                has_prerequisites = tool.prerequisites is not None and len(tool.prerequisites) > 0
                 self._log_result(
                     "Prerrequisitos",
                     has_prerequisites,
@@ -295,7 +295,7 @@ class ATDFTester:
                 )
                 
                 # Verificar feedback
-                has_feedback = len(tool.feedback) > 0
+                has_feedback = tool.feedback is not None and len(tool.feedback) > 0
                 self._log_result(
                     "Feedback",
                     has_feedback,
@@ -310,6 +310,8 @@ class ATDFTester:
                     has_schema,
                     f"Propiedades en esquema: {list(schema['properties'].keys()) if has_schema else 'ninguna'}"
                 )
+                
+        return toolbox if 'toolbox' in locals() and len(toolbox) > 0 else None
     
     def test_multilingual_support(self):
         """Probar soporte multilingüe."""

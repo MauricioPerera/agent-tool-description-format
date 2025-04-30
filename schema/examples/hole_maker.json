@@ -1,30 +1,39 @@
 {
   "tool_id": "hole_maker_v1",
-  "description": "Permite crear agujeros en superficies sólidas",
-  "when_to_use": "Usar cuando necesites generar un agujero en una pared u otra superficie perforable",
+  "description": "Creates holes in various surfaces",
+  "when_to_use": "Use when you need to make a hole in a wall, wood, metal, or other solid surface.",
   "how_to_use": {
     "inputs": [
       {
-        "name": "location",
-        "type": "string",
-        "description": "Ubicación del agujero (e.g., 'x:10,y:20' o descripción textual)"
+        "name": "diameter",
+        "type": "number",
+        "description": "The diameter of the hole in millimeters"
       },
       {
-        "name": "bit_id",
+        "name": "surface_type",
         "type": "string",
-        "description": "Identificador de la broca a usar (e.g., 'BIT_5MM')"
+        "description": "Type of surface (e.g., wall, wood, metal)"
+      },
+      {
+        "name": "depth",
+        "type": "number",
+        "description": "The depth of the hole in millimeters"
       }
     ],
     "outputs": {
-      "success": "Agujero creado con éxito",
+      "success": "The hole has been created with the specified parameters.",
       "failure": [
         {
-          "code": "invalid_bit",
-          "description": "La broca seleccionada no es compatible con la superficie"
+          "code": "invalid_diameter",
+          "description": "The diameter must be between 1mm and 100mm."
         },
         {
           "code": "invalid_surface",
-          "description": "La superficie no es perforable (e.g., vidrio no soportado)"
+          "description": "The surface type is not supported."
+        },
+        {
+          "code": "invalid_depth",
+          "description": "The depth must be between 1mm and 500mm."
         }
       ]
     }

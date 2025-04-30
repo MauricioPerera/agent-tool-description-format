@@ -99,14 +99,22 @@ def run_all_tests():
     # Mostrar resultados por categoría
     for name, success, passed, failed, total in results:
         status = "✅ PASS" if success else "❌ FAIL"
-        print(f"{status} - {name}: {passed}/{total} pruebas exitosas ({(passed/total)*100:.1f}%)")
+        if total > 0:
+            success_rate = (passed/total)*100
+            print(f"{status} - {name}: {passed}/{total} pruebas exitosas ({success_rate:.1f}%)")
+        else:
+            print(f"{status} - {name}: No se ejecutaron pruebas")
     
     # Mostrar resumen total
     print("\n==========================================================")
     print(f"Total de pruebas: {total_tests}")
     print(f"Pruebas exitosas: {total_success}")
     print(f"Pruebas fallidas: {total_failure}")
-    print(f"Tasa de éxito global: {(total_success/total_tests)*100:.1f}%")
+    if total_tests > 0:
+        success_rate = (total_success/total_tests)*100
+        print(f"Tasa de éxito global: {success_rate:.1f}%")
+    else:
+        print("Tasa de éxito global: N/A (no se ejecutaron pruebas)")
     print(f"Tiempo total: {total_time:.2f} segundos")
     print("==========================================================\n")
     

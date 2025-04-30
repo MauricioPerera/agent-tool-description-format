@@ -1,35 +1,39 @@
 {
   "tool_id": "text_translator_v1",
-  "description": "Permite traducir texto entre idiomas",
-  "when_to_use": "Usar cuando necesites convertir texto de un idioma a otro",
+  "description": "Translates text between different languages",
+  "when_to_use": "Use when you need to translate text from one language to another.",
   "how_to_use": {
     "inputs": [
       {
-        "name": "text",
+        "name": "source_text",
         "type": "string",
-        "description": "Texto a traducir"
+        "description": "The text to be translated"
       },
       {
-        "name": "source_lang",
+        "name": "source_language",
         "type": "string",
-        "description": "Código del idioma de origen (e.g., 'es', 'en')"
+        "description": "The language code of the source text (e.g., 'en', 'es', 'fr')"
       },
       {
-        "name": "target_lang",
+        "name": "target_language",
         "type": "string",
-        "description": "Código del idioma de destino (e.g., 'fr', 'de')"
+        "description": "The language code to translate the text to (e.g., 'en', 'es', 'fr')"
       }
     ],
     "outputs": {
-      "success": "Texto traducido con éxito",
+      "success": "The text has been successfully translated to the target language.",
       "failure": [
         {
           "code": "unsupported_language",
-          "description": "El idioma de origen o destino no está soportado"
+          "description": "One or both of the specified languages are not supported."
         },
         {
-          "code": "invalid_text",
-          "description": "El texto de entrada es inválido o está vacío"
+          "code": "empty_text",
+          "description": "The source text cannot be empty."
+        },
+        {
+          "code": "translation_error",
+          "description": "An error occurred during translation."
         }
       ]
     }

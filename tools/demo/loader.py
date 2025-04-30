@@ -1,5 +1,6 @@
 import json
 import os
+from thefuzz import fuzz
 
 def load_tool(filepath):
     """Load a single ATDF tool description from a JSON file."""
@@ -28,10 +29,24 @@ def load_tools_from_directory(directory):
                 tools.append(tool)
     return tools
 
-def select_tool_by_goal(tools, goal):
-    """Select a tool from a list based on a goal (matches description or when_to_use)."""
+def select_tool_by_goal(tools, goal, threshold=75):
+    """Select a tool from a list based on fuzzy matching the goal against description or when_to_use."""
+    best_match = None
+    highest_score = -1
+
+    goal_lower = goal.lower()
+
     for tool in tools:
-        if (goal.lower() in tool['description'].lower() or 
-            goal.lower() in tool['when_to_use'].lower()):
-            return tool
-    return None
+        desc_score = fuzz.partial_ratio(goal_lower, tool['description'].lower())
+        when_score = fuzz.partial_ratio(goal_lower, tool.get('when_to_use', '').lower())
+
+        current_max_score = max(desc_score, when_score)
+
+        if current_max_score > highest_score and current_max_score >= threshold:
+            highest_score = current_max_score
+            best_match = tool
+            
+    if best_match:
+        print(f"\nℹ️ Mejor coincidencia encontrada con puntuación: {highest_score} (Umbral: {threshold})")
+        
+    return best_match

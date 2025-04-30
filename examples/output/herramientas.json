@@ -1,0 +1,29 @@
+[
+  {
+    "id": "herramienta_de_ejemplo_57209136",
+    "name": "Herramienta de Ejemplo",
+    "description": "Una herramienta de ejemplo para mostrar la funcionalidad del SDK de ATDF",
+    "version": "1.0.0",
+    "parameters": [
+      {
+        "name": "param1",
+        "description": "Un par\u00e1metro de ejemplo de tipo texto",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "param2",
+        "description": "Un par\u00e1metro de ejemplo de tipo num\u00e9rico",
+        "type": "number",
+        "required": false,
+        "default": 42
+      }
+    ],
+    "category": "utilidades",
+    "tags": [
+      "ejemplo",
+      "demo",
+      "sdk"
+    ]
+  }
+]
