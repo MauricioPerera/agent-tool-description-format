@@ -108,6 +108,174 @@ describe('McpToAtdf', () => {
         fail('La sección failure no está definida');
       }
     });
+
+    it('debería inferir tipo string correctamente para _def.typeName', () => {
+      // Probar sólo con tipos que tienen estructura _def.typeName
+      const mcpTool = {
+        name: 'string-test',
+        description: 'Test de strings',
+        schema: {
+          stringParam: {
+            type: { _def: { typeName: 'ZodString' } },
+            description: 'Parámetro string',
+            required: true
+          }
+        }
+      };
+
+      const atdfTool = mcpToAtdf(mcpTool);
+      expect(atdfTool.how_to_use.inputs[0].type).toBe('string');
+    });
+
+    it('debería inferir tipo number correctamente para _def.typeName', () => {
+      const mcpTool = {
+        name: 'number-test',
+        description: 'Test de números',
+        schema: {
+          numberParam: {
+            type: { _def: { typeName: 'ZodNumber' } },
+            description: 'Parámetro numérico',
+            required: true
+          }
+        }
+      };
+
+      const atdfTool = mcpToAtdf(mcpTool);
+      expect(atdfTool.how_to_use.inputs[0].type).toBe('number');
+    });
+
+    it('debería inferir tipo boolean correctamente para _def.typeName', () => {
+      const mcpTool = {
+        name: 'boolean-test',
+        description: 'Test de booleanos',
+        schema: {
+          boolParam: {
+            type: { _def: { typeName: 'ZodBoolean' } },
+            description: 'Parámetro booleano',
+            required: true
+          }
+        }
+      };
+
+      const atdfTool = mcpToAtdf(mcpTool);
+      expect(atdfTool.how_to_use.inputs[0].type).toBe('boolean');
+    });
+
+    it('debería inferir tipo array correctamente para _def.typeName', () => {
+      const mcpTool = {
+        name: 'array-test',
+        description: 'Test de arrays',
+        schema: {
+          arrayParam: {
+            type: { _def: { typeName: 'ZodArray' } },
+            description: 'Parámetro array',
+            required: true
+          }
+        }
+      };
+
+      const atdfTool = mcpToAtdf(mcpTool);
+      expect(atdfTool.how_to_use.inputs[0].type).toBe('array');
+    });
+
+    it('debería inferir tipo object correctamente para _def.typeName', () => {
+      const mcpTool = {
+        name: 'object-test',
+        description: 'Test de objetos',
+        schema: {
+          objectParam: {
+            type: { _def: { typeName: 'ZodObject' } },
+            description: 'Parámetro objeto',
+            required: true
+          }
+        }
+      };
+
+      const atdfTool = mcpToAtdf(mcpTool);
+      expect(atdfTool.how_to_use.inputs[0].type).toBe('object');
+    });
+
+    it('debería inferir tipos desde strings descriptivos', () => {
+      // Pruebas más sencillas para tipos basados en cadenas
+      const typeTests = [
+        { type: 'string', expected: 'string' },
+        { type: 'number', expected: 'number' },
+        { type: 'boolean', expected: 'boolean' },
+        { type: 'array', expected: 'array' },
+        { type: 'object', expected: 'object' }
+      ];
+
+      for (const test of typeTests) {
+        const mcpTool = {
+          name: `${test.type}-test`,
+          description: `Test de ${test.type}`,
+          schema: {
+            param: {
+              type: test.type,
+              description: `Parámetro ${test.type}`,
+              required: true
+            }
+          }
+        };
+
+        const atdfTool = mcpToAtdf(mcpTool);
+        expect(atdfTool.how_to_use.inputs[0].type).toBe(test.expected);
+      }
+    });
+
+    it('debería manejar tipos desconocidos como any', () => {
+      const unknownTypes = [
+        { _def: { typeName: 'ZodUnknown' } },
+        { _def: { typeName: 'ZodAny' } },
+        'unknown',
+        'custom-type',
+        {}  // Objeto vacío
+      ];
+
+      for (const type of unknownTypes) {
+        const mcpTool = {
+          name: 'unknown-test',
+          description: 'Test de tipos desconocidos',
+          schema: {
+            unknownParam: {
+              type: type,
+              description: 'Parámetro desconocido',
+              required: true
+            }
+          }
+        };
+
+        const atdfTool = mcpToAtdf(mcpTool);
+        expect(atdfTool.how_to_use.inputs[0].type).toBe('any');
+      }
+    });
+
+    it('debería manejar opciones personalizadas para when_to_use', () => {
+      const mcpTool = {
+        name: 'custom-when',
+        description: 'Herramienta con when_to_use personalizado',
+        schema: {}
+      };
+      
+      const customWhenToUse = 'Usar esta herramienta para casos específicos';
+      const atdfTool = mcpToAtdf(mcpTool, { 
+        includeWhenToUse: true,
+        defaultWhenToUse: customWhenToUse
+      });
+      
+      expect(atdfTool.when_to_use).toBe(customWhenToUse);
+    });
+
+    it('debería manejar herramientas sin descripción', () => {
+      const mcpTool = {
+        name: 'no-description',
+        schema: {}
+      };
+      
+      const atdfTool = mcpToAtdf(mcpTool);
+      
+      expect(atdfTool.description).toContain('no-description');
+    });
   });
   
   describe('batchConvert', () => {
