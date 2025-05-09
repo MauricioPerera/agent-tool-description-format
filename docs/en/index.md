@@ -74,6 +74,16 @@ ATDF is designed for a wide range of applications, including:
 
 ATDF is licensed under the MIT License. See the [LICENSE](license.md) file for details.
 
+## Core Components
+
+- [**Specification**](specification.md): The core technical details of the format
+- [**Examples**](examples.md): Sample tool descriptions
+- [**Usage Examples**](../usage_examples.md): Practical examples of using ATDF
+- [**Multilingual Support**](multilingual.md): How localization works
+- [**MCP to ATDF Converter**](../usage_examples.md#convertidor-mcp-a-atdf): Tools to convert from MCP format
+- [**Contributing**](contributing.md): How to contribute to the format
+- [**Changelog**](changelog.md): History of changes
+
 ---
 
 [GitHub Repository](https://github.com/MauricioPerera/agent-tool-description-format) | [Changelog](changelog.md) 

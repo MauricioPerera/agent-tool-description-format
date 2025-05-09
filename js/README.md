@@ -163,4 +163,70 @@ npm run example:vector
 
 ## Licencia
 
-Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles. 
+Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
+
+## Conversor MCP a ATDF
+
+El SDK incluye un convertidor de herramientas desde el formato MCP (Model Context Protocol) al formato ATDF.
+
+### Uso básico
+
+```javascript
+const { mcpToAtdf } = require('atdf-sdk');
+
+// Definición de herramienta en formato MCP
+const mcpTool = {
+    name: 'fetch',
+    description: 'Recupera contenido de una URL',
+    annotations: {
+        context: 'Cuando necesites obtener datos de una página web'
+    },
+    inputSchema: {
+        type: 'object',
+        properties: {
+            url: {
+                type: 'string',
+                description: 'URL a recuperar'
+            }
+        },
+        required: ['url']
+    }
+};
+
+// Convertir a formato ATDF básico
+const atdfBasic = mcpToAtdf(mcpTool);
+
+// Convertir a formato ATDF mejorado
+const atdfEnhanced = mcpToAtdf(mcpTool, { 
+    enhanced: true, 
+    author: 'Mi Nombre' 
+});
+```
+
+### Conversión desde archivo
+
+```javascript
+const { convertMcpFile } = require('atdf-sdk');
+
+// Convertir un archivo MCP a ATDF y guardarlo
+convertMcpFile(
+    'herramientas_mcp.json',
+    'herramientas_atdf.json',
+    { enhanced: true }
+);
+```
+
+### Procesamiento por lotes
+
+```javascript
+const { batchConvertMcp } = require('atdf-sdk');
+const fs = require('fs');
+
+// Cargar archivo con múltiples herramientas
+const mcpData = JSON.parse(fs.readFileSync('mcp_tools.json', 'utf8'));
+
+// Procesar todas las herramientas
+batchConvertMcp(mcpData, './output', { enhanced: true });
+```
+
+Para ver un ejemplo completo, consulte el archivo `examples/mcp_conversion_example.js`. 

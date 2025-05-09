@@ -21,6 +21,7 @@ This repository contains:
 - **Bidirectional Conversion**: Convert between basic and enhanced formats in both directions
 - **Robust Multilingual Support**: Improved detection of Spanish, English, and Portuguese queries
 - **Alternative Identifiers**: Support for both `tool_id` and `id` fields interchangeably
+- **MCP Format Converters**: New tools to convert from MCP (Model Context Protocol) to ATDF in both Python and JavaScript
 
 See the [CHANGELOG](CHANGELOG.md) for full details and [Usage Examples](docs/usage_examples.md) for practical demonstrations.
 

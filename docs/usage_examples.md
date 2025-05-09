@@ -144,4 +144,150 @@ python tests/run_all_tests.py
 # Ejecutar pruebas específicas
 python tests/test_trilingual_agent.py
 python tests/test_enhanced_features.py
-``` 
+```
+
+## Convertidor MCP a ATDF
+
+El formato ATDF ahora incluye soporte para convertir automáticamente definiciones de herramientas desde el formato MCP (Model Context Protocol) al formato ATDF estándar.
+
+### Implementación en Python
+
+#### Uso básico
+
+```python
+from tools.mcp_converter import mcp_to_atdf
+
+# Definición de herramienta en formato MCP
+mcp_tool = {
+    "name": "fetch",
+    "description": "Recupera contenido de una URL",
+    "annotations": {
+        "context": "Cuando necesites obtener datos de una página web"
+    },
+    "inputSchema": {
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string",
+                "description": "URL a recuperar"
+            }
+        },
+        "required": ["url"]
+    }
+}
+
+# Convertir a formato ATDF básico
+atdf_basic = mcp_to_atdf(mcp_tool)
+
+# Convertir a formato ATDF mejorado
+atdf_enhanced = mcp_to_atdf(mcp_tool, enhanced=True, author="Mi Nombre")
+```
+
+#### Conversión desde archivo
+
+```python
+from tools.mcp_converter import convert_mcp_file
+
+# Convertir un archivo MCP a ATDF y guardarlo
+convert_mcp_file(
+    input_file="herramientas_mcp.json",
+    output_file="herramientas_atdf.json",
+    enhanced=True
+)
+```
+
+#### Procesamiento por lotes
+
+Si tienes múltiples herramientas MCP en un formato como:
+
+```json
+{
+  "tools": [
+    { "name": "tool1", ... },
+    { "name": "tool2", ... }
+  ]
+}
+```
+
+Puedes procesarlas todas:
+
+```python
+import json
+from tools.mcp_converter import mcp_to_atdf
+from tools.converter import save_tool
+
+# Cargar archivo con múltiples herramientas
+with open("mcp_tools.json", "r") as f:
+    mcp_data = json.load(f)
+
+# Procesar cada herramienta
+for tool in mcp_data["tools"]:
+    atdf_tool = mcp_to_atdf(tool, enhanced=True)
+    save_tool(atdf_tool, f"output/{tool['name']}.json")
+```
+
+Para un ejemplo completo de uso, consulta el archivo `examples/mcp_conversion_example.py`.
+
+### Implementación en JavaScript
+
+#### Uso básico
+
+```javascript
+const { mcpToAtdf } = require('atdf-sdk');
+
+// Definición de herramienta en formato MCP
+const mcpTool = {
+    name: 'fetch',
+    description: 'Recupera contenido de una URL',
+    annotations: {
+        context: 'Cuando necesites obtener datos de una página web'
+    },
+    inputSchema: {
+        type: 'object',
+        properties: {
+            url: {
+                type: 'string',
+                description: 'URL a recuperar'
+            }
+        },
+        required: ['url']
+    }
+};
+
+// Convertir a formato ATDF básico
+const atdfBasic = mcpToAtdf(mcpTool);
+
+// Convertir a formato ATDF mejorado
+const atdfEnhanced = mcpToAtdf(mcpTool, { 
+    enhanced: true, 
+    author: 'Mi Nombre' 
+});
+```
+
+#### Conversión desde archivo
+
+```javascript
+const { convertMcpFile } = require('atdf-sdk');
+
+// Convertir un archivo MCP a ATDF y guardarlo
+convertMcpFile(
+    'herramientas_mcp.json',
+    'herramientas_atdf.json',
+    { enhanced: true }
+);
+```
+
+#### Procesamiento por lotes
+
+```javascript
+const { batchConvertMcp } = require('atdf-sdk');
+const fs = require('fs');
+
+// Cargar archivo con múltiples herramientas
+const mcpData = JSON.parse(fs.readFileSync('mcp_tools.json', 'utf8'));
+
+// Procesar todas las herramientas
+batchConvertMcp(mcpData, './output', { enhanced: true });
+```
+
+Para un ejemplo completo, consulta el archivo `js/examples/mcp_conversion_example.js`. 

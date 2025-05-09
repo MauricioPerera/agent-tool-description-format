@@ -1,7 +1,10 @@
 title: Agent Tool Description Format (ATDF)
-description: An open protocol for describing tools functionally for AI agents
+description: An open protocol for describing tools functionally for AI agents, with converters from MCP format
 theme: jekyll-theme-cayman
 show_downloads: true
 github:
   repository_url: https://github.com/MauricioPerera/agent-tool-description-format
-  is_project_page: true 
+  is_project_page: true
+google_analytics: # replace with your analytics ID if applicable
+plugins: 
+  - jekyll-seo-tag 

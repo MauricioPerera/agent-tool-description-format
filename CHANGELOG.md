@@ -48,4 +48,8 @@
 
 - Esquema básico ATDF
 - Cargador simple de herramientas
-- Documentación inicial 
+- Documentación inicial
+
+### Añadido
+- Convertidor MCP a ATDF: Nueva herramienta para transformar definiciones del formato MCP a ATDF
+- Soporte para procesamiento por lotes de herramientas MCP 

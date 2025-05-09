@@ -1,5 +1,6 @@
 const ATDFTool = require('./ATDFTool');
 const ATDFToolbox = require('./ATDFToolbox');
+const MCPConverter = require('./MCPConverter');
 const fs = require('fs');
 const path = require('path');
 
@@ -51,5 +52,9 @@ module.exports = {
   ATDFToolbox,
   loadToolFromFile,
   loadToolboxFromDirectory,
-  findBestTool
+  findBestTool,
+  // Exportar funciones del conversor MCP
+  mcpToAtdf: MCPConverter.mcpToAtdf,
+  convertMcpFile: MCPConverter.convertMcpFile,
+  batchConvertMcp: MCPConverter.batchConvert
 }; 
