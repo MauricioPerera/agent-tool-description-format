@@ -1,0 +1,39 @@
+{
+  "__comment": "Definición ATDF para herramienta fetch - Ejemplo de integración ATDF-MCP",
+  "schema_version": "1.0.0",
+  "tool_id": "fetch",
+  "description": "Recupera contenido de una URL",
+  "when_to_use": "Usar cuando necesites obtener datos de una página web",
+  "how_to_use": {
+    "inputs": [
+      {
+        "__comment": "URL: Parámetro principal requerido para la petición HTTP",
+        "name": "url",
+        "type": "string",
+        "description": "URL a recuperar",
+        "required": true
+      },
+      {
+        "__comment": "Raw: Parámetro opcional que determina el formato de respuesta",
+        "name": "raw",
+        "type": "boolean",
+        "description": "Devolver HTML crudo (opcional)"
+      }
+    ],
+    "outputs": {
+      "success": "Contenido web recuperado con éxito",
+      "failure": [
+        {
+          "__comment": "Error devuelto cuando la URL no es válida o accesible",
+          "code": "invalid_url",
+          "description": "La URL proporcionada es inválida o inaccesible"
+        },
+        {
+          "__comment": "Error general durante la recuperación del contenido",
+          "code": "fetch_error",
+          "description": "Error al recuperar el contenido"
+        }
+      ]
+    }
+  }
+} 

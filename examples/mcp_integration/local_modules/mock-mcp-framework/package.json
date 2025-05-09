@@ -1,0 +1,8 @@
+{
+  "name": "mock-mcp-framework",
+  "version": "1.0.0",
+  "description": "Mock de MCP Framework para pruebas",
+  "main": "index.js",
+  "author": "ATDF Contributors",
+  "license": "MIT"
+} 
