@@ -1,0 +1,35 @@
+{
+  "name": "atdf-mcp-client",
+  "version": "1.0.0",
+  "description": "Cliente MCP con soporte para herramientas ATDF",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "cli": "ts-node src/cli/atdf-mcp-client.ts"
+  },
+  "keywords": [
+    "ATDF",
+    "MCP",
+    "client",
+    "tools",
+    "AI"
+  ],
+  "author": "ATDF Contributors",
+  "license": "MIT",
+  "dependencies": {
+    "@atdf/js": "file:../../js",
+    "commander": "^11.1.0",
+    "fs-extra": "^11.3.0",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.1",
+    "@types/node": "^20.4.5",
+    "@types/node-fetch": "^2.6.11",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  }
+} 

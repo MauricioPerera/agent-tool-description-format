@@ -1,0 +1,26 @@
+# Dependencias
+node_modules/
+package-lock.json
+
+# Archivos de compilación
+dist/
+build/
+*.tsbuildinfo
+
+# Archivos temporales
+.DS_Store
+*.log
+*.swp
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Directorios de caché
+.cache/
+.npm/
+
+# Catálogo generado de herramientas
+atdf-catalog/
+atdf-tools/ 
