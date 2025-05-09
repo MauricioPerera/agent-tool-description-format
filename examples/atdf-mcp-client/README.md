@@ -11,6 +11,30 @@ Un cliente para servidores MCP (Model Context Protocol) con soporte para el form
 - **CLI integrada**: Interfaz de línea de comandos para operaciones comunes.
 - **Tipado completo**: Desarrollado con TypeScript para mayor seguridad.
 
+## Herramientas Implementadas
+
+Este proyecto implementa las siguientes herramientas principales:
+
+1. **MCPClient**: Cliente base para conexión a servidores MCP.
+   - Descubrimiento de herramientas disponibles
+   - Ejecución remota de herramientas
+   - Gestión de conexiones HTTP
+
+2. **ATDFMCPClient**: Cliente extendido con soporte ATDF.
+   - Conversión automática MCP → ATDF
+   - Validación de parámetros según definiciones ATDF
+   - Serialización/deserialización de herramientas
+
+3. **Convertidor McpToAtdf**: Módulo de conversión entre formatos.
+   - Mapeo de esquemas Zod a tipos ATDF
+   - Generación de secciones opcionales (when_to_use, failure)
+   - Conversión batch de múltiples herramientas
+
+4. **CLI**: Interfaz de línea de comandos.
+   - Comando `discover` para buscar herramientas en servidores MCP
+   - Comando `execute` para ejecutar herramientas ATDF
+   - Comando `convert` para transformar herramientas entre formatos
+
 ## Arquitectura
 
 El cliente implementa una arquitectura que conecta el ecosistema MCP con el formato ATDF:
