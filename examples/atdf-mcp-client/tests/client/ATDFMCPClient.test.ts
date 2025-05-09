@@ -1,6 +1,7 @@
 import { ATDFMCPClient } from '../../src/client/ATDFMCPClient';
 import { MCPClient } from '../../src/client/MCPClient';
 import fs from 'fs-extra';
+import fetchMock from 'jest-fetch-mock';
 
 // Mock para fs-extra
 jest.mock('fs-extra', () => ({
@@ -17,6 +18,7 @@ describe('ATDFMCPClient', () => {
   
   beforeEach(() => {
     jest.clearAllMocks();
+    fetchMock.resetMocks();
     client = new ATDFMCPClient(mockServerUrl);
   });
   
@@ -127,6 +129,141 @@ describe('ATDFMCPClient', () => {
       expect(() => {
         client.saveATDFToolsToDirectory('./output-dir');
       }).toThrow();
+    });
+  });
+
+  describe('connect', () => {
+    it('debería conectar y convertir herramientas MCP a ATDF', async () => {
+      // Mock para la respuesta de herramientas MCP
+      fetchMock.mockResponseOnce(JSON.stringify({
+        tools: [
+          { name: 'tool1', description: 'Tool 1', schema: {} },
+          { name: 'tool2', description: 'Tool 2', schema: {} }
+        ]
+      }));
+      
+      await client.connect();
+      
+      // Verificar que se convirtieron las herramientas
+      const atdfTools = client.getATDFTools();
+      expect(atdfTools).toHaveLength(2);
+      expect(atdfTools[0].tool_id).toBe('tool1');
+      expect(atdfTools[1].tool_id).toBe('tool2');
+    });
+  });
+  
+  describe('findATDFTool', () => {
+    it('debería encontrar una herramienta por su ID', () => {
+      // Configurar herramientas ATDF
+      (client as any).atdfTools = [
+        { tool_id: 'tool1', description: 'Tool 1' },
+        { tool_id: 'tool2', description: 'Tool 2' }
+      ];
+      
+      const tool = client.findATDFTool('tool2');
+      expect(tool).toBeDefined();
+      expect(tool?.tool_id).toBe('tool2');
+    });
+    
+    it('debería devolver undefined si no encuentra la herramienta', () => {
+      // Configurar herramientas ATDF
+      (client as any).atdfTools = [
+        { tool_id: 'tool1', description: 'Tool 1' }
+      ];
+      
+      const tool = client.findATDFTool('non-existent');
+      expect(tool).toBeUndefined();
+    });
+  });
+  
+  describe('executeATDFTool', () => {
+    it('debería ejecutar una herramienta ATDF correctamente', async () => {
+      // Configurar herramientas ATDF
+      (client as any).atdfTools = [
+        {
+          tool_id: 'weather',
+          description: 'Weather information',
+          how_to_use: {
+            inputs: [
+              { name: 'city', description: 'City name', type: 'string', required: true }
+            ],
+            outputs: { success: 'Weather data' }
+          }
+        }
+      ];
+      
+      // Mock para la respuesta de la llamada a la herramienta
+      fetchMock.mockResponseOnce(JSON.stringify({
+        temperature: 25,
+        condition: 'Sunny'
+      }));
+      
+      const result = await client.executeATDFTool('weather', { city: 'Madrid' });
+      
+      expect(result.status).toBe('success');
+      expect(result.toolName).toBe('weather');
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(fetchMock).toHaveBeenCalledWith(
+        `${mockServerUrl}/tools/call`,
+        expect.objectContaining({
+          method: 'POST',
+          body: expect.stringContaining('Madrid')
+        })
+      );
+    });
+    
+    it('debería manejar herramientas que no existen', async () => {
+      const result = await client.executeATDFTool('non-existent', {});
+      
+      expect(result.status).toBe('error');
+      expect(result.error).toContain('Herramienta ATDF no encontrada');
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+    
+    it('debería validar parámetros requeridos', async () => {
+      // Configurar herramientas ATDF
+      (client as any).atdfTools = [
+        {
+          tool_id: 'weather',
+          description: 'Weather information',
+          how_to_use: {
+            inputs: [
+              { name: 'city', description: 'City name', type: 'string', required: true }
+            ],
+            outputs: { success: 'Weather data' }
+          }
+        }
+      ];
+      
+      // Ejecutar sin parámetro requerido
+      const result = await client.executeATDFTool('weather', {});
+      
+      expect(result.status).toBe('error');
+      expect(result.error).toContain('Parámetro requerido faltante');
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+    
+    it('debería validar tipos de parámetros', async () => {
+      // Configurar herramientas ATDF
+      (client as any).atdfTools = [
+        {
+          tool_id: 'calculator',
+          description: 'Calculator',
+          how_to_use: {
+            inputs: [
+              { name: 'number', description: 'A number', type: 'number', required: true }
+            ],
+            outputs: { success: 'Result' }
+          }
+        }
+      ];
+      
+      // Ejecutar con tipo incorrecto
+      const result = await client.executeATDFTool('calculator', { number: 'not-a-number' });
+      
+      expect(result.status).toBe('error');
+      expect(result.error).toContain('Tipo incorrecto');
+      expect(fetchMock).not.toHaveBeenCalled();
     });
   });
 }); 
