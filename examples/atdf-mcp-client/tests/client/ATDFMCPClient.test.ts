@@ -2,6 +2,7 @@ import { ATDFMCPClient } from '../../src/client/ATDFMCPClient';
 import { MCPClient } from '../../src/client/MCPClient';
 import fs from 'fs-extra';
 import fetchMock from 'jest-fetch-mock';
+import { ATDFTool } from '../../src/types';
 
 // Mock para fs-extra
 jest.mock('fs-extra', () => ({
@@ -32,6 +33,31 @@ describe('ATDFMCPClient', () => {
     it('debería inicializar correctamente con opciones personalizadas', () => {
       const client = new ATDFMCPClient({ baseUrl: mockServerUrl, timeout: 5000 });
       expect(client).toBeDefined();
+    });
+
+    it('debería inicializar correctamente con opciones de conversión', () => {
+      const conversionOptions = {
+        includeWhenToUse: true,
+        defaultWhenToUse: 'Usar cuando necesites esta herramienta'
+      };
+      
+      const client = new ATDFMCPClient(
+        mockServerUrl, 
+        { baseUrl: mockServerUrl, timeout: 5000 },
+        conversionOptions
+      );
+      
+      expect(client).toBeDefined();
+      
+      // Verificar que se aplican las opciones de conversión al convertir
+      const mockTool = {
+        name: 'test-tool',
+        description: 'Test tool',
+        schema: {}
+      };
+      
+      const atdfTool = client.convertToolToATDF(mockTool);
+      expect(atdfTool.when_to_use).toBe(conversionOptions.defaultWhenToUse);
     });
   });
   
@@ -129,6 +155,33 @@ describe('ATDFMCPClient', () => {
       expect(() => {
         client.saveATDFToolsToDirectory('./output-dir');
       }).toThrow();
+    });
+
+    it('debería respetar la opción pretty=false', () => {
+      // Mock para fs.ensureDirSync y fs.writeJsonSync
+      (fs.ensureDirSync as jest.Mock).mockReturnValue(undefined);
+      (fs.writeJsonSync as jest.Mock).mockReturnValue(undefined);
+      
+      // Forzamos acceso a propiedades internas para pruebas
+      (client as any).atdfTools = [
+        {
+          tool_id: 'tool1',
+          schema_version: '1.0.0',
+          description: 'Tool 1',
+          how_to_use: {
+            inputs: [],
+            outputs: { success: {} }
+          }
+        }
+      ];
+      
+      const result = client.saveATDFToolsToDirectory('./output-dir', false);
+      
+      expect(fs.writeJsonSync).toHaveBeenCalledWith(
+        expect.stringContaining('output-dir/tool1.json'),
+        expect.objectContaining({ tool_id: 'tool1' }),
+        { spaces: 0 }
+      );
     });
   });
 
@@ -264,6 +317,134 @@ describe('ATDFMCPClient', () => {
       expect(result.status).toBe('error');
       expect(result.error).toContain('Tipo incorrecto');
       expect(fetchMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('validateParams', () => {
+    // Exponer el método privado para poder probarlo
+    const validateParams = (atdfTool: ATDFTool, params: any): string | null => {
+      return (client as any).validateParams(atdfTool, params);
+    };
+
+    it('debería validar parámetros de tipo array correctamente', () => {
+      const tool: ATDFTool = {
+        tool_id: 'array-test',
+        schema_version: '1.0.0',
+        description: 'Test Array',
+        how_to_use: {
+          inputs: [
+            { name: 'items', description: 'Array de items', type: 'array', required: true }
+          ],
+          outputs: { success: 'Resultado' }
+        }
+      };
+      
+      // Parámetro correcto
+      const validResult = validateParams(tool, { items: [1, 2, 3] });
+      expect(validResult).toBeNull();
+      
+      // Parámetro incorrecto
+      const invalidResult = validateParams(tool, { items: 'no es un array' });
+      expect(invalidResult).toContain('Tipo incorrecto para items');
+    });
+
+    it('debería validar parámetros de tipo object correctamente', () => {
+      const tool: ATDFTool = {
+        tool_id: 'object-test',
+        schema_version: '1.0.0',
+        description: 'Test Object',
+        how_to_use: {
+          inputs: [
+            { name: 'config', description: 'Configuración', type: 'object', required: true }
+          ],
+          outputs: { success: 'Resultado' }
+        }
+      };
+      
+      // Parámetro correcto
+      const validResult = validateParams(tool, { config: { key: 'value' } });
+      expect(validResult).toBeNull();
+      
+      // Array no es un objeto válido para este caso
+      const invalidResult1 = validateParams(tool, { config: [1, 2, 3] });
+      expect(invalidResult1).toContain('Tipo incorrecto para config');
+      
+      // String no es un objeto
+      const invalidResult2 = validateParams(tool, { config: 'no es un objeto' });
+      expect(invalidResult2).toContain('Tipo incorrecto para config');
+    });
+
+    it('debería validar parámetros de tipo boolean correctamente', () => {
+      const tool: ATDFTool = {
+        tool_id: 'boolean-test',
+        schema_version: '1.0.0',
+        description: 'Test Boolean',
+        how_to_use: {
+          inputs: [
+            { name: 'flag', description: 'Bandera', type: 'boolean', required: true }
+          ],
+          outputs: { success: 'Resultado' }
+        }
+      };
+      
+      // Parámetros correctos
+      expect(validateParams(tool, { flag: true })).toBeNull();
+      expect(validateParams(tool, { flag: false })).toBeNull();
+      
+      // Parámetros incorrectos
+      expect(validateParams(tool, { flag: 'true' })).toContain('Tipo incorrecto para flag');
+      expect(validateParams(tool, { flag: 1 })).toContain('Tipo incorrecto para flag');
+    });
+
+    it('debería ignorar parámetros no requeridos que son undefined o null', () => {
+      const tool: ATDFTool = {
+        tool_id: 'optional-test',
+        schema_version: '1.0.0',
+        description: 'Test Opcionales',
+        how_to_use: {
+          inputs: [
+            { name: 'required', description: 'Requerido', type: 'string', required: true },
+            { name: 'optional', description: 'Opcional', type: 'string', required: false }
+          ],
+          outputs: { success: 'Resultado' }
+        }
+      };
+      
+      // Sin el parámetro opcional
+      expect(validateParams(tool, { required: 'valor' })).toBeNull();
+      
+      // Con parámetro opcional null
+      expect(validateParams(tool, { required: 'valor', optional: null })).toBeNull();
+      
+      // Con parámetro opcional undefined
+      expect(validateParams(tool, { required: 'valor', optional: undefined })).toBeNull();
+      
+      // Sin parámetro requerido
+      expect(validateParams(tool, { optional: 'valor' })).toContain('Parámetro requerido faltante');
+      
+      // Con parámetro requerido null
+      expect(validateParams(tool, { required: null, optional: 'valor' })).toContain('Parámetro requerido faltante');
+    });
+
+    it('debería validar tipos desconocidos como válidos', () => {
+      const tool: ATDFTool = {
+        tool_id: 'unknown-test',
+        schema_version: '1.0.0',
+        description: 'Test Desconocido',
+        how_to_use: {
+          inputs: [
+            { name: 'data', description: 'Datos', type: 'any', required: true }
+          ],
+          outputs: { success: 'Resultado' }
+        }
+      };
+      
+      // Cualquier tipo debería ser válido
+      expect(validateParams(tool, { data: 'string' })).toBeNull();
+      expect(validateParams(tool, { data: 123 })).toBeNull();
+      expect(validateParams(tool, { data: true })).toBeNull();
+      expect(validateParams(tool, { data: { key: 'value' } })).toBeNull();
+      expect(validateParams(tool, { data: [1, 2, 3] })).toBeNull();
     });
   });
 }); 

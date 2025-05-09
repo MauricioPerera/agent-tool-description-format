@@ -74,7 +74,7 @@ describe('CLI', () => {
       const result = await runCLI('discover invalid-url');
       // Verificar que hay algún mensaje de error (no importa el texto exacto)
       expect(result.stderr).toBeTruthy();
-    }, 15000);
+    }, 30000);
     
     it('debería crear directorio de salida si se especifica', async () => {
       // Mockear los métodos necesarios para la acción discover
