@@ -1,4 +1,4 @@
-[Home](index.md) | [Especificação](specification.md) | [Exemplos](examples.md) | [Contribuir](contributing.md) | [Multilíngue](multilingual.md) | [Histórico de Alterações](changelog.md) | [Licença](license.md)
+[Home](index.md) | [Especificação](specification.md) | [Exemplos](examples.md) | [Guia MCP do n8n](n8n_mcp_server_guide.md) | [Contribuir](contributing.md) | [Multilíngue](multilingual.md) | [Histórico de Alterações](changelog.md) | [Licença](license.md)
 
 **Idiomas:** [English (en)](../en/index.md) | [Español (es)](../es/index.md) | [Português (pt)](index.md)
 
