@@ -6,11 +6,11 @@
 
 ### 📖 **Main Documents**
 - **[README](../../README.md)** - Introduction and quick start
-- **[ATDF Specification](./specification.md)** - Full format specification
+- **[ATDF Specification](./ATDF_SPECIFICATION.md)** - Complete format specification
 - **[Core Concepts](./CONCEPTS.md)** - Key concepts explained
 - **[Implementation Examples](./examples.md)** - Examples in multiple languages and tools
 - **[Implementation Guide](./IMPLEMENTATION_GUIDE.md)** - How to implement ATDF
-- **[Best Practices](./BEST_PRACTICES.md)** - Recommendations for robust implementations
+- **[Best Practices](./BEST_PRACTICES.md)** - Implementation recommendations
 
 ### 📊 **Visual Resources**
 - **[Mermaid Diagrams](../MERMAID_DIAGRAMS.md)** - ATDF flow and architecture diagrams

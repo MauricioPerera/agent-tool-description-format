@@ -511,7 +511,7 @@ Para verificar que tu implementación cumple con ATDF:
 
 ## 🔗 Enlaces Relacionados
 
-- **[Ejemplos de Implementación](./EXAMPLES.md)** - Ejemplos en múltiples lenguajes y herramientas
+- **[Ejemplos de Implementación](./examples.md)** - Ejemplos en múltiples lenguajes y herramientas
 - **[Guía de Implementación](./IMPLEMENTATION_GUIDE.md)** - Cómo implementar ATDF
 - **[Mejores Prácticas](./BEST_PRACTICES.md)** - Recomendaciones para implementaciones robustas
 

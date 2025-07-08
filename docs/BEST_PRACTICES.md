@@ -1156,10 +1156,10 @@ def execute_tool(data):
 
 ## 📚 Recursos Adicionales
 
-### Enlaces Útiles
 - [Especificación ATDF](./ATDF_SPECIFICATION.md)
+- [Conceptos Fundamentales](./CONCEPTS.md)
 - [Guía de Implementación](./IMPLEMENTATION_GUIDE.md)
-- [Ejemplos de Código](./EXAMPLES.md)
+- [Ejemplos de Código](./examples.md)
 
 ### Herramientas Recomendadas
 - **Testing**: pytest, unittest, coverage

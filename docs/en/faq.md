@@ -220,4 +220,4 @@
 
 ---
 
-**Need more help?** Check the [documentation](index.md), [examples](../examples/), or [GitHub issues](https://github.com/MauricioPerera/agent-tool-description-format/issues). 
+**Need more help?** Check the [documentation](index.md), [examples](../examples.md), or [GitHub issues](https://github.com/MauricioPerera/agent-tool-description-format/issues). 

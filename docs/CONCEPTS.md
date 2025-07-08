@@ -339,7 +339,7 @@ class ATDFLogger(ToolExecutionObserver):
 
 1. **Leer la [Especificación ATDF](./ATDF_SPECIFICATION.md)** para entender todos los detalles
 2. **Revisar la [Guía de Implementación](./IMPLEMENTATION_GUIDE.md)** para comenzar a implementar
-3. **Explorar los [Ejemplos](./EXAMPLES.md)** para ver implementaciones reales
+3. **Explorar los [Ejemplos](./examples.md)** para ver implementaciones reales
 4. **Consultar las [Mejores Prácticas](./BEST_PRACTICES.md)** para recomendaciones
 
 ---

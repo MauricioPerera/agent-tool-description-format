@@ -4,15 +4,13 @@
 
 El **Agent Tool Description Format (ATDF)** es un estándar abierto para describir herramientas de agentes de IA y manejar respuestas de error de manera estandarizada. ATDF proporciona **plantillas y especificaciones agnósticas al código** que funcionan independientemente del lenguaje de programación o framework utilizado.
 
-## 📚 Documentación ATDF
+## 📚 Documentación Principal
 
-### 📖 **Documentos Principales**
-- **[README](../README.md)** - Introducción y guía rápida
 - **[Especificación ATDF](./ATDF_SPECIFICATION.md)** - Especificación completa del formato
 - **[Conceptos Fundamentales](./CONCEPTS.md)** - Explicación de conceptos clave
-- **[Ejemplos de Implementación](./EXAMPLES.md)** - Ejemplos en múltiples lenguajes y herramientas
+- **[Ejemplos de Implementación](./examples.md)** - Ejemplos en múltiples lenguajes y herramientas
 - **[Guía de Implementación](./IMPLEMENTATION_GUIDE.md)** - Cómo implementar ATDF
-- **[Mejores Prácticas](./BEST_PRACTICES.md)** - Recomendaciones para implementaciones robustas
+- **[Mejores Prácticas](./BEST_PRACTICES.md)** - Recomendaciones para implementación
 
 ### 📊 **Recursos Visuales**
 - **[Diagramas Mermaid](./MERMAID_DIAGRAMS.md)** - Diagramas de flujo y arquitectura ATDF
@@ -181,15 +179,14 @@ Usa la plantilla ATDF para errores:
 }
 ```
 
-### 3. **Implementar en tu Lenguaje**
-Consulta los ejemplos específicos para tu lenguaje:
+### 🔧 **Implementaciones Disponibles**
 
-- **[Python (FastAPI)](./EXAMPLES.md#fastapi-python)**
-- **[JavaScript (Express.js)](./EXAMPLES.md#expressjs-nodejs)**
-- **[Java (Spring Boot)](./EXAMPLES.md#spring-boot-java)**
-- **[C# (ASP.NET Core)](./EXAMPLES.md#aspnet-core-c)**
-- **[Go (Gin)](./EXAMPLES.md#go-gin)**
-- **[Rust (Actix-web)](./EXAMPLES.md#rust-actix-web)**
+- **[Python (FastAPI)](./examples.md#fastapi-python)**
+- **[JavaScript (Express.js)](./examples.md#expressjs-nodejs)**
+- **[Java (Spring Boot)](./examples.md#spring-boot-java)**
+- **[C# (ASP.NET Core)](./examples.md#aspnet-core-c)**
+- **[Go (Gin)](./examples.md#go-gin)**
+- **[Rust (Actix-web)](./examples.md#rust-actix-web)**
 
 ## 🎯 Casos de Uso
 
@@ -220,6 +217,13 @@ Consulta los ejemplos específicos para tu lenguaje:
 | **Contexto Enriquecido** | Errores con información detallada para corrección |
 | **Extensibilidad** | Fácil de extender para casos de uso específicos |
 | **Mantenibilidad** | Código más limpio y fácil de mantener |
+
+## 🚀 **Próximos Pasos**
+
+1. **[Leer la Especificación](./ATDF_SPECIFICATION.md)** para entender el formato completo
+2. **[Revisar los Conceptos](./CONCEPTS.md)** para entender los fundamentos
+3. **[Explorar Ejemplos](./examples.md)** para ver implementaciones reales
+4. **[Seguir la Guía](./IMPLEMENTATION_GUIDE.md)** para crear tu primera herramienta
 
 ## 🔗 Enlaces Útiles
 

@@ -773,7 +773,7 @@ def monitor_execution(func: Callable) -> Callable:
 
 ### Enlaces Útiles
 - [Especificación ATDF](./ATDF_SPECIFICATION.md)
-- [Ejemplos de Implementación](./EXAMPLES.md)
+- [Ejemplos de Implementación](./examples.md)
 - [Mejores Prácticas](./BEST_PRACTICES.md)
 
 ### Herramientas Recomendadas

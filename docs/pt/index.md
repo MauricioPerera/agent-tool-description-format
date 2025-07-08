@@ -2,15 +2,13 @@
 
 **Idiomas:** [English (en)](../en/index.md) | [Español (es)](../es/index.md) | [Português (pt)](index.md)
 
-## 📚 Documentação ATDF
+## 📚 Documentação Principal
 
-### 📖 **Documentos Principais**
-- **[README](../../README.md)** - Introdução e guia rápida
-- **[Especificação ATDF](./specification.md)** - Especificação completa do formato
+- **[Especificação ATDF](./ATDF_SPECIFICATION.md)** - Especificação completa do formato
 - **[Conceitos Fundamentais](./CONCEPTS.md)** - Explicação de conceitos-chave
 - **[Exemplos de Implementação](./examples.md)** - Exemplos em múltiplas linguagens e ferramentas
 - **[Guia de Implementação](./IMPLEMENTATION_GUIDE.md)** - Como implementar ATDF
-- **[Melhores Práticas](./BEST_PRACTICES.md)** - Recomendações para implementações robustas
+- **[Melhores Práticas](./BEST_PRACTICES.md)** - Recomendações para implementação
 
 ### 📊 **Recursos Visuais**
 - **[Diagramas Mermaid](../MERMAID_DIAGRAMS.md)** - Diagramas de fluxo e arquitetura ATDF
