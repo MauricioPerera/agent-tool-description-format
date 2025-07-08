@@ -1,89 +1,159 @@
-[Home](index.md) | [Specification](specification.md) | [Examples](examples.md) | [n8n MCP Guide](n8n_mcp_server_guide.md) | [Contributing](contributing.md) | [Multilingual](multilingual.md) | [Changelog](changelog.md) | [License](license.md)
+[Home](index.md) | [Specification](specification.md) | [Examples](examples.md) | [Enriched Responses Guide](enriched_responses_guide.md) | [n8n MCP Guide](n8n_mcp_server_guide.md) | [Contributing](contributing.md) | [Multilingual](multilingual.md) | [Changelog](changelog.md) | [License](license.md)
 
 **Languages:** [English (en)](index.md) | [Español (es)](../es/index.md) | [Português (pt)](../pt/index.md)
 
-# Agent Tool Description Format (ATDF)
+# ATDF Documentation
 
-Welcome to the documentation for the **Agent Tool Description Format (ATDF)**, an open protocol for describing tools functionally to enable AI agents to select and use them based on purpose, context, and operation, without relying on specific implementation details.
+Welcome to the Agent Tool Description Format (ATDF) documentation. ATDF is an open, standardized format for describing tools functionally, enabling smarter, multilingual AI agents.
 
-## Current Version
+## 🚀 What's New in v2.0.0
 
-**Current version: 0.2.0** - See the [changelog](changelog.md) for details on the latest updates.
+**Enriched Response Standard** - The foundation of ATDF with comprehensive error handling:
 
-## Introduction
+- **Detailed `expected` fields** that provide complete context about what was expected
+- **Self-documenting error messages** with step-by-step solutions
+- **Validation results** showing exactly which conditions failed
+- **Examples of valid and invalid inputs** in error responses
+- **Actionable solution guidance** for fixing issues
 
-ATDF is designed to solve the problem of tool integration for AI agents. Instead of requiring hard-coded tool names or complex technical APIs, ATDF provides a standardized way to describe tools based on:
+## 📚 Documentation Sections
 
-1. **What** the tool does
-2. **When** it should be used
-3. **How** it is used
+### Core Documentation
 
-This functional approach allows AI agents to select tools based on the task at hand, rather than requiring specific knowledge about tool names or APIs.
+- **[Specification](specification.md)** - The formal ATDF specification and technical details
+- **[Examples](examples.md)** - Sample tool descriptions and usage patterns
+- **[Enriched Responses Guide](enriched_responses_guide.md)** - **NEW** - Complete guide to the enriched response standard
+- **[n8n MCP Guide](n8n_mcp_server_guide.md)** - Integration guide for n8n workflows
 
-## Key Features
+### Development & Contribution
 
-### Core Features (v0.1.0)
-- **Simple, Human-Readable Format**: JSON/YAML structure that's easy to understand.
-- **Model Agnostic**: Works with any AI agent model.
-- **Tool Agnostic**: Describes both physical tools (e.g., drills) and digital tools (e.g., APIs).
-- **Prompt Agnostic**: Tool selection based on function, not specific names.
-- **Schema Validation**: JSON Schema for validating tool descriptions.
+- **[Contributing](contributing.md)** - How to contribute to ATDF
+- **[Multilingual](multilingual.md)** - Multilingual support and localization
+- **[Changelog](changelog.md)** - Version history and changes
 
-### Enhanced Features (v0.2.0)
-- **Metadata Support**: Organize tools with version, author, tags, and category information.
-- **Rich Multilingual Support**: Built-in localization for multiple languages.
-- **Prerequisites and Dependencies**: Specify required tools, conditions, and permissions.
-- **Feedback Mechanisms**: Progress indicators and completion signals.
-- **Usage Examples**: Real-world examples with inputs and expected outputs.
-- **Complex Input Types**: Support for nested objects and advanced schemas.
+### Legal
 
-## Quick Links
+- **[License](license.md)** - MIT License details
 
-- [Specification](specification.md): Detailed technical specification of the ATDF protocol.
-- [Examples](examples.md): Sample tool descriptions and how to create your own.
-- [Multilingual Support](multilingual.md): Information about using multiple languages.
-- [Contributing](contributing.md): Guidelines for contributing to ATDF.
-- [Changelog](changelog.md): History of ATDF versions and changes.
+## 🎯 Quick Start
 
-## Getting Started
+### 1. Understanding Enriched Responses
 
-To start using ATDF, you can:
+The core innovation of ATDF v2.0.0 is the **Enriched Response Standard**. Instead of simple error messages, tools now provide comprehensive context:
 
-1. **Explore Examples**: Check out the [example tool descriptions](examples.md) to understand the format.
-2. **Create Your Own**: Follow the [specification](specification.md) to create tool descriptions.
-3. **Validate Tools**: Use the validator to ensure your tool descriptions are valid:
-   ```bash
-   python tools/validator.py path/to/your/tool.json
-   ```
-4. **Try the Demo**: Run the demonstration agents to see ATDF in action:
-   ```bash
-   python tools/demo/atdf_showcase.py
-   ```
+```json
+{
+  "status": "error",
+  "data": {
+    "code": "INVALID_DATE_RANGE",
+    "message": "Date range validation failed",
+    "details": {
+      "field": "date_range",
+      "received": { "start_date": "2023-12-01", "end_date": "2023-11-01" },
+      "expected": {
+        "conditions": [
+          "start_date must be before end_date",
+          "both dates must be after current date"
+        ],
+        "examples": { "valid_range": { "start_date": "2023-10-28", "end_date": "2023-11-15" } }
+      },
+      "solution": "Adjust dates so that start_date is before end_date and both are after current date"
+    }
+  },
+  "meta": { "timestamp": "2023-10-27T10:35:00Z" }
+}
+```
 
-## Use Cases
+### 2. Basic Tool Description
 
-ATDF is designed for a wide range of applications, including:
+```json
+{
+  "schema_version": "2.0.0",
+  "tool_id": "date_validator",
+  "description": "Validates date ranges with enriched error responses",
+  "when_to_use": "When you need to validate date ranges with detailed feedback",
+  "how_to_use": {
+    "inputs": [
+      {
+        "name": "start_date",
+        "type": "string",
+        "description": "Start date in ISO 8601 format",
+        "required": true
+      },
+      {
+        "name": "end_date", 
+        "type": "string",
+        "description": "End date in ISO 8601 format",
+        "required": true
+      }
+    ],
+    "outputs": {
+      "success": "Date range is valid",
+      "failure": [
+        {
+          "code": "INVALID_DATE_RANGE",
+          "description": "Date range validation failed"
+        }
+      ]
+    }
+  }
+}
+```
 
-- **AI Agents**: Helping AI systems select and use tools appropriately.
-- **Robotics**: Describing physical tools for robotic systems.
-- **API Integration**: Standardizing descriptions of APIs and web services.
-- **Multimodal Applications**: Bridging different types of tools in a unified format.
-- **Multilingual Systems**: Supporting tool descriptions across different languages.
+### 3. Implementation Example
 
-## License
+```python
+from examples.enriched_responses_example import EnrichedResponseValidator
 
-ATDF is licensed under the MIT License. See the [LICENSE](license.md) file for details.
+validator = EnrichedResponseValidator()
+result = validator.validate_date_range("2023-12-01T10:00:00Z", "2023-11-01T15:30:00Z")
+print(json.dumps(result, indent=2))
+```
 
-## Core Components
+## 🔧 Key Features
 
-- [**Specification**](specification.md): The core technical details of the format
-- [**Examples**](examples.md): Sample tool descriptions
-- [**Usage Examples**](../usage_examples.md): Practical examples of using ATDF
-- [**Multilingual Support**](multilingual.md): How localization works
-- [**MCP to ATDF Converter**](../usage_examples.md#convertidor-mcp-a-atdf): Tools to convert from MCP format
-- [**Contributing**](contributing.md): How to contribute to the format
-- [**Changelog**](changelog.md): History of changes
+### Enriched Error Handling
+- **Comprehensive Context**: Detailed information about what went wrong
+- **Actionable Solutions**: Step-by-step guidance for fixing issues
+- **Validation Results**: Specific feedback on which conditions failed
+- **Examples**: Valid and invalid input examples
+
+### Multilingual Support
+- **Multiple Languages**: Support for Spanish, English, and Portuguese
+- **Localized Messages**: Error messages in the user's preferred language
+- **Consistent Format**: Same structure across all languages
+
+### Schema Validation
+- **Smart Detection**: Automatically detects schema version
+- **Bidirectional Conversion**: Convert between basic and enhanced formats
+- **Comprehensive Validation**: Validate both tool descriptions and responses
+
+### Integration Ready
+- **n8n Support**: Complete integration guide for n8n workflows
+- **MCP Compatibility**: Convert from Model Context Protocol to ATDF
+- **SDK Support**: Python SDK for easy implementation
+
+## 📖 Getting Started
+
+1. **Read the [Enriched Responses Guide](enriched_responses_guide.md)** to understand the core innovation
+2. **Review [Examples](examples.md)** to see practical implementations
+3. **Check the [Specification](specification.md)** for technical details
+4. **Try the [n8n Integration](n8n_mcp_server_guide.md)** if you're using n8n
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](contributing.md) for details on:
+
+- Code contributions
+- Documentation improvements
+- Bug reports
+- Feature requests
+- Translation contributions
+
+## 📄 License
+
+ATDF is licensed under the MIT License. See [License](license.md) for details.
 
 ---
 
-[GitHub Repository](https://github.com/MauricioPerera/agent-tool-description-format) | [Changelog](changelog.md) 
+**ATDF v2.0.0** - Standard format for describing tools functionally, enabling smarter, multilingual AI agents with enriched error handling. 

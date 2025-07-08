@@ -67,8 +67,8 @@ This document provides a detailed comparison between different versions of the A
     "author": "ATDF Development Team",
     "tags": ["física", "perforación", "construcción"],
     "category": "herramientas_físicas",
-    "created_at": "2024-06-15",
-    "updated_at": "2024-06-15"
+    "created_at": "2025-06-15",
+    "updated_at": "2025-06-15"
   },
   "localization": {
     "es": {

@@ -1,181 +1,264 @@
 # Agent Tool Description Format (ATDF)
 
-[![Version](https://img.shields.io/badge/ATDF_Spec-v0.2.0-blue)](docs/specification.md)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Docs](https://img.shields.io/badge/docs-multilingual-orange)](docs/index.md)
+## 🎯 ¿Qué es ATDF?
 
-**ATDF (Agent Tool Description Format)** is an open, standardized format for describing tools (both digital APIs and physical implements) in a way that allows AI agents to understand their purpose, context, and operation, enabling them to select and utilize tools effectively without relying on hard-coded names or specific implementation details.
+El **Agent Tool Description Format (ATDF)** es un estándar abierto para describir herramientas de agentes de IA y manejar respuestas de error de manera estandarizada. ATDF proporciona un formato JSON consistente que funciona independientemente del lenguaje de programación o framework utilizado.
 
-This repository contains:
+## 🌟 Características Principales
 
-*   The **ATDF Specification**: Formal definition of the format.
-*   **JSON Schemas**: For validating ATDF descriptions.
-*   **Examples**: Demonstrating various tool descriptions.
-*   **Documentation**: Detailed guides, usage examples, and contribution guidelines (available in multiple languages).
-*   **Python SDK**: A helper library for working with ATDF descriptions in Python applications.
+### 📋 **Descripción Estandarizada de Herramientas**
+- Formato JSON consistente para describir herramientas
+- Esquemas de entrada con validación automática
+- Metadatos enriquecidos y ejemplos de uso
+- Compatible con cualquier agente de IA
 
-## What's New in v2.0.0
+### 🚨 **Manejo de Errores Enriquecido**
+- Respuestas de error estandarizadas con contexto
+- Valores sugeridos para corrección automática
+- Tipos de error específicos y descriptivos
+- Información detallada para debugging
 
-- **Schema Version Compatibility**: Both basic and enhanced schemas now include a `schema_version` field
-- **Smart Validation**: New `validate_tool_smart` function automatically detects schema version
-- **Bidirectional Conversion**: Convert between basic and enhanced formats in both directions
-- **Robust Multilingual Support**: Improved detection of Spanish, English, and Portuguese queries
-- **Alternative Identifiers**: Support for both `tool_id` and `id` fields interchangeably
-- **MCP Format Converters**: New tools to convert from MCP (Model Context Protocol) to ATDF in both Python and JavaScript
+### 🔄 **Interoperabilidad Universal**
+- Independiente de lenguaje y framework
+- Fácil integración con sistemas existentes
+- Extensible para casos de uso específicos
+- Compatible con estándares web (JSON Schema, OpenAPI)
 
-See the [CHANGELOG](CHANGELOG.md) for full details and [Usage Examples](docs/usage_examples.md) for practical demonstrations.
+## 📖 Documentación
 
-## Key Goals of ATDF
+### 📚 **Documentación Principal**
+- **[Especificación ATDF](./docs/ATDF_SPECIFICATION.md)** - Especificación completa del formato
+- **[Guía de Implementación](./docs/IMPLEMENTATION_GUIDE.md)** - Cómo implementar ATDF en cualquier lenguaje
+- **[Mejores Prácticas](./docs/BEST_PRACTICES.md)** - Recomendaciones para implementaciones robustas
+- **[Ejemplos](./docs/EXAMPLES.md)** - Ejemplos en múltiples lenguajes y frameworks
 
-*   **Functional Description**: Focus on *what* a tool does, *when* to use it, and *how* to use it, rather than technical implementation.
-*   **Model Agnosticism**: Designed to work with various AI agent architectures.
-*   **Tool Agnosticism**: Capable of describing diverse tools (APIs, physical tools, software functions).
-*   **Standardization**: Provides a common language for tool description, facilitating interoperability.
-*   **Multilingual Support**: Allows tool descriptions to be understood and used across different human languages.
+### 🎯 **Conceptos Fundamentales**
 
-## Documentation (Multilingual)
-
-Comprehensive documentation detailing the ATDF specification, examples, usage guides, and contribution process is available in multiple languages.
-
-➡️ **[Access the Documentation (Select Language)](docs/index.md)**
-
-Key documents include:
-
-*   [Specification](docs/specification.md): The core technical details of the format.
-*   [Examples](docs/examples.md): Sample tool descriptions.
-*   [Multilingual Support](docs/multilingual.md): How localization works.
-*   [Usage Examples](docs/usage_examples.md): Practical examples of using ATDF.
-*   [Contributing](docs/contributing.md): How to contribute to the format or documentation.
-*   [Changelog](CHANGELOG.md): Version history.
-
-## Python SDK for ATDF (Optional Helper Library)
-
-[![SDK Version](https://img.shields.io/badge/SDK_Version-0.3.0-blue)](sdk/)
-[![PyPI Status](https://img.shields.io/pypi/v/atdf-sdk.svg)](https://pypi.org/project/atdf-sdk/) <!-- Placeholder -->
-[![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/MauricioPerera/agent-tool-description-format/actions) <!-- Assumes CI setup -->
-
-Included in this repository is a Python SDK to facilitate working with ATDF descriptions.
-
-**SDK Features:**
-
-*   Load and validate ATDF descriptions (JSON, YAML).
-*   Semantic tool search using vector embeddings (optional).
-*   Programmatic creation and manipulation of tool descriptions.
-*   Export to different formats (e.g., JSON Schema).
-*   Convert between basic and enhanced formats.
-*   Intelligent, version-aware validation.
-
-### SDK Installation
-
-You can install the SDK dependencies using pip and the provided requirements files.
-
-**1. Basic Installation (Core SDK):**
-
-Installs only the essential libraries needed to load, validate, and work with ATDF descriptions (like PyYAML and jsonschema).
-
-```bash
-# Clone the repo if you haven't already
-# git clone https://github.com/MauricioPerera/agent-tool-description-format.git
-# cd agent-tool-description-format
-
-# Install core dependencies
-pip install -r requirements.txt
-
-# Alternatively, if the package is published on PyPI:
-# pip install atdf-sdk 
+#### Descripción de Herramientas
+```json
+{
+  "tools": [
+    {
+      "name": "hotel_reservation",
+      "description": "Make a hotel reservation with validation",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "guest_name": {"type": "string", "description": "Guest name"},
+          "email": {"type": "string", "format": "email"},
+          "check_in": {"type": "string", "format": "date-time"},
+          "check_out": {"type": "string", "format": "date-time"},
+          "room_type": {"type": "string", "enum": ["single", "double", "suite"]},
+          "guests": {"type": "integer", "minimum": 1, "maximum": 4}
+        },
+        "required": ["guest_name", "email", "check_in", "check_out", "room_type", "guests"]
+      }
+    }
+  ]
+}
 ```
 
-**2. Installation with Vector Search Support:**
-
-If you need the semantic search capabilities, install the additional vector dependencies *after* the basic installation:
-
-```bash
-# First, ensure core dependencies are installed (see step 1)
-
-# Install optional vector search dependencies
-pip install -r requirements-vector.txt
-
-# Alternatively, if published with extras on PyPI:
-# pip install atdf-sdk[vector]
+#### Respuestas de Error ATDF
+```json
+{
+  "errors": [
+    {
+      "type": "https://api.example.com/errors/invalid-date",
+      "title": "Invalid Check-in Date",
+      "detail": "Check-in date cannot be in the past",
+      "instance": "/api/errors/e62aa61e-d844-4761-82c3-531a070fb139",
+      "tool_name": "hotel_reservation",
+      "parameter_name": "check_in",
+      "suggested_value": "2025-01-15T12:00:17.148869",
+      "context": {
+        "current_time": "2025-01-15T12:00:17.148869",
+        "provided_date": "2025-01-14T10:00:00Z"
+      }
+    }
+  ]
+}
 ```
 
-**3. Development Installation:**
+## 🚀 Implementación Rápida
 
-To set up a development environment with all dependencies (core, vector, demo, testing, docs):
-
+### 1. **Instalar Dependencias**
 ```bash
-# Installs everything from requirements.txt, requirements-vector.txt, 
-# plus development tools like thefuzz and markdown-link-check
-pip install -r requirements-dev.txt
+pip install fastapi uvicorn pydantic
 ```
 
-### SDK Basic Usage
-
+### 2. **Crear Herramienta ATDF**
 ```python
-# (Keep the existing SDK usage example here)
-from sdk import ATDFSDK
-from sdk.core.schema import ATDFTool, ATDFToolParameter
+from fastapi import FastAPI
+from pydantic import BaseModel
+import uuid
+from datetime import datetime
 
-# Inicializar el SDK (cargará herramientas desde ./tools si existe)
-sdk = ATDFSDK(tools_directory="./tools", auto_load=True)
+app = FastAPI()
 
-# Cargar herramientas adicionales desde un directorio
-tools_extra = sdk.load_tools_from_directory("./more_tools")
+# Definir herramienta
+HOTEL_TOOL = {
+    "name": "hotel_reservation",
+    "description": "Make a hotel reservation",
+    "inputSchema": {
+        "type": "object",
+        "properties": {
+            "guest_name": {"type": "string"},
+            "email": {"type": "string", "format": "email"},
+            "check_in": {"type": "string", "format": "date-time"},
+            "check_out": {"type": "string", "format": "date-time"},
+            "room_type": {"type": "string", "enum": ["single", "double", "suite"]},
+            "guests": {"type": "integer", "minimum": 1, "maximum": 4}
+        },
+        "required": ["guest_name", "email", "check_in", "check_out", "room_type", "guests"]
+    }
+}
 
-# Obtener todas las herramientas cargadas
-all_tools = sdk.get_all_tools()
+@app.get("/tools")
+async def get_tools():
+    return {"tools": [HOTEL_TOOL]}
 
-# Crear parámetros para una nueva herramienta
-param1 = ATDFToolParameter(
-    name="param1",
-    description="Un parámetro de ejemplo de tipo texto",
-    type="string",
-    required=True
-)
-param2 = ATDFToolParameter(
-    name="param2",
-    description="Un parámetro de ejemplo de tipo numérico",
-    type="number",
-    required=False,
-    default=42
-)
-
-# Crear una nueva herramienta usando las clases del esquema
-nueva_herramienta = ATDFTool(
-    name="Herramienta Nueva",
-    description="Una herramienta creada programáticamente con el SDK",
-    parameters=[param1, param2],
-    tags=["sdk", "ejemplo"],
-    category="testing"
-)
-
-# Añadir la herramienta creada al SDK
-sdk.tools.append(nueva_herramienta)
-if sdk.vector_store:
-    sdk.vector_store.add_tool(nueva_herramienta.to_dict())
-
-# Guardar todas las herramientas (incluida la nueva) en un archivo
-sdk.save_tools_to_file("output/todas_las_herramientas.json", format="json")
+@app.post("/api/hotel/reserve")
+async def reserve_hotel(request: dict):
+    # Validar fecha de llegada
+    check_in = datetime.fromisoformat(request["check_in"].replace("Z", "+00:00"))
+    if check_in < datetime.now():
+        return {
+            "errors": [{
+                "type": "https://api.example.com/errors/invalid-date",
+                "title": "Invalid Check-in Date",
+                "detail": "Check-in date cannot be in the past",
+                "instance": f"/api/errors/{uuid.uuid4()}",
+                "tool_name": "hotel_reservation",
+                "parameter_name": "check_in",
+                "suggested_value": datetime.now().isoformat(),
+                "context": {"current_time": datetime.now().isoformat()}
+            }]
+        }
+    
+    return {
+        "reservation_id": str(uuid.uuid4()),
+        "status": "confirmed",
+        "message": "Hotel reservation created successfully"
+    }
 ```
 
-### Advanced SDK Features (New in v2.0.0)
+### 3. **Ejecutar Servidor**
+```bash
+uvicorn main:app --reload --port 8000
+```
 
+## 🔧 Ejemplos por Lenguaje
+
+### Python (FastAPI)
 ```python
-# Smart validation of tools (auto-detects schema version)
-from tools.validator import validate_tool_smart
-
-# Convert between formats
-from tools.converter import convert_to_enhanced, convert_to_basic, load_tool, save_tool
-
-# See docs/usage_examples.md for complete usage examples
+# Ver ejemplos completos en docs/EXAMPLES.md
 ```
 
-*(For detailed SDK usage and advanced features like vector search, please refer to the SDK's own documentation or examples within the `sdk/` directory - Link to be added)*
+### JavaScript (Express.js)
+```javascript
+// Ver ejemplos completos en docs/EXAMPLES.md
+```
 
-## Contributing
+### Java (Spring Boot)
+```java
+// Ver ejemplos completos en docs/EXAMPLES.md
+```
 
-Contributions to both the ATDF specification and the Python SDK are welcome! Please read our [Contributing Guidelines](docs/contributing.md) before submitting pull requests or issues.
+### C# (ASP.NET Core)
+```csharp
+// Ver ejemplos completos en docs/EXAMPLES.md
+```
 
-## License
+## 🎯 Casos de Uso
 
-The ATDF specification and the accompanying SDK are licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+### 🤖 **Agentes de IA**
+- Descripción estandarizada de herramientas
+- Manejo automático de errores
+- Corrección automática con valores sugeridos
+- Integración con cualquier agente compatible
+
+### 🔌 **APIs y Microservicios**
+- Formato de error consistente
+- Documentación automática
+- Validación de entrada estandarizada
+- Interoperabilidad entre servicios
+
+### 🛠️ **Herramientas de Desarrollo**
+- Generación automática de documentación
+- Testing estandarizado
+- Monitoreo y logging consistente
+- Debugging mejorado
+
+## 📊 Beneficios
+
+| Beneficio | Descripción |
+|-----------|-------------|
+| **Interoperabilidad** | Funciona con cualquier agente de IA o sistema |
+| **Estandarización** | Formato consistente independiente de la implementación |
+| **Contexto Enriquecido** | Errores con información detallada para corrección |
+| **Extensibilidad** | Fácil de extender para casos de uso específicos |
+| **Mantenibilidad** | Código más limpio y fácil de mantener |
+| **Documentación** | Documentación automática y actualizada |
+
+## 🔄 Flujo de Trabajo ATDF
+
+```mermaid
+graph LR
+    A[Agente de IA] --> B[Descubre Herramientas]
+    B --> C[Obtiene Esquemas]
+    C --> D[Ejecuta Herramienta]
+    D --> E{¿Éxito?}
+    E -->|Sí| F[Resultado]
+    E -->|No| G[Error ATDF]
+    G --> H[Corrección Automática]
+    H --> D
+```
+
+## 🛠️ Herramientas y SDKs
+
+### 📦 **SDKs Oficiales**
+- [Python SDK](./sdk/python/) - SDK completo para Python
+- [JavaScript SDK](./sdk/javascript/) - SDK para Node.js y navegador
+- [Java SDK](./sdk/java/) - SDK para Java y Spring Boot
+
+### 🔧 **Herramientas de Desarrollo**
+- [ATDF Validator](./tools/validator/) - Validador de esquemas ATDF
+- [ATDF Generator](./tools/generator/) - Generador de código
+- [ATDF Playground](./tools/playground/) - Entorno de pruebas
+
+## 🤝 Contribuir
+
+### 📝 **Cómo Contribuir**
+1. Fork el repositorio
+2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit tus cambios (`git commit -am 'Agregar nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Crea un Pull Request
+
+### 📚 **Documentación**
+- [Guía de Contribución](./docs/contributing.md)
+- [Código de Conducta](./CODE_OF_CONDUCT.md)
+- [Changelog](./CHANGELOG.md)
+
+## 📄 Licencia
+
+Este proyecto está licenciado bajo la [Licencia MIT](./LICENSE).
+
+## 🔗 Enlaces Útiles
+
+- **[Especificación Completa](./docs/ATDF_SPECIFICATION.md)**
+- **[Ejemplos de Implementación](./docs/EXAMPLES.md)**
+- **[Mejores Prácticas](./docs/BEST_PRACTICES.md)**
+- **[FAQ](./docs/faq.md)**
+- **[Changelog](./CHANGELOG.md)**
+- **[Documentación Online](https://mauricioperera.github.io/agent-tool-description-format/)**
+
+## 📞 Soporte
+
+- 📖 **Documentación**: [https://mauricioperera.github.io/agent-tool-description-format/](https://mauricioperera.github.io/agent-tool-description-format/)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/MauricioPerera/agent-tool-description-format/issues)
+- 📚 **Repositorio**: [https://github.com/MauricioPerera/agent-tool-description-format](https://github.com/MauricioPerera/agent-tool-description-format)
+
+---
+
+**ATDF** - Estandarizando la descripción de herramientas para agentes de IA 🚀

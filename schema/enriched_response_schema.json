@@ -1,0 +1,150 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Enriched Response Schema for ATDF",
+  "description": "Schema for validating enriched responses with detailed expected field as the foundation of ATDF",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["success", "error"],
+      "description": "Response status indicating success or error"
+    },
+    "data": {
+      "type": "object",
+      "description": "Response data containing either success result or error details"
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of the response"
+        }
+      },
+      "required": ["timestamp"]
+    }
+  },
+  "required": ["status", "data", "meta"],
+  "allOf": [
+    {
+      "if": {
+        "properties": { "status": { "const": "success" } }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "description": "Success message"
+              }
+            },
+            "required": ["message"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "status": { "const": "error" } }
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "pattern": "^[A-Z_]+$",
+                "description": "Unique error code in UPPERCASE with underscores"
+              },
+              "message": {
+                "type": "string",
+                "description": "Human-readable error description"
+              },
+              "details": {
+                "type": "object",
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "description": "Name of the field that caused the error"
+                  },
+                  "received": {
+                    "type": "object",
+                    "description": "What was actually received"
+                  },
+                  "expected": {
+                    "type": "object",
+                    "properties": {
+                      "conditions": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "List of validation conditions that must be met"
+                      },
+                      "format": {
+                        "type": "string",
+                        "description": "Expected format specification"
+                      },
+                      "constraints": {
+                        "type": "object",
+                        "description": "Value constraints like min/max, patterns, etc."
+                      },
+                      "examples": {
+                        "type": "object",
+                        "properties": {
+                          "valid": {
+                            "oneOf": [
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              {
+                                "type": "object"
+                              }
+                            ]
+                          },
+                          "invalid": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "value": {
+                                  "type": "string"
+                                },
+                                "reason": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "required": ["conditions"],
+                    "additionalProperties": true
+                  },
+                  "validation_results": {
+                    "type": "object",
+                    "description": "Specific validation failures with boolean results"
+                  },
+                  "solution": {
+                    "type": "string",
+                    "description": "Step-by-step solution guide"
+                  }
+                },
+                "required": ["field", "received", "expected", "solution"]
+              }
+            },
+            "required": ["code", "message", "details"]
+          }
+        }
+      }
+    }
+  ]
+} 
