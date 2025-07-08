@@ -230,7 +230,7 @@ Usa la plantilla ATDF para errores:
 - **[Documentación Completa](https://mauricioperera.github.io/agent-tool-description-format/)**
 - **[Repositorio GitHub](https://github.com/MauricioPerera/agent-tool-description-format)**
 - **[Especificación ATDF](./ATDF_SPECIFICATION.md)**
-- **[Ejemplos de Implementación](./EXAMPLES.md)**
+- **[Ejemplos de Implementación](./examples.md)**
 - **[Guía de Implementación](./IMPLEMENTATION_GUIDE.md)**
 
 ## 📄 Licencia

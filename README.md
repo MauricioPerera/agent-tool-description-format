@@ -65,7 +65,7 @@ El **Agent Tool Description Format (ATDF)** es un estándar abierto para describ
 - **[Especificación ATDF](./docs/ATDF_SPECIFICATION.md)** - Especificación completa del formato
 - **[Guía de Implementación](./docs/IMPLEMENTATION_GUIDE.md)** - Cómo implementar ATDF en cualquier herramienta
 - **[Mejores Prácticas](./docs/BEST_PRACTICES.md)** - Recomendaciones para implementaciones robustas
-- **[Ejemplos](./docs/EXAMPLES.md)** - Ejemplos en múltiples lenguajes y herramientas
+- **[Ejemplos](./docs/examples.md)** - Ejemplos en múltiples lenguajes y herramientas
 
 ## 🎯 Plantillas ATDF
 
@@ -313,15 +313,15 @@ Usa la plantilla ATDF para errores:
 Las plantillas funcionan en cualquier herramienta:
 
 #### **Herramientas No-Code**:
-- **[N8N](./docs/EXAMPLES.md#n8n-workflow)**
-- **[Zapier](./docs/EXAMPLES.md#zapier-automation)**
-- **[Make (Integromat)](./docs/EXAMPLES.md#make-integromat)**
+- **[N8N](./docs/examples.md#n8n-workflow)**
+- **[Zapier](./docs/examples.md#zapier-automation)**
+- **[Make (Integromat)](./docs/examples.md#make-integromat)**
 
 #### **Lenguajes de Programación**:
-- **[Python (FastAPI)](./docs/EXAMPLES.md#fastapi-python)**
-- **[JavaScript (Express.js)](./docs/EXAMPLES.md#expressjs-nodejs)**
-- **[Java (Spring Boot)](./docs/EXAMPLES.md#spring-boot-java)**
-- **[C# (ASP.NET Core)](./docs/EXAMPLES.md#aspnet-core-c)**
+- **[Python (FastAPI)](./docs/examples.md#fastapi-python)**
+- **[JavaScript (Express.js)](./docs/examples.md#expressjs-nodejs)**
+- **[Java (Spring Boot)](./docs/examples.md#spring-boot-java)**
+- **[C# (ASP.NET Core)](./docs/examples.md#aspnet-core-c)**
 
 ## 🎯 Casos de Uso
 
@@ -365,7 +365,7 @@ Las plantillas funcionan en cualquier herramienta:
 - **[Documentación Completa](https://mauricioperera.github.io/agent-tool-description-format/)**
 - **[Repositorio GitHub](https://github.com/MauricioPerera/agent-tool-description-format)**
 - **[Especificación ATDF](./docs/ATDF_SPECIFICATION.md)**
-- **[Ejemplos de Implementación](./docs/EXAMPLES.md)**
+- **[Ejemplos de Implementación](./docs/examples.md)**
 - **[Guía de Implementación](./docs/IMPLEMENTATION_GUIDE.md)**
 
 ## 📄 Licencia
