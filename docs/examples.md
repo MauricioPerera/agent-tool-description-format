@@ -1194,26 +1194,26 @@ function validateDateRange(checkIn, checkOut, minDays = 1, maxDays = 30) {
 
 ## 🔗 Enlaces Útiles
 
-- **[Especificación ATDF](./ATDF_SPECIFICATION.md)** - Especificación completa del formato
+- **[Especificación ATDF](./docs/ATDF_SPECIFICATION.md)** - Especificación completa del formato
 - **[Guía de Implementación](./IMPLEMENTATION_GUIDE.md)** - Cómo implementar ATDF
 - **[Mejores Prácticas](./BEST_PRACTICES.md)** - Recomendaciones para implementaciones robustas
 
 ### Ejemplos por Lenguaje
 
-- **[Python](./ATDF_SPECIFICATION.md#python)** - FastAPI, Flask, Django
-- **[JavaScript](./ATDF_SPECIFICATION.md#javascript)** - Express.js, Node.js, React
-- **[Java](./ATDF_SPECIFICATION.md#java)** - Spring Boot, Jakarta EE
-- **[C#](./ATDF_SPECIFICATION.md#csharp)** - ASP.NET Core, .NET
-- **[Go](./ATDF_SPECIFICATION.md#go)** - Gin, Echo, Fiber
-- **[Rust](./ATDF_SPECIFICATION.md#rust)** - Actix-web, Rocket, Axum
+- **[Python](./docs/ATDF_SPECIFICATION.md#python)** - FastAPI, Flask, Django
+- **[JavaScript](./docs/ATDF_SPECIFICATION.md#javascript)** - Express.js, Node.js, React
+- **[Java](./docs/ATDF_SPECIFICATION.md#java)** - Spring Boot, Jakarta EE
+- **[C#](./docs/ATDF_SPECIFICATION.md#csharp)** - ASP.NET Core, .NET
+- **[Go](./docs/ATDF_SPECIFICATION.md#go)** - Gin, Echo, Fiber
+- **[Rust](./docs/ATDF_SPECIFICATION.md#rust)** - Actix-web, Rocket, Axum
 
 ### Ejemplos por Herramienta No-Code
 
-- **[N8N](./ATDF_SPECIFICATION.md#n8n)** - Workflows y automatizaciones
-- **[Zapier](./ATDF_SPECIFICATION.md#zapier)** - Integraciones y automatizaciones
-- **[Make](./ATDF_SPECIFICATION.md#make)** - Scenarios y workflows
-- **[IFTTT](./ATDF_SPECIFICATION.md#ifttt)** - Applets y automatizaciones
-- **[Microsoft Power Automate](./ATDF_SPECIFICATION.md#power-automate)** - Flows y automatizaciones
+- **[N8N](./docs/ATDF_SPECIFICATION.md#n8n)** - Workflows y automatizaciones
+- **[Zapier](./docs/ATDF_SPECIFICATION.md#zapier)** - Integraciones y automatizaciones
+- **[Make](./docs/ATDF_SPECIFICATION.md#make)** - Scenarios y workflows
+- **[IFTTT](./docs/ATDF_SPECIFICATION.md#ifttt)** - Applets y automatizaciones
+- **[Microsoft Power Automate](./docs/ATDF_SPECIFICATION.md#power-automate)** - Flows y automatizaciones
 
 ---
 

@@ -6,9 +6,9 @@ El **Agent Tool Description Format (ATDF)** es un estándar abierto para describ
 
 ## 📚 Documentación Principal
 
-- **[Especificación ATDF](./ATDF_SPECIFICATION.md)** - Especificación completa del formato
-- **[Conceptos Fundamentales](./CONCEPTS.md)** - Explicación de conceptos clave
-- **[Ejemplos de Implementación](./examples.md)** - Ejemplos en múltiples lenguajes y herramientas
+- **[Especificación ATDF](../docs/ATDF_SPECIFICATION.md)** - Especificación completa del formato
+- **[Conceptos Fundamentales](../docs/CONCEPTS.md)** - Explicación de conceptos clave
+- **[Ejemplos de Implementación](../docs/examples.md)** - Ejemplos en múltiples lenguajes y herramientas
 - **[Guía de Implementación](./IMPLEMENTATION_GUIDE.md)** - Cómo implementar ATDF
 - **[Mejores Prácticas](./BEST_PRACTICES.md)** - Recomendaciones para implementación
 
@@ -220,17 +220,17 @@ Usa la plantilla ATDF para errores:
 
 ## 🚀 **Próximos Pasos**
 
-1. **[Leer la Especificación](./ATDF_SPECIFICATION.md)** para entender el formato completo
-2. **[Revisar los Conceptos](./CONCEPTS.md)** para entender los fundamentos
-3. **[Explorar Ejemplos](./examples.md)** para ver implementaciones reales
+1. **[Leer la Especificación](../docs/ATDF_SPECIFICATION.md)** para entender el formato completo
+2. **[Revisar los Conceptos](../docs/CONCEPTS.md)** para entender los fundamentos
+3. **[Explorar Ejemplos](../docs/examples.md)** para ver implementaciones reales
 4. **[Seguir la Guía](./IMPLEMENTATION_GUIDE.md)** para crear tu primera herramienta
 
 ## 🔗 Enlaces Útiles
 
 - **[Documentación Completa](https://mauricioperera.github.io/agent-tool-description-format/)**
 - **[Repositorio GitHub](https://github.com/MauricioPerera/agent-tool-description-format)**
-- **[Especificación ATDF](./ATDF_SPECIFICATION.md)**
-- **[Ejemplos de Implementación](./examples.md)**
+- **[Especificación ATDF](../docs/ATDF_SPECIFICATION.md)**
+- **[Ejemplos de Implementación](../docs/examples.md)**
 - **[Guía de Implementación](./IMPLEMENTATION_GUIDE.md)**
 
 ## 📄 Licencia

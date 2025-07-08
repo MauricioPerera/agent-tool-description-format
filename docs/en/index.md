@@ -6,9 +6,9 @@
 
 ### 📖 **Main Documents**
 - **[README](../../README.md)** - Introduction and quick start
-- **[ATDF Specification](./ATDF_SPECIFICATION.md)** - Complete format specification
-- **[Core Concepts](./CONCEPTS.md)** - Key concepts explained
-- **[Implementation Examples](./examples.md)** - Examples in multiple languages and tools
+- **[ATDF Specification](../docs/ATDF_SPECIFICATION.md)** - Complete format specification
+- **[Core Concepts](../docs/CONCEPTS.md)** - Key concepts explained
+- **[Implementation Examples](../docs/examples.md)** - Examples in multiple languages and tools
 - **[Implementation Guide](./IMPLEMENTATION_GUIDE.md)** - How to implement ATDF
 - **[Best Practices](./BEST_PRACTICES.md)** - Implementation recommendations
 

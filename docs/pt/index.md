@@ -4,9 +4,9 @@
 
 ## 📚 Documentação Principal
 
-- **[Especificação ATDF](./ATDF_SPECIFICATION.md)** - Especificação completa do formato
-- **[Conceitos Fundamentais](./CONCEPTS.md)** - Explicação de conceitos-chave
-- **[Exemplos de Implementação](./examples.md)** - Exemplos em múltiplas linguagens e ferramentas
+- **[Especificação ATDF](../docs/ATDF_SPECIFICATION.md)** - Especificação completa do formato
+- **[Conceitos Fundamentais](../docs/CONCEPTS.md)** - Explicação de conceitos-chave
+- **[Exemplos de Implementação](../docs/examples.md)** - Exemplos em múltiplas linguagens e ferramentas
 - **[Guia de Implementação](./IMPLEMENTATION_GUIDE.md)** - Como implementar ATDF
 - **[Melhores Práticas](./BEST_PRACTICES.md)** - Recomendações para implementação
 
