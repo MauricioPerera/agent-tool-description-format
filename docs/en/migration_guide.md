@@ -351,11 +351,8 @@ If you need to rollback to v1.x:
 ### Documentation
 - [Enriched Responses Guide](enriched_responses_guide.md)
 - [Best Practices](best_practices_enriched_responses.md)
-- [Validation Patterns](../examples/validation_patterns.py)
 
 ### Examples
-- [Complete Implementation Example](../examples/enriched_responses_example.py)
-- [Validation Patterns](../examples/validation_patterns.py)
 
 ### Support
 - Check the [GitHub Issues](https://github.com/MauricioPerera/agent-tool-description-format/issues)

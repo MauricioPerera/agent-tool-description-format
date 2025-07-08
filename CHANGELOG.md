@@ -101,7 +101,6 @@ This update ensures all project documentation and examples reflect the correct y
 ### 📚 Documentation
 
 - **NEW**: `docs/en/enriched_responses_guide.md` - Complete guide to enriched responses
-- **NEW**: `examples/enriched_responses_example.py` - Practical implementation examples
 - **NEW**: `schema/enriched_response_schema.json` - Schema for validating enriched responses
 - **UPDATED**: All existing documentation to reflect v2.0.0 changes
 

@@ -2,6 +2,19 @@
 
 **Idiomas:** [English (en)](../en/index.md) | [Español (es)](../es/index.md) | [Português (pt)](index.md)
 
+## 📚 Documentação ATDF
+
+### 📖 **Documentos Principais**
+- **[README](../../README.md)** - Introdução e guia rápida
+- **[Especificação ATDF](./specification.md)** - Especificação completa do formato
+- **[Conceitos Fundamentais](./CONCEPTS.md)** - Explicação de conceitos-chave
+- **[Exemplos de Implementação](./examples.md)** - Exemplos em múltiplas linguagens e ferramentas
+- **[Guia de Implementação](./IMPLEMENTATION_GUIDE.md)** - Como implementar ATDF
+- **[Melhores Práticas](./BEST_PRACTICES.md)** - Recomendações para implementações robustas
+
+### 📊 **Recursos Visuais**
+- **[Diagramas Mermaid](../MERMAID_DIAGRAMS.md)** - Diagramas de fluxo e arquitetura ATDF
+
 # Formato de Descrição de Ferramentas para Agentes (ATDF)
 
 Bem-vindo à documentação do **Formato de Descrição de Ferramentas para Agentes (ATDF)**, um protocolo aberto para descrever ferramentas funcionalmente para permitir que agentes de IA as selecionem e usem com base no propósito, contexto e operação, sem depender de detalhes específicos de implementação.

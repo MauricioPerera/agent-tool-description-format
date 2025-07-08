@@ -31,10 +31,9 @@
 
 ### Q: How do I implement enriched responses?
 **A:** You can implement enriched responses in several ways:
-1. **Use validation patterns** from `examples/validation_patterns.py`
-2. **Follow the structure** defined in the enriched response schema
-3. **Extend the base validator** class for custom validations
-4. **Use the provided examples** as templates
+1. **Follow the structure** defined in the enriched response schema
+2. **Extend the base validator** class for custom validations
+3. **Use the provided examples** as templates
 
 ### Q: What's the structure of an enriched error response?
 **A:** An enriched error response follows this structure:

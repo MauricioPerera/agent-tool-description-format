@@ -1,182 +1,238 @@
-# Índice de Documentación ATDF
+# Agent Tool Description Format (ATDF) - Documentación
 
-## 🎯 Bienvenido a ATDF
+## 🎯 ¿Qué es ATDF?
 
-El **Agent Tool Description Format (ATDF)** es un estándar abierto para describir herramientas de agentes de IA y manejar respuestas de error de manera estandarizada. Esta documentación te guiará a través de todos los aspectos del formato ATDF.
+El **Agent Tool Description Format (ATDF)** es un estándar abierto para describir herramientas de agentes de IA y manejar respuestas de error de manera estandarizada. ATDF proporciona **plantillas y especificaciones agnósticas al código** que funcionan independientemente del lenguaje de programación o framework utilizado.
 
-## 📚 Documentación Principal
+## 📚 Documentación ATDF
 
-### 🔧 **Especificación y Conceptos**
-- **[Especificación ATDF](./ATDF_SPECIFICATION.md)** - Especificación completa del formato ATDF
-- **[Conceptos Fundamentales](./CONCEPTS.md)** - Explicación de los conceptos básicos de ATDF
-- **[Arquitectura](./ARCHITECTURE.md)** - Diseño y arquitectura del sistema ATDF
-
-### 🚀 **Implementación**
-- **[Guía de Implementación](./IMPLEMENTATION_GUIDE.md)** - Cómo implementar ATDF en cualquier lenguaje
+### 📖 **Documentos Principales**
+- **[README](../README.md)** - Introducción y guía rápida
+- **[Especificación ATDF](./ATDF_SPECIFICATION.md)** - Especificación completa del formato
+- **[Conceptos Fundamentales](./CONCEPTS.md)** - Explicación de conceptos clave
+- **[Ejemplos de Implementación](./EXAMPLES.md)** - Ejemplos en múltiples lenguajes y herramientas
+- **[Guía de Implementación](./IMPLEMENTATION_GUIDE.md)** - Cómo implementar ATDF
 - **[Mejores Prácticas](./BEST_PRACTICES.md)** - Recomendaciones para implementaciones robustas
-- **[Patrones de Diseño](./DESIGN_PATTERNS.md)** - Patrones comunes para implementaciones ATDF
 
-### 📖 **Ejemplos y Tutoriales**
-- **[Ejemplos por Lenguaje](./EXAMPLES.md)** - Ejemplos completos en múltiples lenguajes
-- **[Tutoriales](./TUTORIALS.md)** - Tutoriales paso a paso para diferentes casos de uso
-- **[Casos de Uso](./USE_CASES.md)** - Ejemplos de casos de uso reales
+### 📊 **Recursos Visuales**
+- **[Diagramas Mermaid](./MERMAID_DIAGRAMS.md)** - Diagramas de flujo y arquitectura ATDF
 
-## 🎯 Guías por Lenguaje
+## 🎯 Plantillas ATDF
 
-### 🐍 **Python**
-- [FastAPI](./examples/python/fastapi/)
-- [Flask](./examples/python/flask/)
-- [Django](./examples/python/django/)
-- [SDK Python](./sdk/python/)
+### 1. **Plantilla de Descripción de Herramienta**
 
-### 🟨 **JavaScript/Node.js**
-- [Express.js](./examples/javascript/express/)
-- [Koa](./examples/javascript/koa/)
-- [SDK JavaScript](./sdk/javascript/)
+#### Estructura Básica
+```json
+{
+  "tools": [
+    {
+      "name": "string",
+      "description": "string",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  ]
+}
+```
 
-### ☕ **Java**
-- [Spring Boot](./examples/java/spring-boot/)
-- [JAX-RS](./examples/java/jax-rs/)
-- [SDK Java](./sdk/java/)
+#### Plantilla Completa
+```json
+{
+  "tools": [
+    {
+      "name": "nombre_herramienta",
+      "description": "Descripción clara de lo que hace la herramienta",
+      "version": "1.0.0",
+      "tags": ["categoria1", "categoria2"],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "parametro1": {
+            "type": "string",
+            "description": "Descripción del parámetro",
+            "minLength": 1
+          },
+          "parametro2": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Descripción del parámetro"
+          }
+        },
+        "required": ["parametro1", "parametro2"]
+      },
+      "examples": [
+        {
+          "name": "Ejemplo básico",
+          "input": {
+            "parametro1": "valor_ejemplo",
+            "parametro2": 10
+          }
+        }
+      ]
+    }
+  ]
+}
+```
 
-### 🔷 **C#**
-- [ASP.NET Core](./examples/csharp/aspnet-core/)
-- [Web API](./examples/csharp/web-api/)
-- [SDK C#](./sdk/csharp/)
+### 2. **Plantilla de Respuesta de Error ATDF**
 
-### 🦀 **Rust**
-- [Actix Web](./examples/rust/actix-web/)
-- [Warp](./examples/rust/warp/)
-- [SDK Rust](./sdk/rust/)
+#### Estructura de Error
+```json
+{
+  "errors": [
+    {
+      "type": "string",
+      "title": "string",
+      "detail": "string",
+      "instance": "string",
+      "tool_name": "string",
+      "parameter_name": "string",
+      "suggested_value": "string|null",
+      "context": "object"
+    }
+  ]
+}
+```
 
-### 🐹 **Go**
-- [Gin](./examples/go/gin/)
-- [Echo](./examples/go/echo/)
-- [SDK Go](./sdk/go/)
+#### Plantilla de Error con Contexto
+```json
+{
+  "errors": [
+    {
+      "type": "https://api.example.com/errors/tipo-error",
+      "title": "Título del Error",
+      "detail": "Descripción detallada del problema",
+      "instance": "/api/errors/uuid-unico",
+      "tool_name": "nombre_herramienta",
+      "parameter_name": "parametro_problematico",
+      "suggested_value": "valor_sugerido",
+      "context": {
+        "informacion_adicional": "valor",
+        "timestamp": "2025-01-15T12:00:00Z"
+      }
+    }
+  ]
+}
+```
 
-## 🛠️ Herramientas y SDKs
+## 🔧 Tipos de Error Estándar
 
-### 📦 **SDKs Oficiales**
-- **[Python SDK](./sdk/python/)** - SDK completo para Python con FastAPI, Flask, Django
-- **[JavaScript SDK](./sdk/javascript/)** - SDK para Node.js y navegador
-- **[Java SDK](./sdk/java/)** - SDK para Java y Spring Boot
-- **[C# SDK](./sdk/csharp/)** - SDK para .NET y ASP.NET Core
-- **[Rust SDK](./sdk/rust/)** - SDK para Rust con Actix Web
-- **[Go SDK](./sdk/go/)** - SDK para Go con Gin y Echo
+| Tipo | URI | Descripción | Uso |
+|------|-----|-------------|-----|
+| Validation Error | `https://api.example.com/errors/validation-error` | Errores de validación de entrada | Parámetros inválidos |
+| Invalid Date | `https://api.example.com/errors/invalid-date` | Fechas inválidas | Fechas en el pasado |
+| Invalid Route | `https://api.example.com/errors/invalid-route` | Rutas inválidas | Origen = destino |
+| Business Rule | `https://api.example.com/errors/business-rule` | Reglas de negocio | Límites de capacidad |
+| Authentication | `https://api.example.com/errors/authentication` | Errores de autenticación | Credenciales inválidas |
+| Authorization | `https://api.example.com/errors/authorization` | Errores de autorización | Permisos insuficientes |
 
-### 🔧 **Herramientas de Desarrollo**
-- **[ATDF Validator](./tools/validator/)** - Validador de esquemas ATDF
-- **[ATDF Generator](./tools/generator/)** - Generador de código para múltiples lenguajes
-- **[ATDF Playground](./tools/playground/)** - Entorno de pruebas interactivo
-- **[ATDF CLI](./tools/cli/)** - Herramienta de línea de comandos
+## 🚀 Implementación Rápida
 
-### 📊 **Monitoreo y Testing**
-- **[ATDF Testing Framework](./tools/testing/)** - Framework de testing para ATDF
-- **[ATDF Metrics](./tools/metrics/)** - Métricas y monitoreo
-- **[ATDF Debugger](./tools/debugger/)** - Herramienta de debugging
+### 1. **Definir Descripción de Herramienta**
+Usa la plantilla ATDF para describir tu herramienta:
 
-## 📋 Guías por Caso de Uso
+```json
+{
+  "tools": [
+    {
+      "name": "hotel_reservation",
+      "description": "Make a hotel reservation with validation",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "guest_name": {"type": "string", "description": "Guest name"},
+          "email": {"type": "string", "format": "email"},
+          "check_in": {"type": "string", "format": "date-time"},
+          "check_out": {"type": "string", "format": "date-time"},
+          "room_type": {"type": "string", "enum": ["single", "double", "suite"]},
+          "guests": {"type": "integer", "minimum": 1, "maximum": 4}
+        },
+        "required": ["guest_name", "email", "check_in", "check_out", "room_type", "guests"]
+      }
+    }
+  ]
+}
+```
+
+### 2. **Definir Respuesta de Error**
+Usa la plantilla ATDF para errores:
+
+```json
+{
+  "errors": [
+    {
+      "type": "https://api.example.com/errors/invalid-date",
+      "title": "Invalid Check-in Date",
+      "detail": "Check-in date cannot be in the past",
+      "instance": "/api/errors/e62aa61e-d844-4761-82c3-531a070fb139",
+      "tool_name": "hotel_reservation",
+      "parameter_name": "check_in",
+      "suggested_value": "2025-01-15T12:00:17.148869",
+      "context": {
+        "current_time": "2025-01-15T12:00:17.148869",
+        "provided_date": "2025-01-14T10:00:00Z"
+      }
+    }
+  ]
+}
+```
+
+### 3. **Implementar en tu Lenguaje**
+Consulta los ejemplos específicos para tu lenguaje:
+
+- **[Python (FastAPI)](./EXAMPLES.md#fastapi-python)**
+- **[JavaScript (Express.js)](./EXAMPLES.md#expressjs-nodejs)**
+- **[Java (Spring Boot)](./EXAMPLES.md#spring-boot-java)**
+- **[C# (ASP.NET Core)](./EXAMPLES.md#aspnet-core-c)**
+- **[Go (Gin)](./EXAMPLES.md#go-gin)**
+- **[Rust (Actix-web)](./EXAMPLES.md#rust-actix-web)**
+
+## 🎯 Casos de Uso
 
 ### 🤖 **Agentes de IA**
-- [Integración con OpenAI](./use-cases/ai-agents/openai/)
-- [Integración con Anthropic](./use-cases/ai-agents/anthropic/)
-- [Integración con LangChain](./use-cases/ai-agents/langchain/)
-- [Agentes Personalizados](./use-cases/ai-agents/custom/)
+- Descripción estandarizada de herramientas
+- Manejo automático de errores
+- Corrección automática con valores sugeridos
+- Integración con cualquier agente compatible
 
 ### 🔌 **APIs y Microservicios**
-- [API REST](./use-cases/apis/rest/)
-- [GraphQL](./use-cases/apis/graphql/)
-- [gRPC](./use-cases/apis/grpc/)
-- [Microservicios](./use-cases/apis/microservices/)
+- Formato de error consistente
+- Documentación automática
+- Validación de entrada estandarizada
+- Interoperabilidad entre servicios
 
 ### 🛠️ **Herramientas de Desarrollo**
-- [Generación de Documentación](./use-cases/dev-tools/documentation/)
-- [Testing Automatizado](./use-cases/dev-tools/testing/)
-- [CI/CD](./use-cases/dev-tools/cicd/)
-- [Monitoreo](./use-cases/dev-tools/monitoring/)
+- Generación automática de documentación
+- Testing estandarizado
+- Monitoreo y logging consistente
+- Debugging mejorado
 
-## 📚 Referencias
+## 📊 Beneficios
 
-### 📖 **Especificaciones**
-- [JSON Schema](https://json-schema.org/) - Esquemas JSON
-- [OpenAPI](https://swagger.io/specification/) - Especificación OpenAPI
-- [RFC 7807](https://tools.ietf.org/html/rfc7807) - Problem Details
+| Beneficio | Descripción |
+|-----------|-------------|
+| **Interoperabilidad** | Funciona con cualquier agente de IA o sistema |
+| **Estandarización** | Formato consistente independiente de la implementación |
+| **Contexto Enriquecido** | Errores con información detallada para corrección |
+| **Extensibilidad** | Fácil de extender para casos de uso específicos |
+| **Mantenibilidad** | Código más limpio y fácil de mantener |
 
-### 🔗 **Estándares Relacionados**
-- [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) - Protocolo de contexto de modelo
-- [OpenAI Function Calling](https://platform.openai.com/docs/guides/function-calling) - Llamadas de función OpenAI
-- [Anthropic Tools](https://docs.anthropic.com/claude/docs/tools-and-functions) - Herramientas de Anthropic
+## 🔗 Enlaces Útiles
 
-### 📚 **Recursos Adicionales**
-- [FAQ](./faq.md) - Preguntas frecuentes
-- [Changelog](./changelog.md) - Historial de cambios
-- [Contributing](./contributing.md) - Guía de contribución
-- [License](./license.md) - Información de licencia
+- **[Documentación Completa](https://mauricioperera.github.io/agent-tool-description-format/)**
+- **[Repositorio GitHub](https://github.com/MauricioPerera/agent-tool-description-format)**
+- **[Especificación ATDF](./ATDF_SPECIFICATION.md)**
+- **[Ejemplos de Implementación](./EXAMPLES.md)**
+- **[Guía de Implementación](./IMPLEMENTATION_GUIDE.md)**
 
-## 🚀 Comenzar Rápidamente
+## 📄 Licencia
 
-### 1. **Elegir un Lenguaje**
-```bash
-# Python (Recomendado para principiantes)
-pip install fastapi uvicorn pydantic
-
-# JavaScript
-npm install express fastify
-
-# Java
-# Agregar dependencias de Spring Boot
-
-# C#
-dotnet add package Microsoft.AspNetCore.App
-```
-
-### 2. **Crear Primera Herramienta**
-```python
-# Ejemplo en Python
-from fastapi import FastAPI
-
-app = FastAPI()
-
-@app.get("/tools")
-async def get_tools():
-    return {
-        "tools": [{
-            "name": "hello_world",
-            "description": "Simple hello world tool",
-            "inputSchema": {
-                "type": "object",
-                "properties": {
-                    "name": {"type": "string"}
-                }
-            }
-        }]
-    }
-```
-
-### 3. **Probar la Herramienta**
-```bash
-# Iniciar servidor
-uvicorn main:app --reload
-
-# Probar endpoint
-curl http://localhost:8000/tools
-```
-
-## 📞 Soporte y Comunidad
-
-### 💬 **Canales de Soporte**
-- 🐛 **GitHub Issues**: [Reportar Bugs](https://github.com/MauricioPerera/agent-tool-description-format/issues)
-- 💡 **GitHub Discussions**: [Discusiones](https://github.com/MauricioPerera/agent-tool-description-format/discussions)
-
-### 📖 **Recursos de Aprendizaje**
-- 📚 **Documentación**: [https://mauricioperera.github.io/agent-tool-description-format/](https://mauricioperera.github.io/agent-tool-description-format/)
-- 📚 **Repositorio**: [https://github.com/MauricioPerera/agent-tool-description-format](https://github.com/MauricioPerera/agent-tool-description-format)
-
-### 🤝 **Contribuir**
-- [Guía de Contribución](./contributing.md)
-- [Código de Conducta](./CODE_OF_CONDUCT.md)
-- [Roadmap](./ROADMAP.md)
+Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](../LICENSE) para más detalles.
 
 ---
 
-**¿Necesitas ayuda?** Comienza con la [Guía de Implementación](./IMPLEMENTATION_GUIDE.md) o consulta los [Ejemplos](./EXAMPLES.md) para tu lenguaje preferido. 
+**ATDF** - Plantillas estandarizadas para herramientas de agentes de IA 🚀 

@@ -2,30 +2,32 @@
 
 ## 🎯 Visión General
 
-El **Agent Tool Description Format (ATDF)** es un estándar para describir herramientas de agentes de IA y manejar respuestas de error de manera estandarizada, independientemente del lenguaje de programación o framework utilizado.
+El **Agent Tool Description Format (ATDF)** es un estándar para describir herramientas de agentes de IA y manejar respuestas de error de manera estandarizada, **independientemente del lenguaje de programación, framework o herramienta utilizada**.
 
 ## 📋 Conceptos Fundamentales
 
 ### ¿Qué es ATDF?
 
-ATDF es un formato JSON estandarizado que define:
+ATDF es un **formato JSON estandarizado** que define **plantillas reutilizables** para:
 
-1. **Descripción de Herramientas**: Cómo describir herramientas para agentes de IA
-2. **Respuestas de Error Enriquecidas**: Formato estandarizado para errores con contexto
+1. **Descripción de Herramientas**: Plantillas para describir herramientas para agentes de IA
+2. **Respuestas de Error Enriquecidas**: Plantillas estandarizadas para errores con contexto
 3. **Metadatos de Herramientas**: Información adicional para mejor integración
 
 ### ¿Por qué ATDF?
 
 - **Interoperabilidad**: Funciona con cualquier agente de IA compatible
-- **Estandarización**: Formato consistente independiente de la implementación
+- **Estandarización**: **Plantillas consistentes** independientes de la implementación
 - **Contexto Enriquecido**: Errores con información detallada para corrección automática
 - **Extensibilidad**: Fácil de extender para casos de uso específicos
+- **Reutilización**: **Plantillas que puedes copiar y adaptar** a tu proyecto
+- **No-Code Friendly**: Funciona perfectamente con herramientas visuales como N8N, Zapier, etc.
 
 ## 🔧 Especificación del Formato
 
-### 1. Descripción de Herramientas
+### 1. Plantilla de Descripción de Herramientas
 
-#### Estructura Básica
+#### Estructura Básica (Plantilla Mínima)
 ```json
 {
   "tools": [
@@ -42,13 +44,53 @@ ATDF es un formato JSON estandarizado que define:
 }
 ```
 
-#### Campos Requeridos
+#### Cómo Completar la Plantilla
 
-| Campo | Tipo | Descripción | Ejemplo |
-|-------|------|-------------|---------|
-| `name` | string | Identificador único de la herramienta | `"hotel_reservation"` |
-| `description` | string | Descripción legible de la herramienta | `"Make a hotel reservation"` |
-| `inputSchema` | object | Esquema JSON Schema para parámetros de entrada | Ver ejemplo completo |
+| Campo | Tipo | Requerido | Descripción | Ejemplo |
+|-------|------|-----------|-------------|---------|
+| `name` | string | ✅ | Identificador único de la herramienta | `"hotel_reservation"` |
+| `description` | string | ✅ | Descripción legible de la herramienta | `"Make a hotel reservation"` |
+| `inputSchema` | object | ✅ | Esquema JSON Schema para parámetros de entrada | Ver ejemplo completo |
+
+#### Plantilla Completa con Metadatos
+```json
+{
+  "tools": [
+    {
+      "name": "nombre_herramienta",
+      "description": "Descripción clara de lo que hace la herramienta",
+      "version": "1.0.0",
+      "tags": ["categoria1", "categoria2"],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "parametro1": {
+            "type": "string",
+            "description": "Descripción del parámetro",
+            "minLength": 1
+          },
+          "parametro2": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "description": "Descripción del parámetro"
+          }
+        },
+        "required": ["parametro1", "parametro2"]
+      },
+      "examples": [
+        {
+          "name": "Ejemplo básico",
+          "input": {
+            "parametro1": "valor_ejemplo",
+            "parametro2": 10
+          }
+        }
+      ]
+    }
+  ]
+}
+```
 
 #### Campos Opcionales
 
@@ -58,7 +100,27 @@ ATDF es un formato JSON estandarizado que define:
 | `tags` | array | Etiquetas para categorización | `["travel", "booking"]` |
 | `examples` | array | Ejemplos de uso | Ver sección de ejemplos |
 
-#### Ejemplo Completo
+#### Tipos de Datos en inputSchema
+
+| Tipo | Descripción | Ejemplo |
+|------|-------------|---------|
+| `string` | Texto | `{"type": "string", "minLength": 1}` |
+| `integer` | Número entero | `{"type": "integer", "minimum": 1, "maximum": 100}` |
+| `number` | Número decimal | `{"type": "number", "minimum": 0.0}` |
+| `boolean` | Verdadero/Falso | `{"type": "boolean"}` |
+| `array` | Lista de elementos | `{"type": "array", "items": {"type": "string"}}` |
+| `object` | Objeto con propiedades | `{"type": "object", "properties": {}}` |
+
+#### Formatos Especiales
+
+| Formato | Descripción | Ejemplo |
+|---------|-------------|---------|
+| `email` | Dirección de correo | `{"type": "string", "format": "email"}` |
+| `date-time` | Fecha y hora | `{"type": "string", "format": "date-time"}` |
+| `date` | Solo fecha | `{"type": "string", "format": "date"}` |
+| `uri` | URL | `{"type": "string", "format": "uri"}` |
+
+#### Plantilla de Ejemplo Completo
 ```json
 {
   "tools": [
@@ -110,8 +172,8 @@ ATDF es un formato JSON estandarizado que define:
           "input": {
             "guest_name": "John Doe",
             "email": "john.doe@example.com",
-                    "check_in": "2025-01-15T14:00:00Z",
-        "check_out": "2025-01-17T12:00:00Z",
+            "check_in": "2025-01-15T14:00:00Z",
+            "check_out": "2025-01-17T12:00:00Z",
             "room_type": "double",
             "guests": 2
           }
@@ -122,9 +184,9 @@ ATDF es un formato JSON estandarizado que define:
 }
 ```
 
-### 2. Respuestas de Error ATDF
+### 2. Plantilla de Respuestas de Error ATDF
 
-#### Estructura de Error
+#### Estructura de Error (Plantilla Básica)
 ```json
 {
   "errors": [
@@ -142,20 +204,41 @@ ATDF es un formato JSON estandarizado que define:
 }
 ```
 
-#### Campos de Error
+#### Cómo Completar la Plantilla de Error
 
-| Campo | Tipo | Requerido | Descripción |
-|-------|------|-----------|-------------|
-| `type` | string | ✅ | URI que identifica el tipo de error |
-| `title` | string | ✅ | Título legible del error |
-| `detail` | string | ✅ | Descripción detallada del problema |
-| `instance` | string | ✅ | ID único de la instancia de error |
-| `tool_name` | string | ✅ | Nombre de la herramienta que generó el error |
-| `parameter_name` | string | ✅ | Parámetro específico que causó el error |
-| `suggested_value` | string\|null | ❌ | Valor sugerido para corregir el error |
-| `context` | object | ❌ | Información adicional de contexto |
+| Campo | Tipo | Requerido | Descripción | Ejemplo |
+|-------|------|-----------|-------------|---------|
+| `type` | string | ✅ | URI que identifica el tipo de error | `"https://api.example.com/errors/invalid-date"` |
+| `title` | string | ✅ | Título legible del error | `"Invalid Check-in Date"` |
+| `detail` | string | ✅ | Descripción detallada del problema | `"Check-in date cannot be in the past"` |
+| `instance` | string | ✅ | ID único de la instancia de error | `"/api/errors/uuid-unico"` |
+| `tool_name` | string | ✅ | Nombre de la herramienta que generó el error | `"hotel_reservation"` |
+| `parameter_name` | string | ✅ | Parámetro específico que causó el error | `"check_in"` |
+| `suggested_value` | string\|null | ❌ | Valor sugerido para corregir el error | `"2025-01-15T12:00:00Z"` |
+| `context` | object | ❌ | Información adicional de contexto | `{"current_time": "2025-01-15T12:00:00Z"}` |
 
-#### Tipos de Error Estándar
+#### Plantilla de Error con Contexto Completo
+```json
+{
+  "errors": [
+    {
+      "type": "https://api.example.com/errors/tipo-error",
+      "title": "Título del Error",
+      "detail": "Descripción detallada del problema",
+      "instance": "/api/errors/uuid-unico",
+      "tool_name": "nombre_herramienta",
+      "parameter_name": "parametro_problematico",
+      "suggested_value": "valor_sugerido",
+      "context": {
+        "informacion_adicional": "valor",
+        "timestamp": "2025-01-15T12:00:00Z"
+      }
+    }
+  ]
+}
+```
+
+#### Tipos de Error Estándar (Plantillas de URI)
 
 | Tipo | URI | Descripción | Uso |
 |------|-----|-------------|-----|
@@ -166,7 +249,7 @@ ATDF es un formato JSON estandarizado que define:
 | Authentication | `https://api.example.com/errors/authentication` | Errores de autenticación | Credenciales inválidas |
 | Authorization | `https://api.example.com/errors/authorization` | Errores de autorización | Permisos insuficientes |
 
-#### Ejemplo de Error ATDF
+#### Plantilla de Ejemplo de Error ATDF
 ```json
 {
   "errors": [
@@ -187,123 +270,251 @@ ATDF es un formato JSON estandarizado que define:
 }
 ```
 
-## 🔄 Flujo de Trabajo ATDF
+### 3. Respuestas Completas ATDF
 
-### 1. Descripción de Herramientas
-```mermaid
-graph LR
-    A[Desarrollador] --> B[Define Herramienta]
-    B --> C[Esquema de Entrada]
-    C --> D[Descripción ATDF]
-    D --> E[Agente de IA]
-    E --> F[Consume Herramienta]
-```
-
-### 2. Manejo de Errores
-```mermaid
-graph LR
-    A[Agente Ejecuta] --> B[Error Ocurre]
-    B --> C[Formato ATDF]
-    C --> D[Contexto Enriquecido]
-    D --> E[Corrección Automática]
-    E --> F[Reintento]
-```
-
-## 📚 Mejores Prácticas
-
-### Para Descripción de Herramientas
-
-1. **Nombres Descriptivos**: Usa nombres claros y específicos
-2. **Descripciones Detalladas**: Explica qué hace la herramienta
-3. **Esquemas Validados**: Usa JSON Schema para validación
-4. **Ejemplos Incluidos**: Proporciona ejemplos de uso
-5. **Versionado**: Incluye versiones para compatibilidad
-
-### Para Respuestas de Error
-
-1. **Tipos Específicos**: Usa URIs específicas para tipos de error
-2. **Contexto Útil**: Incluye información para corrección
-3. **Valores Sugeridos**: Proporciona valores cuando sea posible
-4. **IDs Únicos**: Usa IDs únicos para seguimiento
-5. **Mensajes Claros**: Títulos y detalles legibles
-
-### Para Implementación
-
-1. **Consistencia**: Mantén formato consistente
-2. **Extensibilidad**: Diseña para futuras extensiones
-3. **Validación**: Valida esquemas de entrada
-4. **Logging**: Registra errores para debugging
-5. **Documentación**: Documenta tipos de error personalizados
-
-## 🔧 Extensibilidad
-
-### Tipos de Error Personalizados
-
-Puedes definir tipos de error específicos para tu dominio:
-
+#### Respuesta de Éxito
 ```json
 {
-  "type": "https://your-domain.com/errors/insufficient-funds",
-  "title": "Insufficient Funds",
-  "detail": "Account balance is insufficient for this transaction",
-  "tool_name": "payment_processor",
-  "parameter_name": "amount",
-  "suggested_value": "50.00",
-  "context": {
-    "current_balance": "25.00",
-    "requested_amount": "100.00"
+  "reservation_id": "123e4567-e89b-12d3-a456-426614174000",
+  "status": "confirmed",
+  "message": "Hotel reservation created successfully",
+  "details": {
+    "guest_name": "John Doe",
+    "email": "john.doe@example.com",
+    "check_in": "2025-01-15T14:00:00Z",
+    "check_out": "2025-01-17T12:00:00Z",
+    "room_type": "double",
+    "guests": 2,
+    "total_price": 299.99,
+    "confirmation_number": "HTL-2025-001234",
+    "cancellation_policy": "Free cancellation until 24 hours before check-in"
   }
 }
 ```
 
-### Metadatos Adicionales
-
-Extiende el formato con metadatos específicos:
-
+#### Respuesta de Error (Múltiples Errores)
 ```json
 {
-  "tools": [
+  "errors": [
     {
-      "name": "custom_tool",
-      "description": "Custom tool with extended metadata",
-      "inputSchema": {...},
-      "metadata": {
-        "rate_limit": "100/hour",
-        "requires_auth": true,
-        "cost_per_call": "0.001",
-        "supported_languages": ["en", "es", "fr"]
+      "type": "https://api.example.com/errors/invalid-date",
+      "title": "Invalid Check-in Date",
+      "detail": "Check-in date cannot be in the past",
+      "instance": "/api/errors/e62aa61e-d844-4761-82c3-531a070fb139",
+      "tool_name": "hotel_reservation",
+      "parameter_name": "check_in",
+      "suggested_value": "2025-01-15T12:00:17.148869",
+      "context": {
+        "current_time": "2025-01-15T12:00:17.148869",
+        "provided_date": "2025-01-14T10:00:00Z"
+      }
+    },
+    {
+      "type": "https://api.example.com/errors/validation-error",
+      "title": "Invalid Email Format",
+      "detail": "Email address format is invalid",
+      "instance": "/api/errors/f73bb62f-e955-4872-93d4-642181082240",
+      "tool_name": "hotel_reservation",
+      "parameter_name": "email",
+      "suggested_value": "john.doe@example.com",
+      "context": {
+        "provided_value": "invalid-email",
+        "validation_rule": "email_format"
       }
     }
   ]
 }
 ```
 
-## 🚀 Implementación
+#### Respuesta de Error (Regla de Negocio)
+```json
+{
+  "errors": [
+    {
+      "type": "https://api.example.com/errors/business-rule",
+      "title": "Room Not Available",
+      "detail": "Selected room type is not available for the requested dates",
+      "instance": "/api/errors/g84cc73g-f066-5983-04e5-753292193351",
+      "tool_name": "hotel_reservation",
+      "parameter_name": "room_type",
+      "suggested_value": "single",
+      "context": {
+        "requested_room_type": "suite",
+        "available_room_types": ["single", "double"],
+        "check_in": "2025-01-15T14:00:00Z",
+        "check_out": "2025-01-17T12:00:00Z"
+      }
+    }
+  ]
+}
+```
 
-### Endpoints Recomendados
+#### Respuesta de Error (Autenticación)
+```json
+{
+  "errors": [
+    {
+      "type": "https://api.example.com/errors/authentication",
+      "title": "Authentication Required",
+      "detail": "Valid authentication credentials are required to access this resource",
+      "instance": "/api/errors/h95dd84h-g177-6094-15f6-864403304462",
+      "tool_name": "hotel_reservation",
+      "parameter_name": "authentication",
+      "suggested_value": null,
+      "context": {
+        "required_scope": "hotel:write",
+        "provided_scope": "hotel:read",
+        "authentication_method": "bearer_token"
+      }
+    }
+  ]
+}
+```
 
-| Endpoint | Método | Descripción |
-|----------|--------|-------------|
-| `/tools` | GET | Lista todas las herramientas disponibles |
-| `/tools/{name}` | GET | Obtiene descripción de herramienta específica |
-| `/tools/{name}/execute` | POST | Ejecuta una herramienta específica |
+## 🔄 Flujo de Trabajo ATDF
 
-### Headers Recomendados
+### 1. Descripción de Herramientas
+```mermaid
+flowchart LR
+    A[Desarrollador] --> B[Copia Plantilla ATDF]
+    B --> C[Completa Campos Requeridos]
+    C --> D[Define Esquema de Entrada]
+    D --> E[Agrega Metadatos Opcionales]
+    E --> F[Agente de IA Consume]
+    
+    style A fill:#e1f5fe
+    style F fill:#f3e5f5
+    style B fill:#fff3e0
+    style C fill:#fff3e0
+    style D fill:#fff3e0
+    style E fill:#fff3e0
+```
 
-| Header | Descripción |
-|--------|-------------|
-| `Content-Type: application/json` | Para todas las peticiones |
-| `Accept: application/json` | Para respuestas JSON |
-| `X-ATDF-Version: 1.0` | Versión de ATDF utilizada |
+### 2. Manejo de Errores
+```mermaid
+flowchart LR
+    A[Error Ocurre] --> B[Copia Plantilla de Error]
+    B --> C[Llena Campos Requeridos]
+    C --> D[Agrega Contexto Opcional]
+    D --> E[Agente Recibe Error]
+    E --> F[Corrección Automática]
+    
+    style A fill:#ffebee
+    style F fill:#e8f5e8
+    style B fill:#fff3e0
+    style C fill:#fff3e0
+    style D fill:#fff3e0
+    style E fill:#fff3e0
+```
 
-## 📖 Referencias
+## 📋 Plantillas de Uso Común
 
-- [JSON Schema Specification](https://json-schema.org/)
-- [RFC 7807 - Problem Details](https://tools.ietf.org/html/rfc7807)
-- [OpenAPI Specification](https://swagger.io/specification/)
+### Plantilla para Herramienta de Validación
+```json
+{
+  "tools": [
+    {
+      "name": "validate_data",
+      "description": "Validate input data against schema",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "description": "Data to validate"
+          },
+          "schema": {
+            "type": "object",
+            "description": "JSON Schema for validation"
+          }
+        },
+        "required": ["data", "schema"]
+      }
+    }
+  ]
+}
+```
+
+### Plantilla para Herramienta de Búsqueda
+```json
+{
+  "tools": [
+    {
+      "name": "search_database",
+      "description": "Search database with filters",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          },
+          "filters": {
+            "type": "object",
+            "description": "Search filters"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        "required": ["query"]
+      }
+    }
+  ]
+}
+```
+
+### Plantilla para Error de Validación
+```json
+{
+  "errors": [
+    {
+      "type": "https://api.example.com/errors/validation-error",
+      "title": "Validation Error",
+      "detail": "Parameter validation failed",
+      "instance": "/api/errors/{uuid}",
+      "tool_name": "tool_name",
+      "parameter_name": "invalid_parameter",
+      "suggested_value": "correct_value",
+      "context": {
+        "validation_errors": ["error1", "error2"],
+        "timestamp": "2025-01-15T12:00:00Z"
+      }
+    }
+  ]
+}
+```
+
+## 🎯 Implementación
+
+### Pasos para Implementar ATDF
+
+1. **Copia la plantilla** de descripción de herramienta
+2. **Completa los campos requeridos** (name, description, inputSchema)
+3. **Define el esquema** de entrada con validaciones
+4. **Agrega campos opcionales** (version, tags, examples)
+5. **Implementa el manejo de errores** usando las plantillas ATDF
+6. **Prueba la integración** con agentes de IA
+
+### Verificación de Conformidad
+
+Para verificar que tu implementación cumple con ATDF:
+
+- ✅ Usa la estructura JSON correcta
+- ✅ Incluye todos los campos requeridos
+- ✅ Usa tipos de error estándar
+- ✅ Proporciona contexto en errores
+- ✅ Incluye valores sugeridos cuando sea posible
+
+## 🔗 Enlaces Relacionados
+
+- **[Ejemplos de Implementación](./EXAMPLES.md)** - Ejemplos en múltiples lenguajes y herramientas
+- **[Guía de Implementación](./IMPLEMENTATION_GUIDE.md)** - Cómo implementar ATDF
+- **[Mejores Prácticas](./BEST_PRACTICES.md)** - Recomendaciones para implementaciones robustas
 
 ---
 
-**Versión**: 1.0.0  
-**Última Actualización**: Enero 2025  
-**Estado**: Estable 
+**ATDF** - Plantillas estandarizadas para herramientas de agentes de IA 🚀 

@@ -8,7 +8,7 @@
 
 [Home](index.md) | [Specification](specification.md) | [Examples](examples.md) | [Contributing](contributing.md) | [Multilingual](multilingual.md) | [Workflow](workflow.md) | [Changelog](changelog.md) | [License](license.md)
 
-**Languages:** [English (en)](/en/workflow.md) | [Español (es)](/es/workflow.md) | [Português (pt)](/pt/workflow.md)
+**Languages:** [English (en)](../en/workflow.md) | [Español (es)](workflow.md) | [Português (pt)](../pt/workflow.md)
 
 This page illustrates how ATDF works in practice with Mermaid diagrams.
 

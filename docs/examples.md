@@ -1,8 +1,8 @@
-# Ejemplos de ATDF - Múltiples Lenguajes y Frameworks
+# Ejemplos de ATDF - Múltiples Lenguajes y Herramientas
 
 ## 🎯 Visión General
 
-Esta sección proporciona ejemplos prácticos del **Agent Tool Description Format (ATDF)** implementado en diferentes lenguajes de programación y frameworks, mostrando la versatilidad y universalidad del formato.
+Esta sección proporciona ejemplos prácticos del **Agent Tool Description Format (ATDF)** implementado en diferentes lenguajes de programación, frameworks y herramientas no-code, mostrando la versatilidad y universalidad del formato.
 
 ## 📋 Índice de Ejemplos
 
@@ -12,6 +12,11 @@ Esta sección proporciona ejemplos prácticos del **Agent Tool Description Forma
 - [Spring Boot (Java)](#spring-boot-java)
 - [ASP.NET Core (C#)](#aspnet-core-c)
 - [Flask (Python)](#flask-python)
+
+### 🔄 **Herramientas No-Code**
+- [N8N Workflow](#n8n-workflow)
+- [Zapier Automation](#zapier-automation)
+- [Make (Integromat)](#make-integromat)
 
 ### 🎯 **Ejemplos Específicos**
 - [Descripción de Herramientas](#descripción-de-herramientas)
@@ -23,7 +28,7 @@ Esta sección proporciona ejemplos prácticos del **Agent Tool Description Forma
 
 ## 🔧 Implementaciones Completas
 
-### FastAPI (Python)
+### FastAPI (Python) {#fastapi-python}
 
 #### Estructura del Proyecto
 ```
@@ -144,7 +149,7 @@ def create_atdf_error(type_uri: str, title: str, detail: str, tool_name: str,
     )
 ```
 
-### Express.js (Node.js)
+### Express.js (Node.js) {#expressjs-nodejs}
 
 #### Estructura del Proyecto
 ```
@@ -224,7 +229,6 @@ app.post('/api/hotel/reserve', [
   body('guests').isInt({ min: 1, max: 4 }).withMessage('Guests must be between 1 and 4')
 ], (req, res) => {
   const errors = validationResult(req);
-  
   if (!errors.isEmpty()) {
     return res.status(400).json(createATDFError(
       'https://api.example.com/errors/validation-error',
@@ -237,10 +241,9 @@ app.post('/api/hotel/reserve', [
     ));
   }
 
-  const { check_in } = req.body;
-  const checkInDate = new Date(check_in);
-  
-  if (checkInDate < new Date()) {
+  // Validación de negocio
+  const checkIn = new Date(req.body.check_in);
+  if (checkIn < new Date()) {
     return res.status(400).json(createATDFError(
       'https://api.example.com/errors/invalid-date',
       'Invalid Check-in Date',
@@ -276,26 +279,27 @@ function createATDFError(type, title, detail, toolName, parameterName, suggested
 }
 
 app.listen(3000, () => {
-  console.log('ATDF Example server running on port 3000');
+  console.log('Server running on port 3000');
 });
 ```
 
-### Spring Boot (Java)
+### Spring Boot (Java) {#spring-boot-java}
 
 #### Estructura del Proyecto
 ```
-spring-atdf-example/
+spring-boot-atdf-example/
 ├── src/main/java/com/example/atdf/
 │   ├── AtdfApplication.java
 │   ├── controller/
-│   │   └── ToolController.java
+│   │   ├── ToolController.java
+│   │   └── HotelController.java
 │   ├── model/
 │   │   ├── ATDFError.java
-│   │   ├── ATDFErrorResponse.java
-│   │   └── Tool.java
+│   │   └── ATDFTool.java
 │   └── service/
 │       └── HotelService.java
-└── pom.xml
+├── pom.xml
+└── application.properties
 ```
 
 #### Implementación Principal
@@ -306,23 +310,48 @@ spring-atdf-example/
 public class ToolController {
     
     @GetMapping("/tools")
-    public Map<String, List<Tool>> getTools() {
-        List<Tool> tools = Arrays.asList(
-            new Tool(
-                "hotel_reservation",
-                "Make a hotel reservation",
-                createHotelSchema()
-            )
-        );
-        return Map.of("tools", tools);
+    public Map<String, List<ATDFTool>> getTools() {
+        ATDFTool hotelTool = new ATDFTool();
+        hotelTool.setName("hotel_reservation");
+        hotelTool.setDescription("Make a hotel reservation");
+        
+        Map<String, Object> inputSchema = new HashMap<>();
+        inputSchema.put("type", "object");
+        
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("guest_name", Map.of("type", "string", "description", "Guest name"));
+        properties.put("email", Map.of("type", "string", "format", "email"));
+        properties.put("check_in", Map.of("type", "string", "format", "date-time"));
+        properties.put("check_out", Map.of("type", "string", "format", "date-time"));
+        properties.put("room_type", Map.of("type", "string", "enum", Arrays.asList("single", "double", "suite")));
+        properties.put("guests", Map.of("type", "integer", "minimum", 1, "maximum", 4));
+        
+        inputSchema.put("properties", properties);
+        inputSchema.put("required", Arrays.asList("guest_name", "email", "check_in", "check_out", "room_type", "guests"));
+        
+        hotelTool.setInputSchema(inputSchema);
+        
+        return Map.of("tools", Arrays.asList(hotelTool));
     }
+}
+
+// HotelController.java
+@RestController
+@RequestMapping("/api/hotel")
+public class HotelController {
     
-    @PostMapping("/hotel/reserve")
-    public ResponseEntity<?> reserveHotel(@RequestBody @Valid HotelReservationRequest request) {
+    @Autowired
+    private HotelService hotelService;
+    
+    @PostMapping("/reserve")
+    public ResponseEntity<?> reserveHotel(@RequestBody Map<String, Object> request) {
         try {
             // Validación de negocio
-            if (request.getCheckIn().isBefore(LocalDateTime.now())) {
-                ATDFErrorResponse error = createATDFError(
+            String checkInStr = (String) request.get("check_in");
+            LocalDateTime checkIn = LocalDateTime.parse(checkInStr.replace("Z", ""));
+            
+            if (checkIn.isBefore(LocalDateTime.now())) {
+                ATDFError error = createATDFError(
                     "https://api.example.com/errors/invalid-date",
                     "Invalid Check-in Date",
                     "Check-in date cannot be in the past",
@@ -331,19 +360,19 @@ public class ToolController {
                     LocalDateTime.now().toString(),
                     Map.of("current_time", LocalDateTime.now().toString())
                 );
-                return ResponseEntity.badRequest().body(error);
+                return ResponseEntity.badRequest().body(Map.of("errors", Arrays.asList(error)));
             }
             
             // Lógica de negocio exitosa
-            HotelReservationResponse response = new HotelReservationResponse(
-                UUID.randomUUID().toString(),
-                "confirmed",
-                "Hotel reservation created successfully"
-            );
-            return ResponseEntity.ok(response);
+            String reservationId = UUID.randomUUID().toString();
+            return ResponseEntity.ok(Map.of(
+                "reservation_id", reservationId,
+                "status", "confirmed",
+                "message", "Hotel reservation created successfully"
+            ));
             
         } catch (Exception e) {
-            ATDFErrorResponse error = createATDFError(
+            ATDFError error = createATDFError(
                 "https://api.example.com/errors/validation-error",
                 "Validation Error",
                 e.getMessage(),
@@ -352,166 +381,580 @@ public class ToolController {
                 null,
                 Map.of("error_type", e.getClass().getSimpleName())
             );
-            return ResponseEntity.badRequest().body(error);
+            return ResponseEntity.badRequest().body(Map.of("errors", Arrays.asList(error)));
         }
     }
     
-    private ATDFErrorResponse createATDFError(String type, String title, String detail,
-                                            String toolName, String parameterName,
-                                            String suggestedValue, Map<String, Object> context) {
-        ATDFError error = new ATDFError(
-            type, title, detail, "/api/errors/" + UUID.randomUUID(),
-            toolName, parameterName, suggestedValue, context
-        );
-        return new ATDFErrorResponse(Arrays.asList(error));
+    private ATDFError createATDFError(String type, String title, String detail, 
+                                     String toolName, String parameterName, 
+                                     String suggestedValue, Map<String, Object> context) {
+        ATDFError error = new ATDFError();
+        error.setType(type);
+        error.setTitle(title);
+        error.setDetail(detail);
+        error.setInstance("/api/errors/" + UUID.randomUUID());
+        error.setToolName(toolName);
+        error.setParameterName(parameterName);
+        error.setSuggestedValue(suggestedValue);
+        error.setContext(context);
+        return error;
     }
-}
-
-// ATDFError.java
-@Data
-@AllArgsConstructor
-public class ATDFError {
-    private String type;
-    private String title;
-    private String detail;
-    private String instance;
-    private String toolName;
-    private String parameterName;
-    private String suggestedValue;
-    private Map<String, Object> context;
-}
-
-// ATDFErrorResponse.java
-@Data
-@AllArgsConstructor
-public class ATDFErrorResponse {
-    private List<ATDFError> errors;
 }
 ```
 
----
+## 🔄 Herramientas No-Code
+
+### N8N Workflow {#n8n-workflow}
+
+#### Descripción de Herramienta ATDF
+```json
+{
+  "tools": [
+    {
+      "name": "n8n_hotel_reservation",
+      "description": "N8N workflow for hotel reservation with ATDF error handling",
+      "version": "1.0.0",
+      "tags": ["n8n", "workflow", "hotel", "booking"],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "guest_name": {
+            "type": "string",
+            "description": "Full name of the guest",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Guest email address"
+          },
+          "check_in": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Check-in date and time"
+          },
+          "check_out": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Check-out date and time"
+          },
+          "room_type": {
+            "type": "string",
+            "enum": ["single", "double", "suite"],
+            "description": "Type of room"
+          },
+          "guests": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4,
+            "description": "Number of guests"
+          }
+        },
+        "required": ["guest_name", "email", "check_in", "check_out", "room_type", "guests"]
+      }
+    }
+  ]
+}
+```
+
+#### Configuración del Nodo HTTP Request
+```json
+{
+  "method": "POST",
+  "url": "https://your-n8n-instance.com/webhook/hotel-reservation",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "guest_name": "{{ $json.guest_name }}",
+    "email": "{{ $json.email }}",
+    "check_in": "{{ $json.check_in }}",
+    "check_out": "{{ $json.check_out }}",
+    "room_type": "{{ $json.room_type }}",
+    "guests": "{{ $json.guests }}"
+  }
+}
+```
+
+#### Configuración del Nodo Set (Validación)
+```javascript
+// Validar fecha de llegada
+const checkIn = new Date($input.first().json.check_in);
+const now = new Date();
+
+if (checkIn < now) {
+  return {
+    errors: [{
+      type: "https://api.example.com/errors/invalid-date",
+      title: "Invalid Check-in Date",
+      detail: "Check-in date cannot be in the past",
+      instance: "/api/errors/" + Date.now(),
+      tool_name: "n8n_hotel_reservation",
+      parameter_name: "check_in",
+      suggested_value: now.toISOString(),
+      context: {
+        current_time: now.toISOString(),
+        provided_date: $input.first().json.check_in
+      }
+    }]
+  };
+}
+
+// Continuar con el flujo normal
+return $input.first().json;
+```
+
+#### Configuración del Nodo Webhook (Respuesta)
+```json
+{
+  "reservation_id": "{{ $json.reservation_id }}",
+  "status": "{{ $json.status }}",
+  "message": "{{ $json.message }}"
+}
+```
+
+### Zapier Automation {#zapier-automation}
+
+#### Descripción de Herramienta ATDF
+```json
+{
+  "tools": [
+    {
+      "name": "zapier_hotel_reservation",
+      "description": "Zapier automation for hotel reservation with ATDF error handling",
+      "version": "1.0.0",
+      "tags": ["zapier", "automation", "hotel", "booking"],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "guest_name": {
+            "type": "string",
+            "description": "Full name of the guest"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Guest email address"
+          },
+          "check_in": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Check-in date and time"
+          },
+          "check_out": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Check-out date and time"
+          },
+          "room_type": {
+            "type": "string",
+            "enum": ["single", "double", "suite"],
+            "description": "Type of room"
+          },
+          "guests": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4,
+            "description": "Number of guests"
+          }
+        },
+        "required": ["guest_name", "email", "check_in", "check_out", "room_type", "guests"]
+      }
+    }
+  ]
+}
+```
+
+#### Configuración del Trigger (Webhook)
+```json
+{
+  "url": "https://hooks.zapier.com/hooks/catch/123456/abc123/",
+  "method": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}
+```
+
+#### Configuración del Action (Code)
+```javascript
+// Validar fecha de llegada
+const checkIn = new Date(inputData.check_in);
+const now = new Date();
+
+if (checkIn < now) {
+  return {
+    errors: [{
+      type: "https://api.example.com/errors/invalid-date",
+      title: "Invalid Check-in Date",
+      detail: "Check-in date cannot be in the past",
+      instance: "/api/errors/" + Date.now(),
+      tool_name: "zapier_hotel_reservation",
+      parameter_name: "check_in",
+      suggested_value: now.toISOString(),
+      context: {
+        current_time: now.toISOString(),
+        provided_date: inputData.check_in
+      }
+    }]
+  };
+}
+
+// Crear reserva
+const reservationId = Date.now().toString();
+return {
+  reservation_id: reservationId,
+  status: "confirmed",
+  message: "Hotel reservation created successfully"
+};
+```
+
+### Make (Integromat) {#make-integromat}
+
+#### Descripción de Herramienta ATDF
+```json
+{
+  "tools": [
+    {
+      "name": "make_hotel_reservation",
+      "description": "Make (Integromat) scenario for hotel reservation with ATDF error handling",
+      "version": "1.0.0",
+      "tags": ["make", "integromat", "scenario", "hotel", "booking"],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "guest_name": {
+            "type": "string",
+            "description": "Full name of the guest"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Guest email address"
+          },
+          "check_in": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Check-in date and time"
+          },
+          "check_out": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Check-out date and time"
+          },
+          "room_type": {
+            "type": "string",
+            "enum": ["single", "double", "suite"],
+            "description": "Type of room"
+          },
+          "guests": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4,
+            "description": "Number of guests"
+          }
+        },
+        "required": ["guest_name", "email", "check_in", "check_out", "room_type", "guests"]
+      }
+    }
+  ]
+}
+```
+
+#### Configuración del Módulo Webhook
+```json
+{
+  "url": "https://hook.eu1.make.com/abc123def456",
+  "method": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}
+```
+
+#### Configuración del Módulo Router (Validación)
+```javascript
+// Condición: Validar fecha de llegada
+const checkIn = new Date(1.check_in);
+const now = new Date();
+
+if (checkIn < now) {
+  // Ruta de error
+  return {
+    errors: [{
+      type: "https://api.example.com/errors/invalid-date",
+      title: "Invalid Check-in Date",
+      detail: "Check-in date cannot be in the past",
+      instance: "/api/errors/" + Date.now(),
+      tool_name: "make_hotel_reservation",
+      parameter_name: "check_in",
+      suggested_value: now.toISOString(),
+      context: {
+        current_time: now.toISOString(),
+        provided_date: 1.check_in
+      }
+    }]
+  };
+} else {
+  // Ruta de éxito
+  return 1;
+}
+```
+
+#### Configuración del Módulo HTTP (Respuesta)
+```json
+{
+  "reservation_id": "{{1.reservation_id}}",
+  "status": "{{1.status}}",
+  "message": "{{1.message}}"
+}
+```
+
+### N8N - Configuración de Respuestas
+
+#### Respuesta de Éxito (JSON Output)
+```json
+{
+  "booking_id": "N8N-2025-001",
+  "status": "confirmed",
+  "message": "Flight booking created successfully",
+  "details": {
+    "passenger_name": "Jane Smith",
+    "email": "jane.smith@example.com",
+    "flight_number": "AA123",
+    "departure": "2025-01-20T10:00:00Z",
+    "arrival": "2025-01-20T12:30:00Z",
+    "origin": "JFK",
+    "destination": "LAX",
+    "seat_class": "economy",
+    "total_price": 299.99,
+    "confirmation_code": "N8N-FLT-001234"
+  }
+}
+```
+
+#### Respuesta de Error (Error Trigger)
+```json
+{
+  "errors": [
+    {
+      "type": "https://n8n.example.com/errors/invalid-route",
+      "title": "Invalid Flight Route",
+      "detail": "Origin and destination airports cannot be the same",
+      "instance": "/api/errors/n8n-e62aa61e-d844-4761-82c3-531a070fb139",
+      "tool_name": "flight_booking",
+      "parameter_name": "route",
+      "suggested_value": "LAX",
+      "context": {
+        "origin": "JFK",
+        "destination": "JFK",
+        "available_destinations": ["LAX", "ORD", "DFW", "ATL"]
+      }
+    }
+  ]
+}
+```
+
+### Zapier - Configuración de Respuestas
+
+#### Respuesta de Éxito (Webhook Response)
+```json
+{
+  "order_id": "ZAP-2025-001",
+  "status": "processed",
+  "message": "E-commerce order created successfully",
+  "details": {
+    "customer_name": "John Doe",
+    "email": "john.doe@example.com",
+    "order_items": [
+      {
+        "product_id": "PROD-001",
+        "name": "Wireless Headphones",
+        "quantity": 2,
+        "price": 99.99
+      }
+    ],
+    "total_amount": 199.98,
+    "shipping_address": "123 Main St, City, State 12345",
+    "tracking_number": "ZAP-TRK-001234"
+  }
+}
+```
+
+#### Respuesta de Error (Error Path)
+```json
+{
+  "errors": [
+    {
+      "type": "https://zapier.example.com/errors/insufficient-stock",
+      "title": "Insufficient Stock",
+      "detail": "Requested quantity exceeds available stock",
+      "instance": "/api/errors/zap-f73bb62f-e955-4872-93d4-642181082240",
+      "tool_name": "ecommerce_order",
+      "parameter_name": "quantity",
+      "suggested_value": 1,
+      "context": {
+        "product_id": "PROD-001",
+        "requested_quantity": 5,
+        "available_stock": 2,
+        "product_name": "Wireless Headphones"
+      }
+    }
+  ]
+}
+```
+
+### Make - Configuración de Respuestas
+
+#### Respuesta de Éxito (HTTP Response)
+```json
+{
+  "appointment_id": "MAKE-2025-001",
+  "status": "scheduled",
+  "message": "Medical appointment scheduled successfully",
+  "details": {
+    "patient_name": "Maria Garcia",
+    "email": "maria.garcia@example.com",
+    "doctor_name": "Dr. Smith",
+    "specialty": "Cardiology",
+    "appointment_date": "2025-01-25T14:00:00Z",
+    "duration": "30 minutes",
+    "location": "Medical Center - Floor 3",
+    "confirmation_code": "MAKE-APT-001234",
+    "reminder_sent": true
+  }
+}
+```
+
+#### Respuesta de Error (Error Handler)
+```json
+{
+  "errors": [
+    {
+      "type": "https://make.example.com/errors/schedule-conflict",
+      "title": "Schedule Conflict",
+      "detail": "Doctor is not available at the requested time",
+      "instance": "/api/errors/make-g84cc73g-f066-5983-04e5-753292193351",
+      "tool_name": "medical_appointment",
+      "parameter_name": "appointment_time",
+      "suggested_value": "2025-01-25T15:00:00Z",
+      "context": {
+        "requested_time": "2025-01-25T14:00:00Z",
+        "doctor_id": "DOC-001",
+        "available_slots": [
+          "2025-01-25T15:00:00Z",
+          "2025-01-25T16:00:00Z",
+          "2025-01-26T09:00:00Z"
+        ],
+        "conflict_reason": "Existing appointment"
+      }
+    }
+  ]
+}
+```
 
 ## 🎯 Ejemplos Específicos
 
 ### Descripción de Herramientas
 
-#### Herramienta de Búsqueda Web
+#### Plantilla Básica
 ```json
 {
-  "name": "web_search",
-  "description": "Search the web for current information",
-  "version": "1.0.0",
-  "tags": ["search", "web", "information"],
-  "inputSchema": {
-    "type": "object",
-    "properties": {
-      "query": {
-        "type": "string",
-        "description": "Search query",
-        "minLength": 1,
-        "maxLength": 500
-      },
-      "max_results": {
-        "type": "integer",
-        "description": "Maximum number of results",
-        "minimum": 1,
-        "maximum": 20,
-        "default": 10
-      },
-      "language": {
-        "type": "string",
-        "description": "Search language",
-        "enum": ["en", "es", "fr", "de"],
-        "default": "en"
-      }
-    },
-    "required": ["query"]
-  },
-  "examples": [
+  "tools": [
     {
-      "name": "Basic search",
-      "input": {
-        "query": "latest AI developments",
-        "max_results": 5
+      "name": "mi_herramienta",
+      "description": "Descripción de lo que hace la herramienta",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "parametro1": {
+            "type": "string",
+            "description": "Descripción del parámetro"
+          }
+        },
+        "required": ["parametro1"]
       }
     }
   ]
 }
 ```
 
-#### Herramienta de Análisis de Sentimientos
+#### Plantilla con Validaciones
 ```json
 {
-  "name": "sentiment_analysis",
-  "description": "Analyze the sentiment of text content",
-  "version": "1.0.0",
-  "tags": ["nlp", "analysis", "sentiment"],
-  "inputSchema": {
-    "type": "object",
-    "properties": {
-      "text": {
-        "type": "string",
-        "description": "Text to analyze",
-        "minLength": 1,
-        "maxLength": 10000
-      },
-      "language": {
-        "type": "string",
-        "description": "Text language for better accuracy",
-        "enum": ["auto", "en", "es", "fr", "de"],
-        "default": "auto"
-      },
-      "detailed": {
-        "type": "boolean",
-        "description": "Return detailed analysis",
-        "default": false
+  "tools": [
+    {
+      "name": "validacion_avanzada",
+      "description": "Herramienta con validaciones complejas",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email válido"
+          },
+          "edad": {
+            "type": "integer",
+            "minimum": 18,
+            "maximum": 100,
+            "description": "Edad entre 18 y 100"
+          },
+          "categorias": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["tecnologia", "deportes", "cultura"]
+            },
+            "description": "Categorías permitidas"
+          }
+        },
+        "required": ["email", "edad"]
       }
-    },
-    "required": ["text"]
-  }
+    }
+  ]
 }
 ```
 
 ### Manejo de Errores
 
-#### Error de Autenticación
+#### Error de Validación
 ```json
 {
   "errors": [
     {
-      "type": "https://api.example.com/errors/authentication",
-      "title": "Authentication Required",
-      "detail": "Valid API key is required to access this tool",
-      "instance": "/api/errors/auth-required-001",
-      "tool_name": "web_search",
-      "parameter_name": "api_key",
-      "suggested_value": null,
+      "type": "https://api.example.com/errors/validation-error",
+      "title": "Validation Error",
+      "detail": "Email format is invalid",
+      "instance": "/api/errors/123e4567-e89b-12d3-a456-426614174000",
+      "tool_name": "mi_herramienta",
+      "parameter_name": "email",
+      "suggested_value": "usuario@ejemplo.com",
       "context": {
-        "missing_header": "X-API-Key",
-        "documentation_url": "https://api.example.com/docs/authentication"
+        "provided_value": "email_invalido",
+        "validation_rule": "email_format"
       }
     }
   ]
 }
 ```
 
-#### Error de Límite de Uso
+#### Error de Regla de Negocio
 ```json
 {
   "errors": [
     {
-      "type": "https://api.example.com/errors/rate-limit",
-      "title": "Rate Limit Exceeded",
-      "detail": "You have exceeded the rate limit of 100 requests per hour",
-      "instance": "/api/errors/rate-limit-001",
-      "tool_name": "web_search",
-      "parameter_name": "rate_limit",
+      "type": "https://api.example.com/errors/business-rule",
+      "title": "Capacity Exceeded",
+      "detail": "Maximum capacity of 100 users reached",
+      "instance": "/api/errors/123e4567-e89b-12d3-a456-426614174001",
+      "tool_name": "registro_usuario",
+      "parameter_name": "capacity",
       "suggested_value": null,
       "context": {
-        "current_usage": 100,
-        "limit": 100,
-        "reset_time": "2024-01-15T13:00:00Z",
-        "upgrade_url": "https://api.example.com/pricing"
+        "current_capacity": 100,
+        "requested_capacity": 101,
+        "max_capacity": 100
       }
     }
   ]
@@ -520,135 +963,258 @@ public class ATDFErrorResponse {
 
 ### Validación de Entrada
 
-#### Validación de Email
-```json
-{
-  "errors": [
-    {
-      "type": "https://api.example.com/errors/validation-error",
-      "title": "Invalid Email Format",
-      "detail": "The provided email address is not in a valid format",
-      "instance": "/api/errors/email-validation-001",
-      "tool_name": "user_registration",
-      "parameter_name": "email",
-      "suggested_value": null,
-      "context": {
-        "field_path": ["body", "email"],
-        "input_value": "invalid-email",
-        "expected_format": "user@domain.com"
-      }
-    }
-  ]
+#### Validación de Fechas
+```javascript
+// En cualquier lenguaje o herramienta
+function validateDate(checkIn, checkOut) {
+  const now = new Date();
+  const checkInDate = new Date(checkIn);
+  const checkOutDate = new Date(checkOut);
+  
+  if (checkInDate < now) {
+    return {
+      errors: [{
+        type: "https://api.example.com/errors/invalid-date",
+        title: "Invalid Check-in Date",
+        detail: "Check-in date cannot be in the past",
+        instance: "/api/errors/" + Date.now(),
+        tool_name: "hotel_reservation",
+        parameter_name: "check_in",
+        suggested_value: now.toISOString(),
+        context: {
+          current_time: now.toISOString(),
+          provided_date: checkIn
+        }
+      }]
+    };
+  }
+  
+  if (checkOutDate <= checkInDate) {
+    return {
+      errors: [{
+        type: "https://api.example.com/errors/invalid-date",
+        title: "Invalid Check-out Date",
+        detail: "Check-out date must be after check-in date",
+        instance: "/api/errors/" + Date.now(),
+        tool_name: "hotel_reservation",
+        parameter_name: "check_out",
+        suggested_value: new Date(checkInDate.getTime() + 24*60*60*1000).toISOString(),
+        context: {
+          check_in_date: checkIn,
+          check_out_date: checkOut
+        }
+      }]
+    };
+  }
+  
+  return null; // No hay errores
 }
 ```
 
 #### Validación de Rango de Fechas
+
+```javascript
+// Validar que las fechas estén dentro del rango permitido
+function validateDateRange(checkIn, checkOut, minDays = 1, maxDays = 30) {
+  const checkInDate = new Date(checkIn);
+  const checkOutDate = new Date(checkOut);
+  const daysDiff = (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24);
+  
+  if (daysDiff < minDays) {
+    return {
+      errors: [{
+        type: "https://api.example.com/errors/business-rule",
+        title: "Minimum Stay Required",
+        detail: `Minimum stay is ${minDays} day(s)`,
+        instance: "/api/errors/" + Date.now(),
+        tool_name: "hotel_reservation",
+        parameter_name: "check_out",
+        suggested_value: new Date(checkInDate.getTime() + minDays*24*60*60*1000).toISOString(),
+        context: {
+          min_days: minDays,
+          requested_days: daysDiff
+        }
+      }]
+    };
+  }
+  
+  if (daysDiff > maxDays) {
+    return {
+      errors: [{
+        type: "https://api.example.com/errors/business-rule",
+        title: "Maximum Stay Exceeded",
+        detail: `Maximum stay is ${maxDays} days`,
+        instance: "/api/errors/" + Date.now(),
+        tool_name: "hotel_reservation",
+        parameter_name: "check_out",
+        suggested_value: new Date(checkInDate.getTime() + maxDays*24*60*60*1000).toISOString(),
+        context: {
+          max_days: maxDays,
+          requested_days: daysDiff
+        }
+      }]
+    };
+  }
+  
+  return null; // No hay errores
+}
+```
+
+### Ejemplo de Consumo por Agente de IA
+
+#### Solicitud del Agente
+```json
+{
+  "tool_name": "hotel_reservation",
+  "parameters": {
+    "guest_name": "John Doe",
+    "email": "john.doe@example.com",
+    "check_in": "2025-01-14T10:00:00Z",
+    "check_out": "2025-01-16T12:00:00Z",
+    "room_type": "double",
+    "guests": 2
+  }
+}
+```
+
+#### Respuesta de Éxito
+```json
+{
+  "reservation_id": "123e4567-e89b-12d3-a456-426614174000",
+  "status": "confirmed",
+  "message": "Hotel reservation created successfully",
+  "details": {
+    "guest_name": "John Doe",
+    "email": "john.doe@example.com",
+    "check_in": "2025-01-15T14:00:00Z",
+    "check_out": "2025-01-17T12:00:00Z",
+    "room_type": "double",
+    "guests": 2,
+    "total_price": 299.99,
+    "confirmation_number": "HTL-2025-001234",
+    "cancellation_policy": "Free cancellation until 24 hours before check-in",
+    "hotel_info": {
+      "name": "Grand Hotel",
+      "address": "123 Main Street, City",
+      "phone": "+1-555-0123"
+    }
+  }
+}
+```
+
+#### Respuesta de Error (para corrección automática)
 ```json
 {
   "errors": [
     {
-      "type": "https://api.example.com/errors/invalid-date-range",
-      "title": "Invalid Date Range",
-      "detail": "End date must be after start date",
-      "instance": "/api/errors/date-range-001",
-      "tool_name": "event_scheduling",
-      "parameter_name": "end_date",
-      "suggested_value": "2024-02-15T18:00:00Z",
+      "type": "https://api.example.com/errors/invalid-date",
+      "title": "Invalid Check-in Date",
+      "detail": "Check-in date cannot be in the past",
+      "instance": "/api/errors/e62aa61e-d844-4761-82c3-531a070fb139",
+      "tool_name": "hotel_reservation",
+      "parameter_name": "check_in",
+      "suggested_value": "2025-01-15T12:00:17.148869",
       "context": {
-        "start_date": "2024-02-15T18:00:00Z",
-        "end_date": "2024-02-15T17:00:00Z",
-        "minimum_duration": "1 hour"
+        "current_time": "2025-01-15T12:00:17.148869",
+        "provided_date": "2025-01-14T10:00:00Z"
       }
     }
   ]
 }
 ```
 
----
-
-## 🔄 Integración con Agentes
-
-### Ejemplo de Consumo por Agente de IA
-
-```python
-import requests
-import json
-
-class ATDFAgent:
-    def __init__(self, base_url):
-        self.base_url = base_url
-    
-    def get_tools(self):
-        """Obtiene la lista de herramientas disponibles"""
-        response = requests.get(f"{self.base_url}/tools")
-        return response.json()["tools"]
-    
-    def execute_tool(self, tool_name, parameters):
-        """Ejecuta una herramienta específica"""
-        response = requests.post(
-            f"{self.base_url}/api/{tool_name}/execute",
-            json=parameters
-        )
-        
-        if response.status_code == 200:
-            return response.json()
-        else:
-            error_data = response.json()
-            return self.handle_atdf_error(error_data)
-    
-    def handle_atdf_error(self, error_data):
-        """Maneja errores ATDF y sugiere correcciones"""
-        for error in error_data["errors"]:
-            print(f"Error: {error['title']}")
-            print(f"Detail: {error['detail']}")
-            print(f"Tool: {error['tool_name']}")
-            print(f"Parameter: {error['parameter_name']}")
-            
-            if error['suggested_value']:
-                print(f"Suggested value: {error['suggested_value']}")
-                # El agente puede usar el valor sugerido para reintentar
-                return self.retry_with_suggestion(error, error['suggested_value'])
-        
-        return error_data
-    
-    def retry_with_suggestion(self, error, suggested_value):
-        """Reintenta la operación con el valor sugerido"""
-        # Implementación de reintento automático
-        pass
-
-# Uso del agente
-agent = ATDFAgent("http://localhost:8000")
-tools = agent.get_tools()
-print("Available tools:", [tool["name"] for tool in tools])
-
-# Ejecutar herramienta
-result = agent.execute_tool("hotel_reservation", {
-    "guest_name": "John Doe",
-    "email": "john@example.com",
-    "check_in": "2024-01-15T14:00:00Z",
-    "check_out": "2024-01-17T12:00:00Z",
-    "room_type": "double",
-    "guests": 2
-})
+#### Respuesta de Error (Múltiples Errores)
+```json
+{
+  "errors": [
+    {
+      "type": "https://api.example.com/errors/invalid-date",
+      "title": "Invalid Check-in Date",
+      "detail": "Check-in date cannot be in the past",
+      "instance": "/api/errors/e62aa61e-d844-4761-82c3-531a070fb139",
+      "tool_name": "hotel_reservation",
+      "parameter_name": "check_in",
+      "suggested_value": "2025-01-15T12:00:17.148869",
+      "context": {
+        "current_time": "2025-01-15T12:00:17.148869",
+        "provided_date": "2025-01-14T10:00:00Z"
+      }
+    },
+    {
+      "type": "https://api.example.com/errors/validation-error",
+      "title": "Invalid Email Format",
+      "detail": "Email address format is invalid",
+      "instance": "/api/errors/f73bb62f-e955-4872-93d4-642181082240",
+      "tool_name": "hotel_reservation",
+      "parameter_name": "email",
+      "suggested_value": "john.doe@example.com",
+      "context": {
+        "provided_value": "invalid-email",
+        "validation_rule": "email_format"
+      }
+    }
+  ]
+}
 ```
 
----
+#### Respuesta de Error (Regla de Negocio)
+```json
+{
+  "errors": [
+    {
+      "type": "https://api.example.com/errors/business-rule",
+      "title": "Room Not Available",
+      "detail": "Selected room type is not available for the requested dates",
+      "instance": "/api/errors/g84cc73g-f066-5983-04e5-753292193351",
+      "tool_name": "hotel_reservation",
+      "parameter_name": "room_type",
+      "suggested_value": "single",
+      "context": {
+        "requested_room_type": "suite",
+        "available_room_types": ["single", "double"],
+        "check_in": "2025-01-15T14:00:00Z",
+        "check_out": "2025-01-17T12:00:00Z",
+        "alternative_suggestions": [
+          {
+            "room_type": "single",
+            "price": 199.99,
+            "availability": "confirmed"
+          },
+          {
+            "room_type": "double",
+            "price": 249.99,
+            "availability": "confirmed"
+          }
+        ]
+      }
+    }
+  ]
+}
+```
 
-## 📚 Recursos Adicionales
+## 🔗 Enlaces Útiles
 
-### Enlaces Útiles
-- [Especificación ATDF Completa](./ATDF_SPECIFICATION.md)
-- [Mejores Prácticas](./BEST_PRACTICES.md)
-- [Guía de Implementación](./IMPLEMENTATION_GUIDE.md)
+- **[Especificación ATDF](./ATDF_SPECIFICATION.md)** - Especificación completa del formato
+- **[Guía de Implementación](./IMPLEMENTATION_GUIDE.md)** - Cómo implementar ATDF
+- **[Mejores Prácticas](./BEST_PRACTICES.md)** - Recomendaciones para implementaciones robustas
 
 ### Ejemplos por Lenguaje
-- [Python Examples](./examples/python/)
-- [JavaScript Examples](./examples/javascript/)
-- [Java Examples](./examples/java/)
-- [C# Examples](./examples/csharp/)
+
+- **[Python](./ATDF_SPECIFICATION.md#python)** - FastAPI, Flask, Django
+- **[JavaScript](./ATDF_SPECIFICATION.md#javascript)** - Express.js, Node.js, React
+- **[Java](./ATDF_SPECIFICATION.md#java)** - Spring Boot, Jakarta EE
+- **[C#](./ATDF_SPECIFICATION.md#csharp)** - ASP.NET Core, .NET
+- **[Go](./ATDF_SPECIFICATION.md#go)** - Gin, Echo, Fiber
+- **[Rust](./ATDF_SPECIFICATION.md#rust)** - Actix-web, Rocket, Axum
+
+### Ejemplos por Herramienta No-Code
+
+- **[N8N](./ATDF_SPECIFICATION.md#n8n)** - Workflows y automatizaciones
+- **[Zapier](./ATDF_SPECIFICATION.md#zapier)** - Integraciones y automatizaciones
+- **[Make](./ATDF_SPECIFICATION.md#make)** - Scenarios y workflows
+- **[IFTTT](./ATDF_SPECIFICATION.md#ifttt)** - Applets y automatizaciones
+- **[Microsoft Power Automate](./ATDF_SPECIFICATION.md#power-automate)** - Flows y automatizaciones
 
 ---
 
-**Nota**: Todos los ejemplos están diseñados para ser compatibles con la especificación ATDF 1.0.0 y pueden ser utilizados como base para implementaciones en producción.
-
-**Documentación**: [https://mauricioperera.github.io/agent-tool-description-format/](https://mauricioperera.github.io/agent-tool-description-format/) 
+**ATDF** - Ejemplos prácticos para cualquier lenguaje o herramienta 🚀 

@@ -112,10 +112,15 @@ El **contexto** proporciona información adicional que ayuda a entender y resolv
 
 ### 1. **Descubrimiento de Herramientas**
 ```mermaid
-graph LR
+flowchart LR
     A[Agente de IA] --> B[GET /tools]
     B --> C[Descripción de Herramientas]
     C --> D[Esquemas de Entrada]
+    
+    style A fill:#e3f2fd
+    style B fill:#fff3e0
+    style C fill:#e8f5e8
+    style D fill:#f3e5f5
 ```
 
 **Proceso:**
@@ -126,11 +131,17 @@ graph LR
 
 ### 2. **Ejecución de Herramientas**
 ```mermaid
-graph LR
+flowchart LR
     A[Agente] --> B[POST /api/tool/execute]
     B --> C[Validación de Entrada]
     C --> D[Lógica de Negocio]
     D --> E[Respuesta]
+    
+    style A fill:#e3f2fd
+    style B fill:#fff3e0
+    style C fill:#e8f5e8
+    style D fill:#fff3e0
+    style E fill:#f3e5f5
 ```
 
 **Proceso:**
@@ -141,19 +152,18 @@ graph LR
 
 ### 3. **Manejo de Errores**
 ```mermaid
-graph LR
+flowchart LR
     A[Error Ocurre] --> B[Formato ATDF]
     B --> C[Contexto Enriquecido]
     C --> D[Corrección Automática]
     D --> E[Reintento]
+    
+    style A fill:#ffebee
+    style B fill:#fff3e0
+    style C fill:#e8f5e8
+    style D fill:#e3f2fd
+    style E fill:#f3e5f5
 ```
-
-**Proceso:**
-1. Se detecta un error durante la ejecución
-2. Se formatea como respuesta ATDF
-3. Se incluye contexto útil
-4. El agente puede corregir automáticamente
-5. Se reintenta la operación
 
 ## 🎯 Beneficios de ATDF
 
