@@ -1,0 +1,534 @@
+# Tool Integration Workflow
+# BMAD-METHOD Workflow for Integrating ATDF with External Frameworks
+
+name: "tool_integration"
+version: "1.0.0"
+description: "Workflow for integrating ATDF with external frameworks and platforms"
+domain: "framework-integration"
+framework: "bmad-method"
+
+# Workflow Metadata
+metadata:
+  created_by: "BMAD Orchestrator"
+  created_date: "2024-01-20"
+  last_updated: "2024-01-20"
+  project: "ATDF Framework Integration"
+  complexity: "medium"
+  estimated_duration: "2-3 weeks"
+  success_criteria:
+    - "Seamless integration with target framework"
+    - "ATDF compliance maintained"
+    - "Performance benchmarks met"
+    - "Documentation complete"
+    - "Integration tests passing"
+
+# Workflow Configuration
+config:
+  parallel_execution: true
+  quality_gates: true
+  auto_progression: false
+  rollback_enabled: true
+  integration_testing: true
+
+# Target Frameworks
+target_frameworks:
+  primary:
+    - name: "FastAPI"
+      version: "0.104+"
+      priority: "high"
+      status: "active"
+    - name: "Model Context Protocol (MCP)"
+      version: "latest"
+      priority: "high"
+      status: "active"
+      
+  secondary:
+    - name: "OpenAPI"
+      version: "3.1+"
+      priority: "medium"
+      status: "planned"
+    - name: "N8N"
+      version: "latest"
+      priority: "medium"
+      status: "planned"
+    - name: "Zapier"
+      version: "latest"
+      priority: "low"
+      status: "planned"
+
+# Agent Assignments
+agents:
+  primary:
+    - name: "architect"
+      role: "Integration Designer"
+      responsibility: "Design integration patterns and architecture"
+    - name: "developer"
+      role: "Implementation Lead"
+      responsibility: "Implement integration adapters and connectors"
+    - name: "atdf_specialist"
+      role: "ATDF Expert"
+      responsibility: "Ensure ATDF compliance and optimization"
+      
+  supporting:
+    - name: "qa"
+      role: "Integration Tester"
+      responsibility: "Test integration functionality and performance"
+    - name: "pm"
+      role: "Integration Coordinator"
+      responsibility: "Coordinate with external framework teams"
+
+# Workflow Phases
+phases:
+
+  # Phase 1: Analysis & Planning
+  analysis:
+    name: "Integration Analysis & Planning"
+    duration: "3-4 days"
+    parallel: false
+    
+    tasks:
+      - id: "A1"
+        name: "Framework Analysis"
+        agent: "architect"
+        description: "Analyze target framework architecture and integration points"
+        deliverables:
+          - "framework_analysis_report.md"
+          - "integration_points_map.json"
+          - "compatibility_assessment.md"
+        tools:
+          - "analyze_framework_architecture"
+          - "identify_integration_points"
+        dependencies: []
+        estimated_hours: 16
+        
+      - id: "A2"
+        name: "ATDF Compatibility Assessment"
+        agent: "atdf_specialist"
+        description: "Assess ATDF compatibility with target framework"
+        deliverables:
+          - "compatibility_matrix.csv"
+          - "adaptation_requirements.md"
+          - "compliance_checklist.json"
+        tools:
+          - "assess_atdf_compatibility"
+          - "analyze_compliance_requirements"
+        dependencies: ["A1"]
+        estimated_hours: 12
+        
+      - id: "A3"
+        name: "Integration Strategy"
+        agent: "architect"
+        description: "Define integration strategy and approach"
+        deliverables:
+          - "integration_strategy.md"
+          - "implementation_plan.yml"
+          - "resource_requirements.json"
+        tools:
+          - "design_integration_strategy"
+          - "create_implementation_plan"
+        dependencies: ["A1", "A2"]
+        estimated_hours: 10
+        
+    quality_gates:
+      - name: "Analysis Approval"
+        criteria:
+          - "Framework compatibility confirmed"
+          - "Integration strategy approved"
+          - "Resource requirements validated"
+        approvers: ["architect", "atdf_specialist"]
+
+  # Phase 2: Design & Architecture
+  design:
+    name: "Integration Design"
+    duration: "4-5 days"
+    parallel: true
+    
+    tasks:
+      - id: "D1"
+        name: "Adapter Design"
+        agent: "architect"
+        description: "Design integration adapters and connectors"
+        deliverables:
+          - "adapter_architecture.md"
+          - "connector_specifications.yml"
+          - "data_flow_diagrams.png"
+        tools:
+          - "design_integration_adapters"
+          - "create_connector_specs"
+        dependencies: ["A3"]
+        estimated_hours: 20
+        
+      - id: "D2"
+        name: "API Mapping"
+        agent: "atdf_specialist"
+        description: "Map ATDF schema to framework API structures"
+        deliverables:
+          - "api_mapping_document.md"
+          - "schema_transformation_rules.json"
+          - "validation_mappings.yml"
+        tools:
+          - "map_atdf_to_framework"
+          - "create_transformation_rules"
+        dependencies: ["A2", "A3"]
+        estimated_hours: 16
+        
+      - id: "D3"
+        name: "Error Handling Design"
+        agent: "atdf_specialist"
+        description: "Design error handling for framework integration"
+        deliverables:
+          - "error_handling_strategy.md"
+          - "error_mapping_rules.json"
+          - "recovery_procedures.yml"
+        tools:
+          - "design_error_handling"
+          - "create_error_mappings"
+        dependencies: ["D1", "D2"]
+        estimated_hours: 12
+        
+    quality_gates:
+      - name: "Design Review"
+        criteria:
+          - "Integration design approved"
+          - "API mappings validated"
+          - "Error handling strategy confirmed"
+        approvers: ["architect", "atdf_specialist", "developer"]
+
+  # Phase 3: Implementation
+  implementation:
+    name: "Integration Implementation"
+    duration: "1-1.5 weeks"
+    parallel: true
+    
+    tasks:
+      - id: "I1"
+        name: "Adapter Implementation"
+        agent: "developer"
+        description: "Implement integration adapters and connectors"
+        deliverables:
+          - "framework_adapter.py"
+          - "connector_modules.py"
+          - "integration_utilities.py"
+        tools:
+          - "implement_integration_adapter"
+          - "create_connector_modules"
+        dependencies: ["D1"]
+        estimated_hours: 32
+        
+      - id: "I2"
+        name: "Schema Transformation"
+        agent: "developer"
+        description: "Implement ATDF schema transformation logic"
+        deliverables:
+          - "schema_transformer.py"
+          - "validation_adapter.py"
+          - "format_converter.py"
+        tools:
+          - "implement_schema_transformation"
+          - "create_validation_adapter"
+        dependencies: ["D2"]
+        estimated_hours: 24
+        
+      - id: "I3"
+        name: "Error Handling Implementation"
+        agent: "developer"
+        description: "Implement error handling and recovery mechanisms"
+        deliverables:
+          - "error_handler.py"
+          - "error_mapper.py"
+          - "recovery_manager.py"
+        tools:
+          - "implement_error_handling"
+          - "create_error_mapper"
+        dependencies: ["D3"]
+        estimated_hours: 16
+        
+      - id: "I4"
+        name: "Integration Tests"
+        agent: "developer"
+        description: "Implement comprehensive integration tests"
+        deliverables:
+          - "integration_test_suite.py"
+          - "mock_framework_server.py"
+          - "test_data_generators.py"
+        tools:
+          - "create_integration_tests"
+          - "implement_test_utilities"
+        dependencies: ["I1", "I2", "I3"]
+        estimated_hours: 20
+        
+    quality_gates:
+      - name: "Implementation Review"
+        criteria:
+          - "Code review completed"
+          - "Unit tests passing (85%+ coverage)"
+          - "Integration tests implemented"
+        approvers: ["developer", "atdf_specialist"]
+
+  # Phase 4: Testing & Validation
+  testing:
+    name: "Integration Testing & Validation"
+    duration: "3-4 days"
+    parallel: true
+    
+    tasks:
+      - id: "T1"
+        name: "Functional Testing"
+        agent: "qa"
+        description: "Test integration functionality and feature completeness"
+        deliverables:
+          - "functional_test_results.json"
+          - "feature_coverage_report.md"
+          - "functionality_validation.csv"
+        tools:
+          - "run_functional_tests"
+          - "validate_feature_coverage"
+        dependencies: ["I4"]
+        estimated_hours: 16
+        
+      - id: "T2"
+        name: "Performance Testing"
+        agent: "qa"
+        description: "Test integration performance and scalability"
+        deliverables:
+          - "performance_test_results.json"
+          - "scalability_analysis.md"
+          - "bottleneck_identification.csv"
+        tools:
+          - "run_performance_tests"
+          - "analyze_scalability"
+        dependencies: ["I1", "I2", "I3"]
+        estimated_hours: 12
+        
+      - id: "T3"
+        name: "Compatibility Testing"
+        agent: "qa"
+        description: "Test compatibility across different framework versions"
+        deliverables:
+          - "compatibility_test_matrix.csv"
+          - "version_compatibility_report.md"
+          - "regression_test_results.json"
+        tools:
+          - "test_version_compatibility"
+          - "run_regression_tests"
+        dependencies: ["T1"]
+        estimated_hours: 14
+        
+      - id: "T4"
+        name: "ATDF Compliance Validation"
+        agent: "atdf_specialist"
+        description: "Validate ATDF compliance in integrated environment"
+        deliverables:
+          - "compliance_validation_report.md"
+          - "atdf_conformance_results.json"
+          - "standard_adherence_checklist.csv"
+        tools:
+          - "validate_atdf_compliance"
+          - "check_standard_adherence"
+        dependencies: ["T1", "T2"]
+        estimated_hours: 10
+        
+    quality_gates:
+      - name: "Testing Validation"
+        criteria:
+          - "All functional tests passing"
+          - "Performance benchmarks met"
+          - "ATDF compliance validated"
+          - "No critical bugs identified"
+        approvers: ["qa", "atdf_specialist"]
+
+  # Phase 5: Documentation & Deployment
+  deployment:
+    name: "Documentation & Deployment"
+    duration: "2-3 days"
+    parallel: true
+    
+    tasks:
+      - id: "DP1"
+        name: "Integration Documentation"
+        agent: "atdf_specialist"
+        description: "Create comprehensive integration documentation"
+        deliverables:
+          - "integration_guide.md"
+          - "api_reference.md"
+          - "troubleshooting_guide.md"
+          - "best_practices.md"
+        tools:
+          - "create_integration_documentation"
+          - "generate_api_reference"
+        dependencies: ["T4"]
+        estimated_hours: 16
+        
+      - id: "DP2"
+        name: "Example Implementation"
+        agent: "developer"
+        description: "Create example implementations and tutorials"
+        deliverables:
+          - "example_integration.py"
+          - "tutorial_notebooks.ipynb"
+          - "sample_configurations.yml"
+        tools:
+          - "create_example_implementation"
+          - "generate_tutorials"
+        dependencies: ["T1", "T2", "T3"]
+        estimated_hours: 12
+        
+      - id: "DP3"
+        name: "Deployment Package"
+        agent: "pm"
+        description: "Prepare integration deployment package"
+        deliverables:
+          - "integration_package.zip"
+          - "installation_scripts.sh"
+          - "configuration_templates.yml"
+          - "deployment_guide.md"
+        tools:
+          - "create_deployment_package"
+          - "prepare_installation_scripts"
+        dependencies: ["DP1", "DP2"]
+        estimated_hours: 8
+        
+    quality_gates:
+      - name: "Deployment Readiness"
+        criteria:
+          - "Documentation complete and accurate"
+          - "Examples working and tested"
+          - "Deployment package validated"
+          - "Installation process verified"
+        approvers: ["pm", "atdf_specialist", "qa"]
+
+# Integration Patterns
+patterns:
+  adapter:
+    description: "Adapter pattern for framework-specific implementations"
+    use_cases: ["FastAPI", "Express.js", "Spring Boot"]
+    complexity: "medium"
+    
+  bridge:
+    description: "Bridge pattern for protocol translation"
+    use_cases: ["MCP", "OpenAPI", "GraphQL"]
+    complexity: "high"
+    
+  proxy:
+    description: "Proxy pattern for request/response transformation"
+    use_cases: ["API Gateways", "Load Balancers"]
+    complexity: "low"
+    
+  decorator:
+    description: "Decorator pattern for adding ATDF capabilities"
+    use_cases: ["Existing APIs", "Legacy Systems"]
+    complexity: "medium"
+
+# Framework-Specific Configurations
+framework_configs:
+  fastapi:
+    adapter_type: "decorator"
+    validation_mode: "automatic"
+    error_handling: "atdf_native"
+    performance_target: "<50ms"
+    
+  mcp:
+    adapter_type: "bridge"
+    validation_mode: "strict"
+    error_handling: "protocol_compliant"
+    performance_target: "<100ms"
+    
+  openapi:
+    adapter_type: "adapter"
+    validation_mode: "schema_based"
+    error_handling: "rfc7807_compatible"
+    performance_target: "<75ms"
+
+# Success Metrics
+metrics:
+  integration:
+    - name: "Integration Success Rate"
+      target: "95%"
+      measurement: "successful_integrations / total_attempts"
+    - name: "Performance Overhead"
+      target: "<20%"
+      measurement: "integrated_response_time / native_response_time"
+    - name: "ATDF Compliance"
+      target: "100%"
+      measurement: "compliant_features / total_features"
+      
+  quality:
+    - name: "Test Coverage"
+      target: "90%"
+      measurement: "covered_lines / total_lines"
+    - name: "Bug Density"
+      target: "<0.1 bugs/KLOC"
+      measurement: "bugs_found / lines_of_code * 1000"
+    - name: "Documentation Completeness"
+      target: "100%"
+      measurement: "documented_features / total_features"
+
+# Risk Management
+risks:
+  - id: "R1"
+    description: "Framework API changes breaking integration"
+    probability: "medium"
+    impact: "high"
+    mitigation: "Version pinning and compatibility testing"
+    owner: "architect"
+    
+  - id: "R2"
+    description: "Performance degradation in integrated environment"
+    probability: "low"
+    impact: "medium"
+    mitigation: "Performance testing and optimization"
+    owner: "qa"
+    
+  - id: "R3"
+    description: "ATDF compliance issues in complex integrations"
+    probability: "medium"
+    impact: "high"
+    mitigation: "Continuous compliance validation"
+    owner: "atdf_specialist"
+
+# Rollback Strategy
+rollback:
+  triggers:
+    - "Integration failure rate > 10%"
+    - "Performance degradation > 50%"
+    - "ATDF compliance < 95%"
+    
+  procedures:
+    - "Disable integration adapter"
+    - "Revert to previous version"
+    - "Notify affected users"
+    - "Analyze failure root cause"
+    
+  recovery_time: "< 2 hours"
+  data_integrity: "guaranteed"
+
+---
+# Integration Workflow Execution Guide
+
+## Quick Start
+1. Load workflow: `*workflow tool_integration`
+2. Select target framework: `*configure framework fastapi`
+3. Begin analysis: `*phase analysis`
+
+## Framework Selection
+- `*framework fastapi` - FastAPI integration
+- `*framework mcp` - Model Context Protocol integration  
+- `*framework openapi` - OpenAPI integration
+- `*framework n8n` - N8N workflow integration
+
+## Phase Commands
+- `*phase analysis` - Start integration analysis
+- `*phase design` - Begin integration design
+- `*phase implementation` - Start implementation
+- `*phase testing` - Begin testing phase
+- `*phase deployment` - Prepare deployment
+
+## Monitoring
+- `*status integration` - Check integration status
+- `*metrics performance` - View performance metrics
+- `*compliance check` - Validate ATDF compliance
+
+## Emergency Procedures
+- `*rollback integration` - Rollback integration
+- `*disable adapter` - Disable integration adapter
+- `*emergency stop` - Emergency workflow stop
