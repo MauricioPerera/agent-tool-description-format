@@ -1,0 +1,58 @@
+{
+  "name": "atdf-bmad-integration",
+  "version": "1.0.0",
+  "description": "ATDF (Agent Tool Description Format) project enhanced with BMAD-METHOD framework for AI-driven development",
+  "main": "index.js",
+  "scripts": {
+    "install:bmad": "npx bmad-method install",
+    "bmad:update": "git pull && npm run install:bmad",
+    "start": "python -m examples.fastapi_mcp_integration",
+    "test": "python -m pytest tests/",
+    "test:js": "cd js && npm test",
+    "bmad:web": "echo 'Visit https://gemini.google.com or https://chat.openai.com and upload bmad-orchestrator.md'",
+    "bmad:setup": "python tools/bmad_atdf_integration.py",
+    "dev": "uvicorn examples.fastapi_mcp_integration:app --reload --port 8000",
+    "dev:safe": "uvicorn examples.fastapi_mcp_integration:app --no-reload --port 8000"
+  },
+  "keywords": [
+    "atdf",
+    "agent-tools",
+    "ai-agents",
+    "bmad-method",
+    "tool-description",
+    "error-handling",
+    "mcp",
+    "fastapi",
+    "json-schema"
+  ],
+  "author": "ATDF Team",
+  "license": "MIT",
+  "dependencies": {
+    "bmad-method": "latest"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "bmad": {
+    "expansionPacks": [
+      "bmad-method-core",
+      "bmad-method-python"
+    ],
+    "projectType": "api-framework",
+    "primaryLanguage": "python",
+    "framework": "fastapi"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "python": ">=3.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/agent-tool-description-format"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/agent-tool-description-format/issues"
+  },
+  "homepage": "https://github.com/your-org/agent-tool-description-format#readme"
+}

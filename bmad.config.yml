@@ -1,0 +1,173 @@
+# BMAD-METHOD Configuration for ATDF Project
+# Agent Tool Description Format - AI-Driven Development Configuration
+
+project:
+  name: "ATDF - Agent Tool Description Format"
+  type: "api-framework"
+  description: "Standardized format for AI agent tools with enriched error handling and MCP integration"
+  version: "2.0.0"
+  domain: "ai-tools-standardization"
+
+# Technical preferences for BMAD agents
+preferences:
+  languages:
+    primary: "python"
+    secondary: ["javascript", "typescript", "yaml", "json"]
+  
+  frameworks:
+    backend: ["fastapi", "flask", "django"]
+    frontend: ["vanilla-js", "react", "vue"]
+    testing: ["pytest", "jest", "unittest"]
+    documentation: ["mkdocs", "sphinx", "gitbook"]
+  
+  architecture:
+    style: "microservices"
+    patterns: ["repository", "factory", "adapter", "observer"]
+    principles: ["solid", "dry", "kiss", "yagni"]
+  
+  tools:
+    validation: ["json-schema", "pydantic", "joi"]
+    api: ["openapi", "swagger", "postman"]
+    integration: ["mcp", "zapier", "n8n"]
+
+# Agent specializations for ATDF domain
+agents:
+  analyst:
+    focus: 
+      - "api-design"
+      - "tool-standardization" 
+      - "error-handling-patterns"
+      - "interoperability-analysis"
+      - "developer-experience"
+    expertise:
+      - "json-schema-design"
+      - "ai-agent-workflows"
+      - "error-taxonomy"
+  
+  pm:
+    focus:
+      - "developer-experience"
+      - "documentation-strategy"
+      - "integration-roadmap"
+      - "community-adoption"
+      - "backwards-compatibility"
+    expertise:
+      - "api-versioning"
+      - "migration-planning"
+      - "user-story-mapping"
+  
+  architect:
+    focus:
+      - "schema-design"
+      - "interoperability"
+      - "extensibility"
+      - "performance-optimization"
+      - "security-patterns"
+    expertise:
+      - "json-schema-architecture"
+      - "api-gateway-patterns"
+      - "error-propagation"
+      - "caching-strategies"
+  
+  dev:
+    focus:
+      - "python-implementation"
+      - "fastapi-integration"
+      - "json-schema-validation"
+      - "testing-automation"
+      - "mcp-protocol"
+    expertise:
+      - "pydantic-models"
+      - "async-programming"
+      - "error-handling"
+      - "api-documentation"
+
+  qa:
+    focus:
+      - "schema-validation-testing"
+      - "error-response-testing"
+      - "integration-testing"
+      - "performance-testing"
+      - "compatibility-testing"
+    expertise:
+      - "pytest-fixtures"
+      - "api-testing"
+      - "contract-testing"
+
+# Files that agents should always load for context
+devLoadAlwaysFiles:
+  - "docs/ATDF_SPECIFICATION.md"
+  - "schema/atdf_schema.json"
+  - "schema/enhanced_atdf_schema.json"
+  - "examples/fastapi_mcp_integration.py"
+  - "README.md"
+  - "PROJECT_SUMMARY.md"
+  - "sdk/atdf_sdk.py"
+  - "tools/validator.py"
+
+# ATDF-specific workflows
+workflows:
+  schema_enhancement:
+    description: "Enhance ATDF schemas with new features"
+    phases: ["analysis", "design", "implementation", "validation"]
+    
+  tool_integration:
+    description: "Integrate new tools with ATDF format"
+    phases: ["specification", "implementation", "testing", "documentation"]
+    
+  error_handling_improvement:
+    description: "Improve error handling patterns"
+    phases: ["analysis", "design", "implementation", "testing"]
+
+# Custom BMAD commands for ATDF
+custom_commands:
+  validate_atdf:
+    description: "Validate ATDF schema compliance"
+    command: "python tools/validator.py"
+    
+  test_integration:
+    description: "Run ATDF integration tests"
+    command: "python -m pytest tests/test_atdf_complete.py -v"
+    
+  start_server:
+    description: "Start ATDF FastAPI server"
+    command: "python -m examples.fastapi_mcp_integration"
+    
+  generate_docs:
+    description: "Generate ATDF documentation"
+    command: "python tools/enhanced_loader.py"
+
+# Integration settings
+integrations:
+  mcp:
+    enabled: true
+    version: "latest"
+    tools_endpoint: "/tools"
+    
+  fastapi:
+    enabled: true
+    auto_reload: false  # Disabled due to Windows issues
+    port: 8000
+    
+  vector_search:
+    enabled: true
+    provider: "local"
+    index_path: "examples/output/vector_db"
+
+# Quality gates
+quality_gates:
+  schema_validation: true
+  error_format_compliance: true
+  documentation_coverage: 80
+  test_coverage: 85
+  
+# Development environment
+environment:
+  python_version: ">=3.8"
+  node_version: ">=20.0.0"
+  required_packages:
+    - "fastapi"
+    - "pydantic"
+    - "uvicorn"
+    - "pytest"
+    - "jsonschema"
