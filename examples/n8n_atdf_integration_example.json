@@ -1,0 +1,86 @@
+{
+  "name": "ATDF-MCP Integration Example",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "atdf-workflow",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "sseEndpoint": "http://localhost:8001/sse",
+        "authentication": "none",
+        "toolsToInclude": "all"
+      },
+      "id": "mcp-client",
+      "name": "ATDF MCP Client",
+      "type": "n8n-nodes-langchain.toolMcp",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "options": {
+          "systemMessage": "You are an AI assistant that can use ATDF tools through the MCP bridge. Use the available tools to help users with their requests."
+        }
+      },
+      "id": "ai-agent",
+      "name": "AI Agent with ATDF Tools",
+      "type": "n8n-nodes-langchain.agent",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.output }}"
+      },
+      "id": "response",
+      "name": "Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent with ATDF Tools",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent with ATDF Tools": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["ATDF", "MCP", "AI", "Integration"],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-15T10:00:00.000Z",
+  "versionId": "1"
+}

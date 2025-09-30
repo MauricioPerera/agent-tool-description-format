@@ -98,7 +98,7 @@ python tools/validate_enhanced.py tu_tool.json
 python tests/run_all_tests.py
 ```
 
-El manejo de errores enriquecidos se explica en la [Guía de Respuestas Enriquecidas](enriched_responses_guide.md).## Casos de Uso
+El manejo de errores enriquecidos se explica en la [Guía de Respuestas Enriquecidas](enriched_responses_guide.md\).\r\n\r\n## Casos de Uso
 
 ATDF está diseñado para una amplia gama de aplicaciones, incluyendo:
 

@@ -1,7 +1,44 @@
-[Home](index.md) | [Specification](specification.md) | [Examples](examples.md) | [Enriched Responses Guide](enriched_responses_guide.md) | [n8n MCP Guide](n8n_mcp_server_guide.md) | [Contributing](contributing.md) | [Multilingual](multilingual.md) | [Changelog](changelog.md) | [License](license.md)
+## 🎯 Quick Start
 
-**Languages:** [English (en)](index.md) | [Español (es)](../es/index.md) | [Português (pt)](../pt/index.md)
+1. **Pick the right schema**
+   - 1.x basic (`schema/atdf_schema.json`): minimal descriptors with `tool_id`, `description`, `when_to_use`, and `how_to_use`.
+   - 2.x enhanced (`schema/enhanced_atdf_schema.json`): adds `metadata`, `localization`, `prerequisites`, `examples`, and `feedback`.
+   See [Version Compatibility](version_compatibility.md) if you are unsure.
 
+2. **Draft the descriptor**
+
+```json
+{
+  "schema_version": "2.0.0",
+  "tool_id": "date_validator",
+  "description": "Validates date ranges with enriched error responses",
+  "when_to_use": "Use when you need a full explanation of invalid date ranges",
+  "how_to_use": {
+    "inputs": [
+      {"name": "start_date", "type": "string", "description": "Start date in ISO 8601 format", "required": true},
+      {"name": "end_date", "type": "string", "description": "End date in ISO 8601 format", "required": true}
+    ],
+    "outputs": {
+      "success": "Date range is valid",
+      "failure": [
+        {"code": "INVALID_DATE_RANGE", "description": "Start date must be before end date"}
+      ]
+    }
+  }
+}
+```
+
+Set `schema_version` to `1.0.0` and omit optional sections like `metadata` and `examples` for a 1.x descriptor.
+
+3. **Validate and test**
+
+```bash
+python tools/validator.py examples/date_validator.json --schema schema/atdf_schema.json
+python tools/validate_enhanced.py examples/date_validator.json
+python tests/run_all_tests.py
+```
+
+For enriched error payloads see the [Enriched Responses Guide](enriched_responses_guide.md).
 ## 📚 ATDF Documentation
 
 ### 📖 **Main Documents**
@@ -45,81 +82,6 @@
 ### Legal
 
 - **[License](license.md)** - MIT License details
-
-## 🎯 Quick Start
-
-### 1. Understanding Enriched Responses
-
-The core innovation of ATDF v2.0.0 is the **Enriched Response Standard**. Instead of simple error messages, tools now provide comprehensive context:
-
-```json
-{
-  "status": "error",
-  "data": {
-    "code": "INVALID_DATE_RANGE",
-    "message": "Date range validation failed",
-    "details": {
-      "field": "date_range",
-      "received": { "start_date": "2023-12-01", "end_date": "2023-11-01" },
-      "expected": {
-        "conditions": [
-          "start_date must be before end_date",
-          "both dates must be after current date"
-        ],
-        "examples": { "valid_range": { "start_date": "2023-10-28", "end_date": "2023-11-15" } }
-      },
-      "solution": "Adjust dates so that start_date is before end_date and both are after current date"
-    }
-  },
-  "meta": { "timestamp": "2023-10-27T10:35:00Z" }
-}
-```
-
-### 2. Basic Tool Description
-
-```json
-{
-  "schema_version": "2.0.0",
-  "tool_id": "date_validator",
-  "description": "Validates date ranges with enriched error responses",
-  "when_to_use": "When you need to validate date ranges with detailed feedback",
-  "how_to_use": {
-    "inputs": [
-      {
-        "name": "start_date",
-        "type": "string",
-        "description": "Start date in ISO 8601 format",
-        "required": true
-      },
-      {
-        "name": "end_date", 
-        "type": "string",
-        "description": "End date in ISO 8601 format",
-        "required": true
-      }
-    ],
-    "outputs": {
-      "success": "Date range is valid",
-      "failure": [
-        {
-          "code": "INVALID_DATE_RANGE",
-          "description": "Date range validation failed"
-        }
-      ]
-    }
-  }
-}
-```
-
-### 3. Implementation Example
-
-```python
-from examples.enriched_responses_example import EnrichedResponseValidator
-
-validator = EnrichedResponseValidator()
-result = validator.validate_date_range("2023-12-01T10:00:00Z", "2023-11-01T15:30:00Z")
-print(json.dumps(result, indent=2))
-```
 
 ## 🔧 Key Features
 

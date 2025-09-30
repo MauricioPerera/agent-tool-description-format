@@ -672,6 +672,24 @@ def reserve_hotel():
     pass
 ```
 
+#### 4. **Declarar permisos y condiciones en ATDF**
+```json
+{
+  "schema_version": "2.0.0",
+  "tool_id": "payments_processor",
+  "prerequisites": {
+    "permissions": ["scope:payments:write"],
+    "conditions": ["requires customer MFA"]
+  },
+  "metadata": {
+    "data_retention_days": 30,
+    "security_contact": "security@example.com"
+  }
+}
+```
+
+**Razón**: Explicitar permisos y contactos de seguridad facilita auditorías y automatiza el consentimiento informado.
+
 ### ❌ **No Hacer**
 
 #### 1. **Confiar en la Entrada del Usuario**

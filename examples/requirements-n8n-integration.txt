@@ -1,0 +1,31 @@
+# Requirements for n8n-ATDF Integration
+# ====================================
+
+# Core dependencies for MCP-ATDF Bridge
+aiohttp>=3.8.0
+aiohttp-sse>=2.1.0
+asyncio-mqtt>=0.11.0
+
+# HTTP client for ATDF server communication
+requests>=2.28.0
+
+# JSON-RPC support
+jsonrpc-base>=2.1.0
+jsonrpc-async>=2.1.0
+
+# Logging and monitoring
+structlog>=22.1.0
+
+# Development and testing
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+pytest-aiohttp>=1.0.4
+
+# Optional: Enhanced features
+pydantic>=1.10.0  # For data validation
+python-dotenv>=0.19.0  # For environment configuration
+uvloop>=0.17.0  # For better async performance (Unix only)
+
+# Documentation
+mkdocs>=1.4.0
+mkdocs-material>=8.5.0
