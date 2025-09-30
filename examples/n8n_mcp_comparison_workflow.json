@@ -1,0 +1,174 @@
+{
+  "name": "ATDF + MCP Integration Comparison",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "serverUrl": "http://localhost:8001/sse",
+        "operation": "listTools"
+      },
+      "id": "mcp-native-list",
+      "name": "MCP Native - List Tools",
+      "type": "n8n-nodes-base.mcpClient",
+      "typeVersion": 1,
+      "position": [460, 200]
+    },
+    {
+      "parameters": {
+        "operation": "listTools",
+        "language": "es",
+        "includeMetadata": true,
+        "includeSchemas": true
+      },
+      "id": "atdf-mcp-list",
+      "name": "ATDF-MCP - List Tools",
+      "type": "n8n-nodes-atdf-mcp.atdfMcpClient",
+      "typeVersion": 1,
+      "position": [460, 400]
+    },
+    {
+      "parameters": {
+        "serverUrl": "http://localhost:8001/sse",
+        "operation": "callTool",
+        "toolName": "calculate_metrics",
+        "arguments": {
+          "data": "={{ $json.data }}",
+          "format": "json"
+        }
+      },
+      "id": "mcp-native-execute",
+      "name": "MCP Native - Execute",
+      "type": "n8n-nodes-base.mcpClient",
+      "typeVersion": 1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "operation": "executeTool",
+        "toolName": "calculate_metrics",
+        "parameters": {
+          "data": "={{ $json.data }}",
+          "format": "json",
+          "locale": "es-ES"
+        },
+        "language": "es",
+        "validateSchema": true,
+        "includeMetadata": true
+      },
+      "id": "atdf-mcp-execute",
+      "name": "ATDF-MCP - Execute",
+      "type": "n8n-nodes-atdf-mcp.atdfMcpClient",
+      "typeVersion": 1,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Comparar resultados de ambos enfoques\nconst mcpResult = $input.first();\nconst atdfResult = $input.last();\n\nreturn {\n  comparison: {\n    mcp_native: {\n      tools_count: mcpResult.tools?.length || 0,\n      has_metadata: !!mcpResult.metadata,\n      localized: false\n    },\n    atdf_mcp: {\n      tools_count: atdfResult.tools?.length || 0,\n      has_metadata: !!atdfResult.metadata,\n      localized: !!atdfResult.localization,\n      schemas_included: !!atdfResult.schemas\n    },\n    recommendation: atdfResult.tools?.length > mcpResult.tools?.length ? \n      'ATDF-MCP provides richer metadata' : \n      'Both approaches work similarly'\n  }\n};"
+      },
+      "id": "compare-results",
+      "name": "Compare Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "response",
+      "name": "Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "MCP Native - List Tools",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "ATDF-MCP - List Tools",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Native - List Tools": {
+      "main": [
+        [
+          {
+            "node": "MCP Native - Execute",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ATDF-MCP - List Tools": {
+      "main": [
+        [
+          {
+            "node": "ATDF-MCP - Execute",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Native - Execute": {
+      "main": [
+        [
+          {
+            "node": "Compare Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ATDF-MCP - Execute": {
+      "main": [
+        [
+          {
+            "node": "Compare Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compare Results": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-01-20T10:00:00.000Z",
+  "versionId": "1"
+}

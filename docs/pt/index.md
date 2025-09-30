@@ -51,7 +51,8 @@ Essa abordagem funcional permite que os agentes de IA selecionem ferramentas com
 ## Links Rápidos
 
 - [Especificação](specification.md): Especificação técnica detalhada do protocolo ATDF.
-- [Compatibilidade de Versões](version_compatibility.md): Tabela que relaciona rótulos antigos aos esquemas atuais.\r\n- [Exemplos](examples.md): Descrições de ferramentas de exemplo e como criar as suas.
+- [Compatibilidade de Versões](version_compatibility.md): Tabela que relaciona rótulos antigos aos esquemas atuais.
+- [Exemplos](examples.md): Descrições de ferramentas de exemplo e como criar as suas.
 - [Suporte Multilíngue](multilingual.md): Informações sobre o uso de múltiplos idiomas.
 - [Contribuir](contributing.md): Diretrizes para contribuir com o ATDF.
 - [Guia de Redesign](redesign_guidelines.md): Considerações centrais para evoluir o protocolo.
@@ -98,6 +99,16 @@ python tests/run_all_tests.py
 ```
 
 Veja a [Guia de Respostas Enriquecidas](enriched_responses_guide.md) para a estrutura de erros detalhados.
+## Casos de Uso
+
+O ATDF é projetado para uma ampla gama de aplicações, incluindo:
+
+- **Agentes de IA**: Ajudar sistemas de IA a selecionar e usar ferramentas apropriadamente.
+- **Robótica**: Descrever ferramentas físicas para sistemas robóticos.
+- **Integração de API**: Padronizar descrições de APIs e serviços web.
+- **Aplicações Multimodais**: Unificar diferentes tipos de ferramentas em um formato comum.
+- **Sistemas Multilíngues**: Suportar descrições de ferramentas em diferentes idiomas.
+
 ## Licença
 
 O ATDF é licenciado sob a Licença MIT. Consulte o arquivo [LICENSE](license.md) para mais detalhes.
