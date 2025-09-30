@@ -63,6 +63,29 @@ To contribute new tool descriptions:
   - Use clear, descriptive messages (e.g., "Add text_translator.json example").
   - Reference related issues (e.g., "Fixes #123").
 
+## Checklist para Pull Requests
+- [ ] Referencie a versão de esquema alvo (veja [Compatibilidade de Versões](version_compatibility.md)) e defina `schema_version` explicitamente.
+- [ ] Valide todos os descritores modificados com `tools/validator.py` (1.x) e `tools/validate_enhanced.py` (2.x).
+- [ ] Execute `python tests/run_all_tests.py` e, se alterar o SDK JS, `npm test` dentro de `js/`.
+- [ ] Atualize a documentação localizada em `docs/en`, `docs/es` e `docs/pt` quando a mudança impactar usuários.
+- [ ] Anexe ou referencie atualizações de workflow BMAD caso modifique `bmad.config.yml` ou scripts de integração.
+- [ ] Inclua um breve resumo dos testes na descrição do PR.
+- **Code Style**:
+  - For Python, follow [PEP 8](https://www.python.org/dev/peps/pep-0008/) guidelines.
+  - For JSON, use 2-space indentation and ensure schema compliance.
+- **Documentation**:
+  - Update relevant documentation (e.g., `docs/specification.md`) for major changes.
+  - Keep Markdown files clear and concise.
+- **Testing**:
+  - Add tests for new features or scripts in `tests/`.
+  - Ensure all tests pass:
+    ```
+    python -m unittest discover tests
+    ```
+- **Commit Messages**:
+  - Use clear, descriptive messages (e.g., "Add text_translator.json example").
+  - Reference related issues (e.g., "Fixes #123").
+
 ## Code of Conduct
 We aim to maintain a respectful and inclusive community. Please adhere to the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/version/2/0/code_of_conduct/).
 

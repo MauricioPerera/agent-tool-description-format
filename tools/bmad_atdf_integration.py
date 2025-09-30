@@ -245,7 +245,7 @@ class BMadATDFIntegration:
                 "breaking_changes": {
                     "type": "boolean",
                     "description": "Whether migration includes breaking changes",
-                    "default": false
+                    "default": False
                 },
                 "timeline_weeks": {
                     "type": "integer",
@@ -350,7 +350,7 @@ class BMadATDFIntegration:
                 "include_tests": {
                     "type": "boolean",
                     "description": "Whether to generate unit tests",
-                    "default": true
+                    "default": True
                 }
             },
             "dev"
@@ -407,7 +407,7 @@ class BMadATDFIntegration:
                 "generate_report": {
                     "type": "boolean",
                     "description": "Whether to generate detailed test report",
-                    "default": true
+                    "default": True
                 }
             },
             "qa"

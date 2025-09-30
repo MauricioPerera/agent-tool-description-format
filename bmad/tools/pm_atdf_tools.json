@@ -1,0 +1,129 @@
+{
+  "tools": [
+    {
+      "tools": [
+        {
+          "name": "create_atdf_requirements",
+          "description": "Create detailed requirements document for ATDF enhancements",
+          "version": "1.0.0",
+          "tags": [
+            "bmad-generated",
+            "atdf-compliant",
+            "agent-pm",
+            "ai-development"
+          ],
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "current_version": {
+                "type": "string",
+                "description": "Current ATDF version",
+                "default": "2.0.0"
+              },
+              "target_features": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Features to implement in next version"
+              },
+              "stakeholders": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Key stakeholders to consider",
+                "default": [
+                  "developers",
+                  "ai_agents",
+                  "tool_creators"
+                ]
+              },
+              "priority_level": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high",
+                  "critical"
+                ],
+                "description": "Priority level for the requirements",
+                "default": "medium"
+              }
+            },
+            "required": [
+              "current_version",
+              "target_features",
+              "stakeholders",
+              "priority_level"
+            ]
+          },
+          "bmad_metadata": {
+            "agent_compatible": true,
+            "agent_type": "pm",
+            "error_format": "atdf",
+            "framework": "bmad-method",
+            "domain": "atdf-development",
+            "created_at": "2025-09-30T16:03:38.516676",
+            "integration_version": "1.0.0"
+          }
+        }
+      ]
+    },
+    {
+      "tools": [
+        {
+          "name": "plan_atdf_migration",
+          "description": "Plan migration strategy for existing tools to new ATDF version",
+          "version": "1.0.0",
+          "tags": [
+            "bmad-generated",
+            "atdf-compliant",
+            "agent-pm",
+            "ai-development"
+          ],
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "from_version": {
+                "type": "string",
+                "description": "Source ATDF version"
+              },
+              "to_version": {
+                "type": "string",
+                "description": "Target ATDF version"
+              },
+              "breaking_changes": {
+                "type": "boolean",
+                "description": "Whether migration includes breaking changes",
+                "default": false
+              },
+              "timeline_weeks": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 52,
+                "description": "Timeline for migration in weeks",
+                "default": 4
+              }
+            },
+            "required": [
+              "from_version",
+              "to_version",
+              "breaking_changes",
+              "timeline_weeks"
+            ]
+          },
+          "bmad_metadata": {
+            "agent_compatible": true,
+            "agent_type": "pm",
+            "error_format": "atdf",
+            "framework": "bmad-method",
+            "domain": "atdf-development",
+            "created_at": "2025-09-30T16:03:38.516676",
+            "integration_version": "1.0.0"
+          }
+        }
+      ]
+    }
+  ]
+}

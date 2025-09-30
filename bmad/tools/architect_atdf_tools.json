@@ -1,0 +1,137 @@
+{
+  "tools": [
+    {
+      "tools": [
+        {
+          "name": "design_atdf_schema",
+          "description": "Design new ATDF schema components with architectural best practices",
+          "version": "1.0.0",
+          "tags": [
+            "bmad-generated",
+            "atdf-compliant",
+            "agent-architect",
+            "ai-development"
+          ],
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "component_type": {
+                "type": "string",
+                "enum": [
+                  "tool_description",
+                  "error_response",
+                  "metadata",
+                  "validation"
+                ],
+                "description": "Type of schema component to design"
+              },
+              "requirements": {
+                "type": "object",
+                "description": "Functional and non-functional requirements"
+              },
+              "compatibility_targets": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Systems/frameworks to maintain compatibility with",
+                "default": [
+                  "mcp",
+                  "openapi",
+                  "json-schema"
+                ]
+              },
+              "performance_constraints": {
+                "type": "object",
+                "properties": {
+                  "max_validation_time_ms": {
+                    "type": "integer",
+                    "default": 100
+                  },
+                  "max_schema_size_kb": {
+                    "type": "integer",
+                    "default": 50
+                  }
+                }
+              }
+            },
+            "required": [
+              "component_type",
+              "requirements",
+              "compatibility_targets",
+              "performance_constraints"
+            ]
+          },
+          "bmad_metadata": {
+            "agent_compatible": true,
+            "agent_type": "architect",
+            "error_format": "atdf",
+            "framework": "bmad-method",
+            "domain": "atdf-development",
+            "created_at": "2025-09-30T16:03:38.516676",
+            "integration_version": "1.0.0"
+          }
+        }
+      ]
+    },
+    {
+      "tools": [
+        {
+          "name": "design_integration_architecture",
+          "description": "Design architecture for integrating ATDF with external systems",
+          "version": "1.0.0",
+          "tags": [
+            "bmad-generated",
+            "atdf-compliant",
+            "agent-architect",
+            "ai-development"
+          ],
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "target_system": {
+                "type": "string",
+                "description": "System to integrate with (FastAPI, N8N, Zapier, etc.)"
+              },
+              "integration_pattern": {
+                "type": "string",
+                "enum": [
+                  "adapter",
+                  "bridge",
+                  "gateway",
+                  "proxy"
+                ],
+                "description": "Integration pattern to use",
+                "default": "adapter"
+              },
+              "data_flow_direction": {
+                "type": "string",
+                "enum": [
+                  "bidirectional",
+                  "inbound",
+                  "outbound"
+                ],
+                "description": "Direction of data flow",
+                "default": "bidirectional"
+              }
+            },
+            "required": [
+              "target_system",
+              "integration_pattern",
+              "data_flow_direction"
+            ]
+          },
+          "bmad_metadata": {
+            "agent_compatible": true,
+            "agent_type": "architect",
+            "error_format": "atdf",
+            "framework": "bmad-method",
+            "domain": "atdf-development",
+            "created_at": "2025-09-30T16:03:38.516676",
+            "integration_version": "1.0.0"
+          }
+        }
+      ]
+    }
+  ]
+}

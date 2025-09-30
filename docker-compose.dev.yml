@@ -1,0 +1,135 @@
+version: '3.8'
+
+services:
+  # Development ATDF API service
+  atdf-api-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: atdf-api-dev
+    ports:
+      - "8000:8000"
+      - "5678:5678"  # Debug port
+    environment:
+      - ATDF_ENV=development
+      - DATABASE_URL=postgresql://atdf_user:atdf_password@postgres-dev:5432/atdf_db
+      - REDIS_URL=redis://redis-dev:6379/0
+      - LOG_LEVEL=debug
+      - PYTHONPATH=/app
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - /app/__pycache__  # Exclude pycache from volume mount
+    depends_on:
+      postgres-dev:
+        condition: service_healthy
+      redis-dev:
+        condition: service_healthy
+    networks:
+      - atdf-dev-network
+    restart: unless-stopped
+    command: >
+      sh -c "
+        pip install debugpy &&
+        python -m debugpy --listen 0.0.0.0:5678 --wait-for-client -m uvicorn examples.fastapi_mcp_integration:app --host 0.0.0.0 --port 8000 --reload
+      "
+
+  # PostgreSQL for development
+  postgres-dev:
+    image: postgres:15-alpine
+    container_name: atdf-postgres-dev
+    environment:
+      POSTGRES_DB: atdf_db
+      POSTGRES_USER: atdf_user
+      POSTGRES_PASSWORD: atdf_password
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "5433:5432"  # Different port to avoid conflicts
+    networks:
+      - atdf-dev-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U atdf_user -d atdf_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for development
+  redis-dev:
+    image: redis:7-alpine
+    container_name: atdf-redis-dev
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_dev_data:/data
+    ports:
+      - "6380:6379"  # Different port to avoid conflicts
+    networks:
+      - atdf-dev-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Mailhog for email testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: atdf-mailhog
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - atdf-dev-network
+    restart: unless-stopped
+
+  # pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: atdf-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@atdf.dev
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - atdf-dev-network
+    restart: unless-stopped
+    depends_on:
+      - postgres-dev
+
+  # Redis Commander for Redis management
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: atdf-redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis-dev:6379
+    ports:
+      - "8081:8081"
+    networks:
+      - atdf-dev-network
+    restart: unless-stopped
+    depends_on:
+      - redis-dev
+
+volumes:
+  postgres_dev_data:
+    driver: local
+  redis_dev_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  atdf-dev-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16

@@ -16,22 +16,51 @@
 
 # Arranque rápido / Quick Start
 
-**Windows:**
+1. **Selecciona el esquema / Pick a schema**
+   - 1.x básico (`schema/atdf_schema.json`): descripciones mínimas con `tool_id`, `description`, `when_to_use` y `how_to_use`.
+   - 2.x mejorado (`schema/enhanced_atdf_schema.json`): añade `metadata`, `localization`, `prerequisites`, `examples` y `feedback`.
+   Consulta la guía de [Compatibilidad de versiones](./docs/en/version_compatibility.md) para elegir.
 
-```bat
-run_fastapi_no_reload.bat
+2. **Redacta la descripción / Draft the descriptor**
+
+```json
+{
+  "schema_version": "2.0.0",
+  "tool_id": "date_validator",
+  "description": "Valida rangos de fechas y devuelve errores enriquecidos",
+  "when_to_use": "Usa la herramienta cuando necesites validar fechas con detalles de corrección",
+  "how_to_use": {
+    "inputs": [
+      {"name": "start_date", "type": "string", "description": "Fecha inicial ISO 8601", "required": true},
+      {"name": "end_date", "type": "string", "description": "Fecha final ISO 8601", "required": true}
+    ],
+    "outputs": {
+      "success": "El rango es válido",
+      "failure": [
+        {"code": "INVALID_DATE_RANGE", "description": "La fecha inicial debe ser menor que la final"}
+      ]
+    }
+  },
+  "metadata": {"version": "1.0.0", "author": "ATDF Team"},
+  "examples": [
+    {
+      "name": "Rango válido",
+      "input": {"start_date": "2025-01-01", "end_date": "2025-01-15"}
+    }
+  ]
+}
 ```
 
-**Linux/Mac:**
+Ajusta los campos según la complejidad de tu herramienta. Para un descriptor 1.x usa `schema_version` = `"1.0.0"` y omite `metadata` y `examples`.
 
-```sh
-chmod +x run_fastapi_no_reload.sh
-./run_fastapi_no_reload.sh
+3. **Valida y prueba / Validate and test**
+
+```bash
+python tools/validator.py tu_tool.json --schema schema/atdf_schema.json
+python tools/validate_enhanced.py tu_tool.json
 ```
 
-Esto arrancará el servidor FastAPI en modo seguro, sin recarga automática, en el puerto 8000.
-
-# Agent Tool Description Format (ATDF)
+Ejecuta `python tests/run_all_tests.py` para validar todo el SDK y ejemplos si modificas código.# Agent Tool Description Format (ATDF)
 
 ## 🎯 ¿Qué es ATDF?
 
@@ -66,106 +95,87 @@ El **Agent Tool Description Format (ATDF)** es un estándar abierto para describ
 - **[Guía de Implementación](./docs/IMPLEMENTATION_GUIDE.md)** - Cómo implementar ATDF en cualquier herramienta
 - **[Mejores Prácticas](./docs/BEST_PRACTICES.md)** - Recomendaciones para implementaciones robustas
 - **[Ejemplos](./docs/examples.md)** - Ejemplos en múltiples lenguajes y herramientas
+- **[Compatibilidad de versiones](./docs/en/version_compatibility.md)** - Relación entre las versiones históricas (v0.1/v0.2) y los esquemas actuales (1.x/2.x).
 
 ## 🎯 Plantillas ATDF
 
-### 1. **Plantilla de Descripción de Herramienta**
+### 1. **Plantilla de herramienta (esquema 1.x)**
 
-#### Estructura Básica
 ```json
 {
-  "tools": [
-    {
-      "name": "string",
-      "description": "string",
-      "inputSchema": {
-        "type": "object",
-        "properties": {},
-        "required": []
-      }
-    }
-  ]
-}
-```
-
-#### Plantilla Completa con Metadatos
-```json
-{
-  "tools": [
-    {
-      "name": "nombre_herramienta",
-      "description": "Descripción clara de lo que hace la herramienta",
-      "version": "1.0.0",
-      "tags": ["categoria1", "categoria2"],
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "parametro1": {
-            "type": "string",
-            "description": "Descripción del parámetro",
-            "minLength": 1
-          },
-          "parametro2": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 100,
-            "description": "Descripción del parámetro"
-          }
-        },
-        "required": ["parametro1", "parametro2"]
-      },
-      "examples": [
-        {
-          "name": "Ejemplo básico",
-          "input": {
-            "parametro1": "valor_ejemplo",
-            "parametro2": 10
-          }
-        }
+  "schema_version": "1.0.0",
+  "tool_id": "tool_name",
+  "description": "Resumen claro de la herramienta",
+  "when_to_use": "Cuándo debe invocarse",
+  "how_to_use": {
+    "inputs": [
+      {"name": "parametro1", "type": "string", "description": "Descripción del parámetro", "required": true}
+    ],
+    "outputs": {
+      "success": "Mensaje de éxito",
+      "failure": [
+        {"code": "ERROR_CODE", "description": "Descripción del error"}
       ]
     }
-  ]
+  }
 }
 ```
 
-### 2. **Plantilla de Respuesta de Error ATDF**
+### 2. **Plantilla de herramienta (esquema 2.x)**
 
-#### Estructura de Error
 ```json
 {
-  "errors": [
+  "schema_version": "2.0.0",
+  "tool_id": "tool_name",
+  "description": "Resumen con los beneficios clave",
+  "when_to_use": "Escenarios recomendados",
+  "how_to_use": {
+    "inputs": [
+      {"name": "parametro1", "type": "string", "description": "Descripción del parámetro", "required": true},
+      {"name": "parametro2", "type": "integer", "description": "Valores permitidos", "minimum": 1, "maximum": 100, "required": true}
+    ],
+    "outputs": {
+      "success": "Mensaje de éxito",
+      "failure": [
+        {"code": "ERROR_CODE", "description": "Descripción del error"}
+      ]
+    }
+  },
+  "metadata": {"version": "1.2.0", "author": "Equipo ATDF", "tags": ["categoria1", "categoria2"]},
+  "prerequisites": {"permissions": ["scope:write"]},
+  "examples": [
     {
-      "type": "string",
-      "title": "string",
-      "detail": "string",
-      "instance": "string",
-      "tool_name": "string",
-      "parameter_name": "string",
-      "suggested_value": "string|null",
-      "context": "object"
+      "name": "Caso básico",
+      "input": {"parametro1": "valor", "parametro2": 10}
     }
   ]
 }
 ```
 
-#### Plantilla de Error con Contexto
+### 3. **Plantilla de respuesta de error ATDF**
+
 ```json
 {
-  "errors": [
-    {
-      "type": "https://api.example.com/errors/tipo-error",
-      "title": "Título del Error",
-      "detail": "Descripción detallada del problema",
-      "instance": "/api/errors/uuid-unico",
-      "tool_name": "nombre_herramienta",
-      "parameter_name": "parametro_problematico",
-      "suggested_value": "valor_sugerido",
-      "context": {
-        "informacion_adicional": "valor",
-        "timestamp": "2025-01-15T12:00:00Z"
-      }
+  "status": "error",
+  "data": {
+    "code": "INVALID_DATE_RANGE",
+    "message": "Date range validation failed",
+    "details": {
+      "field": "date_range",
+      "received": {"start_date": "2025-01-20", "end_date": "2025-01-10"},
+      "expected": {
+        "conditions": [
+          "start_date must be before end_date",
+          "dates must be in the future"
+        ],
+        "examples": {
+          "valid_range": {"start_date": "2025-01-05", "end_date": "2025-01-12"}
+        }
+      },
+      "solution": "Adjust the dates so start_date < end_date and both are in the future"
     }
-  ]
+  },
+  "meta": {"timestamp": "2025-01-01T10:00:00Z"}
 }
 ```
 
@@ -349,6 +359,80 @@ Las plantillas funcionan en cualquier herramienta:
 - Manejo de errores uniforme
 - Documentación automática
 
+## 🤖 BMAD-METHOD Integration
+
+### ¿Qué es BMAD-METHOD?
+
+**BMAD-METHOD** (Behavioral Multi-Agent Development) es un framework de desarrollo ágil impulsado por IA que utiliza agentes especializados para manejar diferentes aspectos del desarrollo de software. Esta integración permite workflows de desarrollo específicamente adaptados para ATDF.
+
+### 🚀 Instalación Rápida
+
+#### Windows
+```batch
+install_bmad.bat
+```
+
+#### Linux/macOS
+```bash
+chmod +x install_bmad.sh
+./install_bmad.sh
+```
+
+### 🎯 Agentes Especializados
+
+| Agente | Especialización | Responsabilidades |
+|--------|----------------|-------------------|
+| **ATDF Specialist** | Experto en dominio ATDF | Diseño de esquemas, manejo de errores, integración de herramientas |
+| **BMAD Orchestrator** | Coordinación multi-agente | Gestión de workflows, distribución de tareas, control de calidad |
+| **Analyst** | Análisis de requisitos | Historias de usuario, análisis de necesidades |
+| **Architect** | Diseño de sistemas | Arquitectura técnica, patrones de diseño |
+| **Developer** | Implementación | Desarrollo de código, soluciones técnicas |
+| **QA** | Aseguramiento de calidad | Estrategias de testing, validación |
+
+### 📋 Workflows Disponibles
+
+#### 1. **ATDF Enhancement** (`bmad/workflows/atdf-enhancement.yml`)
+- **Propósito**: Agregar nuevas características a ATDF
+- **Fases**: Planificación → Diseño → Implementación → Testing → Despliegue
+- **Agentes**: ATDF Specialist, Architect, Developer, QA, PM
+
+#### 2. **Tool Integration** (`bmad/workflows/tool-integration.yml`)
+- **Propósito**: Integrar ATDF con frameworks externos
+- **Frameworks objetivo**: FastAPI, MCP, OpenAPI, N8N, Zapier
+- **Fases**: Análisis → Diseño → Implementación → Testing → Documentación
+
+### 🛠️ Comandos Disponibles
+
+```bash
+# Gestión BMAD
+npm run bmad:update    # Actualizar BMAD-METHOD
+npm run bmad:status    # Verificar estado de BMAD
+npm run bmad:tools     # Listar herramientas disponibles
+npm run bmad:agents    # Listar agentes configurados
+
+# Comandos de Orquestador
+*help                  # Mostrar comandos disponibles
+*status               # Estado actual del proyecto
+*agents               # Listar todos los agentes
+*workflows            # Mostrar workflows disponibles
+*start [workflow]     # Iniciar workflow específico
+*assign [agent] [task] # Asignar tarea a agente específico
+```
+
+### 📚 Documentación BMAD
+
+- **[Guía de Integración BMAD](./docs/BMAD_INTEGRATION.md)** - Documentación completa de la integración
+- **[Configuración BMAD](./bmad.config.yml)** - Configuración del proyecto
+- **[Definiciones de Agentes](./bmad/agents/)** - Agentes especializados
+- **[Workflows](./bmad/workflows/)** - Procesos de desarrollo definidos
+
+### 🎯 Cómo Empezar con BMAD
+
+1. **Instalar BMAD-METHOD**: Ejecutar script de instalación
+2. **Subir Agente**: Cargar `bmad/agents/bmad-orchestrator.md` en tu plataforma de IA preferida
+3. **Comenzar**: Usar comando `*help` o `*status`
+4. **Ejecutar Workflow**: `*start atdf-enhancement` para nuevas características
+
 ## 📊 Beneficios
 
 | Beneficio | Descripción |
@@ -359,6 +443,8 @@ Las plantillas funcionan en cualquier herramienta:
 | **Extensibilidad** | Fácil de extender para casos de uso específicos |
 | **Mantenibilidad** | Código más limpio y fácil de mantener |
 | **No-Code Friendly** | Funciona perfectamente con herramientas visuales |
+| **Desarrollo Ágil** | Workflows estructurados con BMAD-METHOD |
+| **Calidad Automatizada** | Testing y validación automática con agentes especializados |
 
 ## 🔗 Enlaces Útiles
 

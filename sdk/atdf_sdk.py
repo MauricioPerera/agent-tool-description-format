@@ -3,8 +3,9 @@
 ATDF SDK - Facilita la integración de herramientas ATDF en agentes de IA.
 
 Este SDK proporciona clases y funciones para cargar, buscar y utilizar herramientas
-descritas en formato ATDF (Agent Tool Description Format) tanto en su versión
-básica (0.1.0) como en la versión extendida (0.2.0).
+descritas en formato ATDF (Agent Tool Description Format). Es compatible con el
+esquema básico 1.x (`schema/atdf_schema.json`, legado v0.1) y con el esquema extendido
+2.x (`schema/enhanced_atdf_schema.json`, legado v0.2).
 """
 
 import os

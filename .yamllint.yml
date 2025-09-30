@@ -1,0 +1,34 @@
+extends: default
+
+rules:
+  line-length:
+    max: 120
+    level: warning
+  
+  indentation:
+    spaces: 2
+    indent-sequences: true
+    check-multi-line-strings: false
+  
+  truthy:
+    allowed-values: ['true', 'false', 'yes', 'no']
+    check-keys: true
+  
+  comments:
+    min-spaces-from-content: 1
+  
+  document-start: disable
+  document-end: disable
+  
+  empty-lines:
+    max: 2
+    max-start: 0
+    max-end: 1
+
+ignore: |
+  .github/
+  node_modules/
+  venv/
+  env/
+  .venv/
+  .env/

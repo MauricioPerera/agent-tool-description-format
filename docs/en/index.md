@@ -30,6 +30,7 @@
 ### Core Documentation
 
 - **[Specification](specification.md)** - The formal ATDF specification and technical details
+- **[Version Compatibility](version_compatibility.md)** - Mapping between legacy labels and current schemas
 - **[Examples](examples.md)** - Sample tool descriptions and usage patterns
 - **[Enriched Responses Guide](enriched_responses_guide.md)** - **NEW** - Complete guide to the enriched response standard
 - **[n8n MCP Guide](n8n_mcp_server_guide.md)** - Integration guide for n8n workflows
@@ -37,6 +38,7 @@
 ### Development & Contribution
 
 - **[Contributing](contributing.md)** - How to contribute to ATDF
+- **[Redesign Guidelines](redesign_guidelines.md)** - Planning considerations for future protocol versions
 - **[Multilingual](multilingual.md)** - Multilingual support and localization
 - **[Changelog](changelog.md)** - Version history and changes
 

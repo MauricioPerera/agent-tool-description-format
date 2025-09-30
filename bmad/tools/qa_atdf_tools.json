@@ -1,0 +1,61 @@
+{
+  "tools": [
+    {
+      "tools": [
+        {
+          "name": "test_atdf_validation",
+          "description": "Test ATDF schema validation across different scenarios",
+          "version": "1.0.0",
+          "tags": [
+            "bmad-generated",
+            "atdf-compliant",
+            "agent-qa",
+            "ai-development"
+          ],
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "test_scenarios": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Validation scenarios to test",
+                "default": [
+                  "valid_input",
+                  "invalid_input",
+                  "edge_cases",
+                  "malformed_data"
+                ]
+              },
+              "schema_version": {
+                "type": "string",
+                "description": "ATDF schema version to test against",
+                "default": "latest"
+              },
+              "generate_report": {
+                "type": "boolean",
+                "description": "Whether to generate detailed test report",
+                "default": true
+              }
+            },
+            "required": [
+              "test_scenarios",
+              "schema_version",
+              "generate_report"
+            ]
+          },
+          "bmad_metadata": {
+            "agent_compatible": true,
+            "agent_type": "qa",
+            "error_format": "atdf",
+            "framework": "bmad-method",
+            "domain": "atdf-development",
+            "created_at": "2025-09-30T16:03:38.516676",
+            "integration_version": "1.0.0"
+          }
+        }
+      ]
+    }
+  ]
+}

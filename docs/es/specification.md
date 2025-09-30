@@ -3,6 +3,7 @@
 **Idiomas:** [English (en)](../en/specification.md) | [Español (es)](specification.md) | [Português (pt)](../pt/specification.md)
 
 # Agent Tool Description Format (ATDF) Specification (v0.1.0 & v0.2.0)
+> **Mapa de versiones:** Las etiquetas v0.1/v0.2 se corresponden con los esquemas 1.x y 2.x (schema/atdf_schema.json, schema/enhanced_atdf_schema.json). Consulta [Compatibilidad de Versiones](version_compatibility.md) para más detalles.
 
 ## Introduction
 

@@ -11,6 +11,13 @@
     "test:js": "cd js && npm test",
     "bmad:web": "echo 'Visit https://gemini.google.com or https://chat.openai.com and upload bmad-orchestrator.md'",
     "bmad:setup": "python tools/bmad_atdf_integration.py",
+    "bmad:validate": "python tools/validator.py schema/examples/hole_maker.json",
+    "bmad:test-integration": "python -m pytest tests/test_integration.py -v",
+    "bmad:start-server": "uvicorn examples.fastapi_mcp_integration:app --reload --port 8000",
+    "bmad:generate-docs": "python tools/generate_docs.py",
+    "bmad:status": "python -c \"import json; print(json.dumps(json.load(open('bmad/bmad_status.json')), indent=2))\"",
+    "bmad:tools": "python -c \"import json; print(json.dumps(json.load(open('bmad/tools/atdf_all_tools.json')), indent=2))\"",
+    "bmad:workflow": "echo 'Available workflows: schema_enhancement, tool_integration, error_handling_improvement'",
     "dev": "uvicorn examples.fastapi_mcp_integration:app --reload --port 8000",
     "dev:safe": "uvicorn examples.fastapi_mcp_integration:app --no-reload --port 8000"
   },

@@ -53,6 +53,22 @@ Error responses must include detailed context in the `expected` field:
 }
 ```
 
+## Error Response Checklist
+
+Use this checklist before publishing a tool or workflow:
+
+- [ ] `status` is `error` and `data.code` is stable across deployments.
+- [ ] `data.message` describes the failure in plain language.
+- [ ] `data.details.field` points to the offending parameter or step.
+- [ ] `data.details.received` captures the raw input that failed.
+- [ ] `data.details.expected` includes conditions, format guidance, and at least one valid example.
+- [ ] `data.details.validation_results` toggles for each guardrail that failed (boolean or descriptive string).
+- [ ] `data.details.solution` contains actionable remediation steps.
+- [ ] `data.details.suggested_value` (optional) offers an autocorrect value when safe.
+- [ ] `meta.timestamp` uses ISO 8601 and any sensitive identifiers are redacted.
+
+See `schema/enriched_response_schema.json` for the authoritative contract.
+
 ## Detailed Expected Field Structure
 
 ### Basic Structure

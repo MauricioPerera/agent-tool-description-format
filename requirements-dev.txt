@@ -13,5 +13,29 @@ python-Levenshtein>=0.12.0 # Speeds up thefuzz
 # Documentation dependencies
 markdown-link-check # For checking links in docs (used in CI)
 
-# Testing dependencies (add others if needed, e.g., pytest)
-# pytest>=7.0.0 
+# Testing dependencies
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-asyncio>=0.21.0
+pytest-mock>=3.11.0
+
+# Code Quality
+black>=23.0.0
+isort>=5.12.0
+flake8>=6.0.0
+mypy>=1.5.0
+
+# Security
+safety>=2.3.0
+bandit>=1.7.0
+
+# Development
+pre-commit>=3.3.0
+coverage>=7.2.0
+
+# API Testing
+httpx>=0.24.0
+requests>=2.31.0
+
+# Monitoring
+prometheus_client>=0.17.0

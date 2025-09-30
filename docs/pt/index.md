@@ -51,28 +51,54 @@ Essa abordagem funcional permite que os agentes de IA selecionem ferramentas com
 ## Links Rápidos
 
 - [Especificação](specification.md): Especificação técnica detalhada do protocolo ATDF.
+- [Compatibilidade de Versões](version_compatibility.md): Tabela que relaciona rótulos antigos aos esquemas atuais.
 - [Exemplos](examples.md): Descrições de ferramentas de exemplo e como criar as suas.
 - [Suporte Multilíngue](multilingual.md): Informações sobre o uso de múltiplos idiomas.
 - [Contribuir](contributing.md): Diretrizes para contribuir com o ATDF.
+- [Guia de Redesign](redesign_guidelines.md): Considerações centrais para evoluir o protocolo.
 - [Histórico de Alterações](changelog.md): Histórico de versões e alterações do ATDF.
 
 ## Primeiros Passos
 
-Para começar a usar o ATDF, você pode:
+1. **Escolha o esquema certo**
+   - 1.x básico (`schema/atdf_schema.json`): descrições essenciais com `tool_id`, `description`, `when_to_use` e `how_to_use`.
+  - 2.x avançado (`schema/enhanced_atdf_schema.json`): acrescenta `metadata`, `localization`, `prerequisites`, `examples` e `feedback`.
+   Consulte [Compatibilidade de Versões](version_compatibility.md) em caso de dúvida.
 
-1.  **Explorar Exemplos**: Confira as [descrições de ferramentas de exemplo](examples.md) para entender o formato.
-2.  **Criar as Suas**: Siga a [especificação](specification.md) para criar descrições de ferramentas.
-3.  **Validar Ferramentas**: Use o validador para garantir que suas descrições de ferramentas sejam válidas:
-    ```bash
-    python tools/validator.py caminho/para/sua/ferramenta.json
-    ```
-4.  **Experimentar a Demo**: Execute os agentes de demonstração para ver o ATDF em ação:
-    ```bash
-    python tools/demo/atdf_showcase.py
-    ```
-    (Nota: estes scripts podem precisar existir ou ser adaptados)
+2. **Escreva a descrição**
 
-## Casos de Uso
+```json
+{
+  "schema_version": "2.0.0",
+  "tool_id": "validador_datas",
+  "description": "Valida intervalos de datas e sugere correções",
+  "when_to_use": "Use quando precisar detalhar por que um intervalo de datas é inválido",
+  "how_to_use": {
+    "inputs": [
+      {"name": "data_inicial", "type": "string", "description": "Data inicial ISO 8601", "required": true},
+      {"name": "data_final", "type": "string", "description": "Data final ISO 8601", "required": true}
+    ],
+    "outputs": {
+      "success": "Intervalo válido",
+      "failure": [
+        {"code": "INVALID_DATE_RANGE", "description": "A data inicial deve ser menor que a final"}
+      ]
+    }
+  }
+}
+```
+
+Para um descriptor 1.x use `schema_version` = "1.0.0" e omita campos opcionais como `metadata` e `examples`.
+
+3. **Valide e teste**
+
+```bash
+python tools/validator.py sua_tool.json --schema schema/atdf_schema.json
+python tools/validate_enhanced.py sua_tool.json
+python tests/run_all_tests.py
+```
+
+Veja a [Guia de Respostas Enriquecidas](enriched_responses_guide.md) para a estrutura de erros detalhados.## Casos de Uso
 
 O ATDF é projetado para uma ampla gama de aplicações, incluindo:
 

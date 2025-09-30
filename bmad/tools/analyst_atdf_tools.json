@@ -1,0 +1,137 @@
+{
+  "tools": [
+    {
+      "tools": [
+        {
+          "name": "analyze_atdf_schema",
+          "description": "Analyze ATDF schema for improvements, compliance, and optimization opportunities",
+          "version": "1.0.0",
+          "tags": [
+            "bmad-generated",
+            "atdf-compliant",
+            "agent-analyst",
+            "ai-development"
+          ],
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "schema_file": {
+                "type": "string",
+                "description": "Path to ATDF schema file to analyze",
+                "default": "schema/atdf_schema.json"
+              },
+              "focus_areas": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Specific areas to analyze (validation, errors, interoperability, etc.)",
+                "default": [
+                  "validation",
+                  "error_handling",
+                  "interoperability"
+                ]
+              },
+              "output_format": {
+                "type": "string",
+                "enum": [
+                  "json",
+                  "markdown",
+                  "yaml"
+                ],
+                "description": "Format for analysis output",
+                "default": "markdown"
+              }
+            },
+            "required": [
+              "schema_file",
+              "focus_areas",
+              "output_format"
+            ]
+          },
+          "bmad_metadata": {
+            "agent_compatible": true,
+            "agent_type": "analyst",
+            "error_format": "atdf",
+            "framework": "bmad-method",
+            "domain": "atdf-development",
+            "created_at": "2025-09-30T16:03:38.516676",
+            "integration_version": "1.0.0"
+          },
+          "examples": [
+            {
+              "name": "Basic schema analysis",
+              "input": {
+                "schema_file": "schema/atdf_schema.json",
+                "focus_areas": [
+                  "validation",
+                  "error_handling"
+                ],
+                "output_format": "markdown"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tools": [
+        {
+          "name": "research_tool_standards",
+          "description": "Research existing tool description standards and compare with ATDF",
+          "version": "1.0.0",
+          "tags": [
+            "bmad-generated",
+            "atdf-compliant",
+            "agent-analyst",
+            "ai-development"
+          ],
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "standards_to_compare": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Standards to compare (OpenAPI, JSON Schema, MCP, etc.)",
+                "default": [
+                  "openapi",
+                  "json-schema",
+                  "mcp",
+                  "zapier"
+                ]
+              },
+              "comparison_criteria": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Criteria for comparison",
+                "default": [
+                  "expressiveness",
+                  "validation",
+                  "error_handling",
+                  "adoption"
+                ]
+              }
+            },
+            "required": [
+              "standards_to_compare",
+              "comparison_criteria"
+            ]
+          },
+          "bmad_metadata": {
+            "agent_compatible": true,
+            "agent_type": "analyst",
+            "error_format": "atdf",
+            "framework": "bmad-method",
+            "domain": "atdf-development",
+            "created_at": "2025-09-30T16:03:38.516676",
+            "integration_version": "1.0.0"
+          }
+        }
+      ]
+    }
+  ]
+}
