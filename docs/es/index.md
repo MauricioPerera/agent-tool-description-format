@@ -52,6 +52,7 @@ Este enfoque funcional permite a los agentes de IA seleccionar herramientas basa
 
 - [Especificación](specification.md): Especificación técnica detallada del protocolo ATDF.
 - [Compatibilidad de Versiones](version_compatibility.md): Tabla que relaciona etiquetas antiguas con los esquemas actuales.
+- [Compatibilidad de Versiones](version_compatibility.md): Tabla que relaciona etiquetas antiguas con los esquemas actuales.
 - [Ejemplos](examples.md): Descripciones de herramientas de muestra y cómo crear las tuyas.
 - [Soporte Multilingüe](multilingual.md): Información sobre el uso de múltiples idiomas.
 - [Contribuir](contributing.md): Directrices para contribuir a ATDF.
@@ -98,16 +99,7 @@ python tools/validate_enhanced.py tu_tool.json
 python tests/run_all_tests.py
 ```
 
-El manejo de errores enriquecidos se explica en la [Guía de Respuestas Enriquecidas](enriched_responses_guide.md\).\r\n\r\n## Casos de Uso
-
-ATDF está diseñado para una amplia gama de aplicaciones, incluyendo:
-
-- **Agentes de IA**: Ayudar a los sistemas de IA a seleccionar y usar herramientas apropiadamente.
-- **Robótica**: Describir herramientas físicas para sistemas robóticos.
-- **Integración de API**: Estandarizar descripciones de APIs y servicios web.
-- **Aplicaciones Multimodales**: Unificar diferentes tipos de herramientas en un formato común.
-- **Sistemas Multilingües**: Soportar descripciones de herramientas en diferentes idiomas.
-
+El manejo de errores enriquecidos se explica en la [Guía de Respuestas Enriquecidas](enriched_responses_guide.md).
 ## Licencia
 
 ATDF está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](license.md) para más detalles.
