@@ -123,15 +123,23 @@ class MCPATDFBridge:
     async def call_atdf_tool(self, tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         """Call a tool on the ATDF server"""
         try:
-            payload = {
-                "tool_name": tool_name,
-                "arguments": arguments
+            # Map tool names to their specific endpoints
+            endpoint_map = {
+                "hotel_reservation": "/api/hotel/reserve",
+                "flight_booking": "/api/flight/book"
             }
+            
+            endpoint = endpoint_map.get(tool_name)
+            if not endpoint:
+                return {
+                    "error": f"Unknown tool: {tool_name}",
+                    "details": f"Available tools: {list(endpoint_map.keys())}"
+                }
             
             async with ClientSession() as session:
                 async with session.post(
-                    f"{self.atdf_server_url}/tools/call",
-                    json=payload,
+                    f"{self.atdf_server_url}{endpoint}",
+                    json=arguments,
                     headers={"Content-Type": "application/json"}
                 ) as response:
                     if response.status == 200:
