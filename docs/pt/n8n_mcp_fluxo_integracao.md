@@ -135,7 +135,7 @@ python examples/mcp_atdf_bridge.py --port 8001 --atdf-server http://localhost:80
 - Planeje migração gradual para os nós dedicados
 
 ## Recursos Relacionados
- - [Guia MCP para n8n (EN)](../en/n8n_mcp_server_guide.md)
+ - [Guia MCP para n8n (PT)](n8n_mcp_server_guide.md)
  - [Índice central n8n + MCP + ATDF](../n8n_mcp_atdf_index.md)
  - [API REST e Autenticação do n8n](../../n8n_setup_complete.md)
  - [Workflow Code v3 (n8n)](../../n8n-workflows/README.md)
