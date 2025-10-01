@@ -278,3 +278,7 @@ Edit workflow nodes to change:
 - [ATDF Specification](../docs/ATDF_SPECIFICATION.md)
 - [MCP Integration Guide](../GUIA_INTEGRACION_N8N.md)
 - [Integration Status](../estado_final_integracion.md)
+ - [n8n REST API & Auth](../n8n_setup_complete.md)
+ - [n8n + MCP + ATDF Index](../docs/n8n_mcp_atdf_index.md)
+ - [English guide (n8n + MCP + ATDF)](../docs/en/n8n_mcp_server_guide.md)
+ - [Guía ES (n8n + MCP + ATDF)](../docs/es/n8n_mcp_integracion_flujo.md)

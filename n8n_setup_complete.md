@@ -192,3 +192,12 @@ curl -s -H "X-N8N-API-KEY: <API_KEY>" \
 - `"'X-N8N-API-KEY' header required"`: añade la cabecera con tu API key.
 - `request/body must have required property 'name'`: envía el objeto de workflow directamente (sin envolver en `workflow`).
 - `request/body/active is read-only` / `must NOT have additional properties`: filtra propiedades a las permitidas.
+
+---
+
+## Related
+- Guía rápida (ES): `./GUIA_INTEGRACION_N8N.md`
+- Workflow Code v3 (n8n): `./n8n-workflows/README.md`
+- Guía EN (n8n + MCP + ATDF): `./docs/en/n8n_mcp_server_guide.md`
+- Guía ES (n8n + MCP + ATDF): `./docs/es/n8n_mcp_integracion_flujo.md`
+- Índice temático n8n + MCP + ATDF: `./docs/n8n_mcp_atdf_index.md`

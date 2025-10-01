@@ -1,0 +1,80 @@
+{
+  "name": "Flight Booking MCP CLI Test",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "start-flight-cli",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:8001/mcp",
+        "method": "POST",
+        "sendBody": true,
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"flight_booking\",\n    \"arguments\": {\n      \"passenger_name\": \"Jane Smith\",\n      \"email\": \"jane.smith@example.com\",\n      \"departure_city\": \"Madrid\",\n      \"arrival_city\": \"Barcelona\",\n      \"departure_date\": \"2025-12-20T10:00:00\",\n      \"return_date\": \"2025-12-27T18:00:00\",\n      \"seat_class\": \"business\"\n    }\n  }\n}"
+      },
+      "id": "call-flight-cli",
+      "name": "Call Flight Booking Tool",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process flight booking response from MCP bridge\nconst rpcResponse = items[0]?.json ?? {};\nconst content = rpcResponse?.result?.content ?? [];\nconst rawText = content.length ? content[0].text : null;\n\nlet parsed;\ntry {\n  parsed = rawText ? JSON.parse(rawText) : {};\n} catch (error) {\n  parsed = { status: 'failed', parse_error: error.message, raw: rawText };\n}\n\nconst details = parsed.details ?? {};\nconst status = parsed.status ?? 'failed';\n\nconst bookingData = {\n  status,\n  booking_reference: parsed.booking_id ?? parsed.confirmation_id ?? 'N/A',\n  flight_number: details.flight_number ?? 'IB1234',\n  departure_city: details.departure_city ?? 'Madrid',\n  arrival_city: details.arrival_city ?? 'Barcelona',\n  departure_date: details.departure_date ?? '2025-12-20T10:00:00',\n  return_date: details.return_date ?? '2025-12-27T18:00:00',\n  passenger_name: details.passenger_name ?? 'Jane Smith',\n  email: details.email ?? 'jane.smith@example.com',\n  seat_class: details.seat_class ?? 'business',\n  timestamp: new Date().toISOString(),\n  raw_response: parsed\n};\n\nreturn [{ json: bookingData }];\n"
+      },
+      "id": "process-flight-cli",
+      "name": "Process Booking Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        980,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Call Flight Booking Tool",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Flight Booking Tool": {
+      "main": [
+        [
+          {
+            "node": "Process Booking Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "codex-flight-cli-test"
+}

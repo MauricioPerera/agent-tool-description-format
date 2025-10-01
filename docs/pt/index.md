@@ -1,4 +1,4 @@
-﻿[Home](index.md) | [Especificação](specification.md) | [Exemplos](examples.md) | [Guia MCP do n8n](n8n_mcp_server_guide.md) | [Contribuir](contributing.md) | [Multilíngue](multilingual.md) | [Histórico de Alterações](changelog.md) | [Licença](license.md)
+[Home](index.md) | [Especificação](specification.md) | [Exemplos](examples.md) | [Guia MCP do n8n](n8n_mcp_server_guide.md) | [Contribuir](contributing.md) | [Multilíngue](multilingual.md) | [Histórico de Alterações](changelog.md) | [Licença](license.md)
 
 **Idiomas:** [English (en)](../en/index.md) | [Español (es)](../es/index.md) | [Português (pt)](index.md)
 
@@ -57,6 +57,10 @@ Consulte o [Guia de Respostas Enriquecidas](enriched_responses_guide.md) para es
 
 ## 🔌 Integrações em destaque
 - **n8n + MCP + ATDF**: siga o [guia de integração](n8n_mcp_fluxo_integracao.md) para conectar o bridge ATDF-MCP e executar ferramentas no n8n (nós nativos ou personalizados).
+- **API REST e Autenticação do n8n**: `../../n8n_setup_complete.md` — como autenticar e importar workflows via REST.
+- **Workflow Code v3 (n8n)**: `../../n8n-workflows/README.md` — reserva completa de viagem usando MCP Bridge.
+- **Guia rápido (ES)**: `../../GUIA_INTEGRACION_N8N.md` — configuração ATDF + MCP + n8n.
+- **Índice central n8n + MCP + ATDF**: `../n8n_mcp_atdf_index.md` — mapa unificado da documentação.
 - **Bridge ATDF-MCP local**:
   ```bash
   python examples/fastapi_mcp_integration.py

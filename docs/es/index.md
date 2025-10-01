@@ -60,6 +60,7 @@ Consulta la [Guía de Respuestas Enriquecidas](enriched_responses_guide.md) para
 - **API REST y Autenticación de n8n**: `../../n8n_setup_complete.md` — cómo autenticar y importar workflows por REST.
 - **Workflow Code v3 (n8n)**: `../../n8n-workflows/README.md` — flujo de viaje completo usando MCP Bridge.
 - **Guía rápida (ES)**: `../../GUIA_INTEGRACION_N8N.md` — configuración ATDF + MCP + n8n.
+- **Índice central n8n + MCP + ATDF**: `../n8n_mcp_atdf_index.md` — mapa unificado de documentación.
 - **Bridge ATDF-MCP local**:
   ```bash
   python examples/fastapi_mcp_integration.py

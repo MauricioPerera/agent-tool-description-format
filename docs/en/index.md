@@ -81,6 +81,7 @@ For enriched error payloads see the [Enriched Responses Guide](enriched_response
 - **n8n REST API & Auth**: `../../n8n_setup_complete.md` — authenticate and import workflows via REST.
 - **Code v3 Workflow (n8n)**: `../../n8n-workflows/README.md` — end-to-end travel booking using the MCP Bridge.
 - **Spanish quick-start**: `../../GUIA_INTEGRACION_N8N.md` — ATDF + MCP + n8n setup (ES).
+- **Central index**: `../n8n_mcp_atdf_index.md` — unified map of all docs.
 
 ### Development & Contribution
 

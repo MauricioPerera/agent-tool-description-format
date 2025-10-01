@@ -54,6 +54,7 @@ Enhanced documents add optional fields such as `metadata.version`, `metadata.tag
 - `python tests/run_all_tests.py` runs SDK, schema, multilingual, and enhanced-feature suites.
 - `npm test` inside `js/` covers the JavaScript SDK.
 - Sample workflows and bridges live under `examples/`; use them to validate MCP/n8n integrations before deployment.
+- CLI smoke tests for MCP↔n8n: with FastAPI and the bridge running, execute `n8n execute --id codex-hotel-cli-test` and `n8n execute --id codex-flight-cli-test` to confirm hotel/flight flows remain healthy.
 
 ## Governance
 - Use Conventional Commits.
