@@ -1,0 +1,56 @@
+﻿{
+  "schema_version": "2.0.0",
+  "tool_id": "date_validator",
+  "description": "Valida rangos de fechas y devuelve errores enriquecidos",
+  "when_to_use": "Usa la herramienta cuando necesites validar un rango de fechas y recibir orientación sobre cómo corregir errores.",
+  "how_to_use": {
+    "inputs": [
+      {
+        "name": "start_date",
+        "type": "string",
+        "description": "Fecha inicial en formato ISO 8601",
+        "required": true
+      },
+      {
+        "name": "end_date",
+        "type": "string",
+        "description": "Fecha final en formato ISO 8601",
+        "required": true
+      }
+    ],
+    "outputs": {
+      "success": "El rango de fechas es válido",
+      "failure": [
+        {
+          "code": "INVALID_DATE_RANGE",
+          "description": "La fecha inicial debe ser anterior a la fecha final y ambas deben ser posteriores a la fecha actual."
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "author": "ATDF Team",
+    "tags": [
+      "dates",
+      "validation",
+      "examples"
+    ]
+  },
+  "examples": [
+    {
+      "name": "Rango válido",
+      "input": {
+        "start_date": "2025-01-01",
+        "end_date": "2025-01-15"
+      }
+    },
+    {
+      "name": "Rango inválido",
+      "input": {
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-10"
+      }
+    }
+  ]
+}
