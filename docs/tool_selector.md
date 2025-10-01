@@ -24,6 +24,8 @@ as n8n.
 
 ## Quick Start
 
+- **n8n Integration**: Usa el nodo *ATDF Tool Selector* para obtener recomendaciones del selector y pasar la lista filtrada al nodo MCP Client o al nodo ATDF MCP Client.
+
 ```bash
 # Build the catalog and persist it in SQLite
 env PYTHONPATH=. python -m selector.cli \

@@ -1,4 +1,4 @@
-# n8n-nodes-atdf-mcp
+﻿# n8n-nodes-atdf-mcp
 
 Nodos personalizados de n8n para integración con ATDF (Agent Tool Description Format) y MCP (Model Context Protocol).
 
@@ -6,6 +6,7 @@ Nodos personalizados de n8n para integración con ATDF (Agent Tool Description F
 
 - **ATDF MCP Client Node**: Conecta a servidores ATDF via protocolo MCP
 - **ATDF MCP Server Node**: Expone workflows de n8n como herramientas ATDF
+- **ATDF Tool Selector Node**: Filtra y recomienda herramientas ATDF usando el servicio selector
 - **Soporte multiidioma**: Inglés, Español y Portugués
 - **Validación de esquemas**: Validación automática de parámetros de entrada
 - **Metadatos enriquecidos**: Soporte completo para metadatos ATDF
@@ -357,3 +358,5 @@ Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](L
 - ✅ Validación de esquemas JSON
 - ✅ Metadatos ATDF completos
 - ✅ Compatibilidad MCP total
+
+## Uso del nodo ATDF Tool Selector\\n\\n1. Configure las credenciales **ATDF Selector API** con la URL del servicio selector (/recommend).\\n2. Añada el nodo **ATDF Tool Selector** antes del MCP Client en su workflow y defina la consulta en lenguaje natural.\\n3. Opcionalmente filtre por servidores MCP registrados o por IDs permitidos para reducir el conjunto de herramientas.\\n4. Utilice el resultado (results) para alimentar el nodo MCP Client o cualquier lógica personalizada.\\n\\n
