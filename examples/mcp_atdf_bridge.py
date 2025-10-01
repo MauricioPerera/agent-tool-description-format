@@ -49,7 +49,7 @@ class ATDFToMCPConverter:
         """Convert a single ATDF tool to MCP format"""
         
         # Extract basic information
-        name = atdf_tool.get("name", "unknown_tool")
+        name = atdf_tool.get("tool_id", "unknown_tool")
         description = atdf_tool.get("description", "")
         
         # Add when_to_use information to description if available

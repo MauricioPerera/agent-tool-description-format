@@ -1,0 +1,319 @@
+{
+  "name": "Complete Travel Booking via ATDF-MCP",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "start-trigger-001",
+      "name": "When clicking 'Test workflow'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "traveler_name",
+              "value": "Carlos Mendez"
+            },
+            {
+              "name": "email",
+              "value": "carlos.mendez@example.com"
+            },
+            {
+              "name": "departure_city",
+              "value": "Madrid"
+            },
+            {
+              "name": "arrival_city",
+              "value": "Barcelona"
+            },
+            {
+              "name": "travel_date",
+              "value": "2025-12-28T10:00:00"
+            },
+            {
+              "name": "check_in",
+              "value": "2025-12-28T15:00:00"
+            },
+            {
+              "name": "check_out",
+              "value": "2025-12-30T11:00:00"
+            },
+            {
+              "name": "room_type",
+              "value": "suite"
+            }
+          ],
+          "number": [
+            {
+              "name": "guests",
+              "value": 2
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-travel-data-002",
+      "name": "Set Travel Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:8001/mcp",
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"hotel_reservation\",\n    \"arguments\": {\n      \"guest_name\": \"{{ $json.traveler_name }}\",\n      \"email\": \"{{ $json.email }}\",\n      \"check_in\": \"{{ $json.check_in }}\",\n      \"check_out\": \"{{ $json.check_out }}\",\n      \"room_type\": \"{{ $json.room_type }}\",\n      \"guests\": {{ $json.guests }}\n    }\n  }\n}"
+      },
+      "id": "hotel-reservation-003",
+      "name": "Book Hotel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "hotel_success_condition",
+              "leftValue": "={{ $json.result.content[0].text }}",
+              "rightValue": "confirmed",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-hotel-status-004",
+      "name": "Check Hotel Status",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:8001/mcp",
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"flight_booking\",\n    \"arguments\": {\n      \"passenger_name\": \"{{ $('Set Travel Data').item.json.traveler_name }}\",\n      \"email\": \"{{ $('Set Travel Data').item.json.email }}\",\n      \"departure_city\": \"{{ $('Set Travel Data').item.json.departure_city }}\",\n      \"arrival_city\": \"{{ $('Set Travel Data').item.json.arrival_city }}\",\n      \"departure_date\": \"{{ $('Set Travel Data').item.json.travel_date }}\",\n      \"seat_class\": \"business\"\n    }\n  }\n}"
+      },
+      "id": "flight-booking-005",
+      "name": "Book Flight",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1120,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "flight_success_condition",
+              "leftValue": "={{ $json.result.content[0].text }}",
+              "rightValue": "confirmed",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-flight-status-006",
+      "name": "Check Flight Status",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1340,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "message": "🎉 Complete travel booking successful!\n\n✅ Hotel: {{ JSON.parse($('Book Hotel').item.json.result.content[0].text).reservation_id }}\n✈️ Flight: {{ JSON.parse($('Book Flight').item.json.result.content[0].text).booking_id }}\n\nTraveler: {{ $('Set Travel Data').item.json.traveler_name }}\nEmail: {{ $('Set Travel Data').item.json.email }}",
+        "options": {}
+      },
+      "id": "complete-success-007",
+      "name": "Complete Success Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        1560,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "message": "❌ Hotel booking failed!\n\nError: {{ $('Book Hotel').item.json.result.content[0].text }}\n\nTravel booking cancelled.",
+        "options": {}
+      },
+      "id": "hotel-error-008",
+      "name": "Hotel Error Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        1120,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "message": "❌ Flight booking failed!\n\nHotel was booked successfully but flight failed:\n{{ $('Book Flight').item.json.result.content[0].text }}\n\nPlease book flight manually or cancel hotel reservation.",
+        "options": {}
+      },
+      "id": "flight-error-009",
+      "name": "Flight Error Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        1560,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "When clicking 'Test workflow'": {
+      "main": [
+        [
+          {
+            "node": "Set Travel Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Travel Data": {
+      "main": [
+        [
+          {
+            "node": "Book Hotel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Book Hotel": {
+      "main": [
+        [
+          {
+            "node": "Check Hotel Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Hotel Status": {
+      "main": [
+        [
+          {
+            "node": "Book Flight",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Hotel Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Book Flight": {
+      "main": [
+        [
+          {
+            "node": "Check Flight Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Flight Status": {
+      "main": [
+        [
+          {
+            "node": "Complete Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Flight Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "local"
+  },
+  "id": "complete-travel-atdf-mcp",
+  "tags": [
+    {
+      "createdAt": "2025-10-01T07:35:00.000Z",
+      "updatedAt": "2025-10-01T07:35:00.000Z",
+      "id": "atdf-integration",
+      "name": "ATDF Integration"
+    }
+  ]
+}

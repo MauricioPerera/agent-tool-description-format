@@ -1,0 +1,157 @@
+{
+  "name": "Flight Booking via ATDF-MCP",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "f1g2h3i4-j5k6-7l8m-9n0o-p1q2r3s4t5u6",
+      "name": "When clicking 'Test workflow'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:8001/mcp",
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"flight_booking\",\n    \"arguments\": {\n      \"passenger_name\": \"{{ $json.passenger_name || 'María García' }}\",\n      \"email\": \"{{ $json.email || 'maria.garcia@example.com' }}\",\n      \"departure_city\": \"{{ $json.departure_city || 'Madrid' }}\",\n      \"arrival_city\": \"{{ $json.arrival_city || 'Barcelona' }}\",\n      \"departure_date\": \"{{ $json.departure_date || '2025-12-20T10:00:00' }}\",\n      \"seat_class\": \"{{ $json.seat_class || 'business' }}\"\n    }\n  }\n}"
+      },
+      "id": "g2h3i4j5-k6l7-8m9n-0o1p-q2r3s4t5u6v7",
+      "name": "Call ATDF Flight Booking",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "success_condition",
+              "leftValue": "={{ $json.result.content[0].text }}",
+              "rightValue": "confirmed",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "h3i4j5k6-l7m8-9n0o-1p2q-r3s4t5u6v7w8",
+      "name": "Check Booking Status",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "message": "✈️ Flight booking successful!\n\nDetails:\n{{ JSON.parse($('Call ATDF Flight Booking').item.json.result.content[0].text) }}",
+        "options": {}
+      },
+      "id": "i4j5k6l7-m8n9-0o1p-2q3r-s4t5u6v7w8x9",
+      "name": "Success Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        900,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "message": "❌ Flight booking failed!\n\nError:\n{{ $('Call ATDF Flight Booking').item.json.result.content[0].text }}",
+        "options": {}
+      },
+      "id": "j5k6l7m8-n9o0-1p2q-3r4s-t5u6v7w8x9y0",
+      "name": "Error Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        900,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "When clicking 'Test workflow'": {
+      "main": [
+        [
+          {
+            "node": "Call ATDF Flight Booking",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call ATDF Flight Booking": {
+      "main": [
+        [
+          {
+            "node": "Check Booking Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Booking Status": {
+      "main": [
+        [
+          {
+            "node": "Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "local"
+  },
+  "id": "flight-booking-atdf-mcp",
+  "tags": [
+    {
+      "createdAt": "2025-10-01T07:35:00.000Z",
+      "updatedAt": "2025-10-01T07:35:00.000Z",
+      "id": "atdf-integration",
+      "name": "ATDF Integration"
+    }
+  ]
+}
