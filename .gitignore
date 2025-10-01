@@ -96,3 +96,4 @@ test_converter.py
 .vscode/
 *.swp
 *.swo
+node_modules
