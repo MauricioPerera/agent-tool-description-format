@@ -148,5 +148,23 @@ python examples/mcp_atdf_bridge.py --port 8001 --atdf-server http://localhost:80
 - **MCP Bridge**: `examples/mcp_atdf_bridge.py`
 - **n8n Docs**: https://docs.n8n.io/
 
+## 🔗 Referencias y siguientes pasos
+
+- Autenticación y REST import: ver `n8n_setup_complete.md` → sección "Importación por API (REST) y Autenticación".
+- Workflow Code v3: ver `n8n-workflows/README.md` → sección "Complete Travel Booking via ATDF-MCP (Code v3)".
+- Endpoints MCP usados por Code v3: `POST http://localhost:8001/mcp` y `GET http://localhost:8001/tools`.
+
+### Checklist rápido
+- n8n corriendo en `http://localhost:5678`.
+- API key funcional: `curl -s -H "X-N8N-API-KEY: <API_KEY>" http://localhost:5678/api/v1/workflows | head -c 300`.
+- Importar Code v3 por REST:
+```bash
+WORKFLOW_FILE="n8n-workflows/complete-travel-workflow-code-v3.json" \
+N8N_API_KEY="<API_KEY>" \
+python import_workflows_to_n8n.py
+```
+
+Nota: el payload de creación debe incluir únicamente `name`, `nodes`, `connections`, `settings`.
+
 ---
 *Guía creada: 2025-09-30 19:42*

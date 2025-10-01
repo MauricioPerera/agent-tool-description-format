@@ -87,6 +87,38 @@ ATDF Server (Port 8000) → MCP Bridge (Port 8001) → n8n (Port 5678)
 6. Process flight booking response
 7. Send final confirmation email
 
+### 4. Complete Travel Booking via ATDF-MCP (Code v3) (`complete-travel-workflow-code-v3.json`)
+
+**Purpose**: End-to-end travel booking using Code nodes that call the MCP Bridge directly.
+
+**Key Features**:
+- Uses naïve date strings to avoid timezone offset issues
+- Reads input from `$json` in Code nodes
+- Calls MCP Bridge via `this.helpers.httpRequest` (`POST http://localhost:8001/mcp`)
+- Sequential execution: hotel then flight
+
+**Workflow Steps**:
+1. `Set Travel Data`: provides parameters such as `traveler_name`, `email`, `departure_city`, `arrival_city`, `travel_date`, `check_in`, `check_out`, `room_type`, `guests`.
+2. `Book Hotel` (Code): calls `hotel_reservation` tool via MCP Bridge.
+3. `Book Flight` (Code): calls `flight_booking` tool via MCP Bridge.
+
+**REST Import (API)**:
+```bash
+# Import only Code v3 workflow
+WORKFLOW_FILE="n8n-workflows/complete-travel-workflow-code-v3.json" \
+N8N_API_KEY="<API_KEY>" \
+python import_workflows_to_n8n.py
+
+# Verify ID (example)
+curl -s -H "X-N8N-API-KEY: <API_KEY>" \
+  http://localhost:5678/api/v1/workflows/<WORKFLOW_ID>
+```
+
+**Execution (UI)**:
+1. Open `http://localhost:5678/`.
+2. Find the workflow by name.
+3. Click `Execute Workflow` and check node outputs for confirmations.
+
 ## 🔧 Configuration Requirements
 
 ### Prerequisites
@@ -115,7 +147,7 @@ SMTP_PASS=your_email_password
 The workflows use these MCP bridge endpoints:
 
 - **Get Tools**: `GET http://localhost:8001/tools`
-- **Execute Tool**: `POST http://localhost:8001/execute`
+- **Execute Tool**: `POST http://localhost:8001/mcp` (Code v3 workflows)
 
 ## 🚀 Quick Start
 

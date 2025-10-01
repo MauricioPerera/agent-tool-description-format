@@ -105,3 +105,77 @@ curl http://localhost:8001/tools
 ## 🎉 ¡Listo para Usar!
 
 Ahora puedes crear workflows en n8n que usen herramientas ATDF a través del protocolo MCP. ¡La integración está completa y funcionando!
+
+---
+
+## 🔐 Importación por API (REST) y Autenticación
+
+Para gestionar workflows vía API necesitas que n8n esté corriendo y una API key.
+
+### Requisitos
+- n8n corriendo en `http://localhost:5678`
+- API habilitada y cabecera `X-N8N-API-KEY`
+
+### Comandos de verificación
+```bash
+# Verificar editor (UI)
+curl -s http://localhost:5678 | head -c 200
+
+# Listar workflows (API)
+curl -s -H "X-N8N-API-KEY: <API_KEY>" \
+  http://localhost:5678/api/v1/workflows | head -c 300
+```
+
+### Importar workflow Code v3 por API
+```bash
+# Importar únicamente el workflow Code v3
+WORKFLOW_FILE="n8n-workflows/complete-travel-workflow-code-v3.json" \
+N8N_API_KEY="<API_KEY>" \
+python import_workflows_to_n8n.py
+
+# Confirmar por ID (ejemplo del ID creado)
+curl -s -H "X-N8N-API-KEY: <API_KEY>" \
+  http://localhost:5678/api/v1/workflows/98PshpVrKFAma04t | head -c 400
+```
+
+### Notas importantes
+- La API de n8n espera un objeto de workflow con claves permitidas: `name`, `nodes`, `connections`, `settings`.
+- No enviar propiedades de solo lectura (`active`, `staticData`, etc.).
+- El script `import_workflows_to_n8n.py` ha sido ajustado para:
+  - Usar `X-N8N-API-KEY` si `N8N_API_KEY` está definido.
+  - Filtrar el payload a las claves permitidas por la API de creación.
+  - Permitir importar un archivo específico con `WORKFLOW_FILE`.
+  - Considerar exitosas respuestas `200` y `201`.
+
+---
+
+## 🧩 Workflow “Complete Travel Booking via ATDF-MCP (Code v3)”
+
+**Archivo**: `n8n-workflows/complete-travel-workflow-code-v3.json`
+
+**Descripción**:
+- Implementa reserva de hotel y vuelo usando nodos `Code` que llaman al MCP Bridge.
+- Usa cadenas de fecha naïve para evitar errores de offset.
+- Los nodos `Code` leen datos desde `$json` y usan `this.helpers.httpRequest`.
+
+**Nodos**:
+- `Set Travel Data`: provee parámetros de entrada (ej. `check_in`, `check_out`, `travel_date`).
+- `Book Hotel` (Code): `POST http://localhost:8001/mcp` con `name: 'hotel_reservation'` y argumentos desde `$json`.
+- `Book Flight` (Code): `POST http://localhost:8001/mcp` con `name: 'flight_booking'` y argumentos desde `$json`.
+
+**Conexiones**:
+- `Set Travel Data` → `Book Hotel` → `Book Flight`
+
+**Ejecución (UI)**:
+1. Abrir `http://localhost:5678/`.
+2. Buscar el workflow por nombre.
+3. Pulsar `Execute Workflow`.
+4. Ver confirmaciones con IDs en la salida de cada nodo `Code`.
+
+---
+
+## 🧪 Troubleshooting API
+
+- `"'X-N8N-API-KEY' header required"`: añade la cabecera con tu API key.
+- `request/body must have required property 'name'`: envía el objeto de workflow directamente (sin envolver en `workflow`).
+- `request/body/active is read-only` / `must NOT have additional properties`: filtra propiedades a las permitidas.
