@@ -1,4 +1,4 @@
-﻿# Fluxo de Integração ATDF + MCP + n8n
+# Fluxo de Integração ATDF + MCP + n8n
 
 ## Arquitetura de Integração
 
@@ -135,6 +135,10 @@ python examples/mcp_atdf_bridge.py --port 8001 --atdf-server http://localhost:80
 - Planeje migração gradual para os nós dedicados
 
 ## Recursos Relacionados
-- [Guia MCP para n8n](n8n_mcp_server_guide.md)
-- [Compatibilidade de versões do ATDF](../en/version_compatibility.md)
-- Fluxo de referência: `examples/n8n_mcp_comparison_workflow.json`
+ - [Guia MCP para n8n (EN)](../en/n8n_mcp_server_guide.md)
+ - [Índice central n8n + MCP + ATDF](../n8n_mcp_atdf_index.md)
+ - [API REST e Autenticação do n8n](../../n8n_setup_complete.md)
+ - [Workflow Code v3 (n8n)](../../n8n-workflows/README.md)
+ - [Guia rápido (ES)](../../GUIA_INTEGRACION_N8N.md)
+ - [Compatibilidade de versões do ATDF](../web/versions.html)
+ - Fluxo de referência: `examples/n8n_mcp_comparison_workflow.json`
