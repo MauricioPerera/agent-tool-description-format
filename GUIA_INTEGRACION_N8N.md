@@ -168,3 +168,10 @@ Nota: el payload de creación debe incluir únicamente `name`, `nodes`, `connect
 
 ---
 *Guía creada: 2025-09-30 19:42*
+
+## Relacionados
+- API REST y Autenticación de n8n: `./n8n_setup_complete.md`
+- Workflow Code v3 (n8n): `./n8n-workflows/README.md`
+- Guía EN (n8n + MCP + ATDF): `./docs/en/n8n_mcp_server_guide.md`
+- Guía ES (n8n + MCP + ATDF): `./docs/es/n8n_mcp_integracion_flujo.md`
+- Índice temático n8n + MCP + ATDF: `./docs/n8n_mcp_atdf_index.md`

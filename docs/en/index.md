@@ -77,6 +77,11 @@ For enriched error payloads see the [Enriched Responses Guide](enriched_response
 - **[Enriched Responses Guide](enriched_responses_guide.md)** - **NEW** - Complete guide to the enriched response standard
 - **[n8n MCP Guide](n8n_mcp_server_guide.md)** - Integration guide for n8n workflows
 
+### Quick Links — n8n Integration
+- **n8n REST API & Auth**: `../../n8n_setup_complete.md` — authenticate and import workflows via REST.
+- **Code v3 Workflow (n8n)**: `../../n8n-workflows/README.md` — end-to-end travel booking using the MCP Bridge.
+- **Spanish quick-start**: `../../GUIA_INTEGRACION_N8N.md` — ATDF + MCP + n8n setup (ES).
+
 ### Development & Contribution
 
 - **[Contributing](contributing.md)** - How to contribute to ATDF
@@ -134,4 +139,4 @@ ATDF is licensed under the MIT License. See [License](license.md) for details.
 
 ---
 
-**ATDF v2.0.0** - Standard format for describing tools functionally, enabling smarter, multilingual AI agents with enriched error handling. 
+**ATDF v2.0.0** - Standard format for describing tools functionally, enabling smarter, multilingual AI agents with enriched error handling.

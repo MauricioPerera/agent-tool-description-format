@@ -153,7 +153,8 @@
       "position": [
         1560,
         120
-      ]
+      ],
+      "disabled": true
     },
     {
       "parameters": {
@@ -167,7 +168,8 @@
       "position": [
         1560,
         280
-      ]
+      ],
+      "disabled": true
     },
     {
       "parameters": {
@@ -181,7 +183,8 @@
       "position": [
         900,
         400
-      ]
+      ],
+      "disabled": true
     }
   ],
   "connections": {

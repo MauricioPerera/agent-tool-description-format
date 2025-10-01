@@ -1,0 +1,79 @@
+{
+  "name": "Hotel Reservation MCP CLI Test",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "f6b4c5d7-8e9f-4a1b-2c3d-4e5f6a7b8c9d",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:8001/mcp",
+        "sendBody": true,
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"hotel_reservation\",\n    \"arguments\": {\n      \"guest_name\": \"John Doe\",\n      \"email\": \"john.doe@example.com\",\n      \"check_in\": \"2024-03-15T15:00:00\",\n      \"check_out\": \"2024-03-18T11:00:00\",\n      \"room_type\": \"deluxe\",\n      \"guests\": 2\n    }\n  }\n}"
+      },
+      "id": "e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b",
+      "name": "Call Hotel Reservation Tool",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process hotel reservation response from MCP bridge\nconst rpcResponse = $input.first().json;\nconst content = rpcResponse?.result?.content ?? [];\nconst rawText = content.length ? content[0].text : null;\n\nlet parsed;\ntry {\n  parsed = rawText ? JSON.parse(rawText) : {};\n} catch (error) {\n  parsed = { status: 'failed', parse_error: error.message, raw: rawText };\n}\n\nconst details = parsed.details ?? {};\nconst status = parsed.status ?? 'failed';\n\nconst reservationData = {\n  status,\n  reservation_id: parsed.reservation_id ?? 'N/A',\n  hotel_name: 'Grand Plaza Hotel',\n  guest_name: details.guest_name ?? 'John Doe',\n  check_in: details.check_in ?? '2024-03-15T15:00:00',\n  check_out: details.check_out ?? '2024-03-18T11:00:00',\n  room_type: details.room_type ?? 'deluxe',\n  guests: details.guests ?? 2,\n  message: parsed.message ?? null,\n  timestamp: new Date().toISOString(),\n  raw_response: parsed\n};\n\nreturn {\n  json: reservationData\n};\n"
+      },
+      "id": "f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c",
+      "name": "Process Reservation Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Call Hotel Reservation Tool",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Hotel Reservation Tool": {
+      "main": [
+        [
+          {
+            "node": "Process Reservation Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "codex-hotel-cli-test"
+}
