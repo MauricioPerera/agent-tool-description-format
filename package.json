@@ -19,7 +19,11 @@
     "bmad:tools": "python -c \"import json; print(json.dumps(json.load(open('bmad/tools/atdf_all_tools.json')), indent=2))\"",
     "bmad:workflow": "echo 'Available workflows: schema_enhancement, tool_integration, error_handling_improvement'",
     "dev": "uvicorn examples.fastapi_mcp_integration:app --reload --port 8000",
-    "dev:safe": "uvicorn examples.fastapi_mcp_integration:app --no-reload --port 8000"
+    "dev:safe": "uvicorn examples.fastapi_mcp_integration:app --no-reload --port 8000",
+    "n8n:start": "n8n start",
+    "n8n:install": "npm install n8n",
+    "bridge:start": "python examples/mcp_atdf_bridge.py --port 8001 --atdf-server http://localhost:8000",
+    "integration:full": "echo 'Start ATDF server, then MCP bridge, then n8n - see README for details'"
   },
   "keywords": [
     "atdf",
@@ -35,7 +39,8 @@
   "author": "ATDF Team",
   "license": "MIT",
   "dependencies": {
-    "bmad-method": "latest"
+    "bmad-method": "latest",
+    "n8n": "^1.0.0"
   },
   "devDependencies": {
     "jest": "^29.0.0",
