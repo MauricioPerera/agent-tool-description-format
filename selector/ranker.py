@@ -47,6 +47,8 @@ class ToolRanker:
         query: str,
         top_n: int = 5,
         preferred_language: Optional[str] = None,
+        sources: Optional[Sequence[str]] = None,
+        tool_ids: Optional[Sequence[str]] = None,
     ) -> List[RankedTool]:
         query = (query or "").strip()
         if not query:
@@ -55,7 +57,7 @@ class ToolRanker:
         tokens = self._tokenize(query)
         results: List[RankedTool] = []
 
-        for record in self.catalog.list_tools():
+        for record in self.catalog.list_tools(sources=sources, tool_ids=tool_ids):
             score, reasons = self._score_record(record, tokens, preferred_language)
             if score <= 0:
                 continue

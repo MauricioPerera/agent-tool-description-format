@@ -284,4 +284,105 @@ class ToolCatalog:
 
         description = self._extract_description(descriptor)
         when_to_use = self._extract_when_to_use(descriptor)
-        languages = self._extract_languages(descript
+        languages = self._extract_languages(descriptor)
+        tags = self._extract_tags(descriptor)
+
+        return ATDFToolRecord(
+            tool_id=tool_id,
+            description=description,
+            when_to_use=when_to_use,
+            schema_version=schema_version,
+            languages=languages,
+            tags=tags,
+            source=source,
+            raw_descriptor=descriptor,
+        )
+
+    def _validate_descriptor(self, descriptor: Dict[str, object], schema_version: str) -> None:
+        enhanced_keys = {"metadata", "localization", "examples", "prerequisites", "feedback"}
+        is_enhanced = schema_version.startswith("2") or bool(enhanced_keys.intersection(descriptor.keys()))
+        schema = None
+        if is_enhanced and self._enhanced_schema:
+            schema = self._enhanced_schema
+        elif self._basic_schema:
+            schema = self._basic_schema
+        else:  # pragma: no cover - configuration fallback
+            LOGGER.debug("No schema available for validation; skipping")
+            return
+        try:
+            jsonschema.validate(descriptor, schema)
+        except jsonschema.ValidationError as exc:
+            raise ValueError(f"ATDF descriptor validation error: {exc.message}") from exc
+
+    @staticmethod
+    def _extract_tool_id(descriptor: Dict[str, object]) -> Optional[str]:
+        for key in ("tool_id", "id", "name"):
+            value = descriptor.get(key)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+        return None
+
+    @staticmethod
+    def _extract_description(descriptor: Dict[str, object]) -> str:
+        description = descriptor.get("description")
+        if isinstance(description, str) and description.strip():
+            return description.strip()
+        localization = descriptor.get("localization")
+        if isinstance(localization, dict):
+            for value in localization.values():
+                text = value.get("description") if isinstance(value, dict) else value
+                if isinstance(text, str) and text.strip():
+                    return text.strip()
+        return ""
+
+    @staticmethod
+    def _extract_when_to_use(descriptor: Dict[str, object]) -> Optional[str]:
+        when = descriptor.get("when_to_use")
+        if isinstance(when, str) and when.strip():
+            return when.strip()
+        localization = descriptor.get("localization")
+        if isinstance(localization, dict):
+            for value in localization.values():
+                text = value.get("when_to_use") if isinstance(value, dict) else None
+                if isinstance(text, str) and text.strip():
+                    return text.strip()
+        return None
+
+    @staticmethod
+    def _extract_languages(descriptor: Dict[str, object]) -> List[str]:
+        languages: List[str] = []
+        localization = descriptor.get("localization")
+        if isinstance(localization, dict):
+            languages.extend(sorted(localization.keys()))
+        if not languages:
+            languages.append("default")
+        return languages
+
+    @staticmethod
+    def _extract_tags(descriptor: Dict[str, object]) -> List[str]:
+        metadata = descriptor.get("metadata")
+        if isinstance(metadata, dict):
+            tags = metadata.get("tags")
+            if isinstance(tags, list):
+                return [str(tag) for tag in tags if isinstance(tag, (str, int))]
+        return []
+
+    @staticmethod
+    def _convert_mcp_tool(tool: Dict[str, object]) -> Dict[str, object]:
+        """Convert an MCP tool entry into an ATDF-like structure."""
+        descriptor: Dict[str, object] = {
+            "tool_id": tool.get("name"),
+            "description": tool.get("description", ""),
+            "schema_version": "1.0.0",
+            "how_to_use": {
+                "inputs": [],
+                "outputs": {
+                    "success": "",
+                    "failure": [],
+                },
+            },
+        }
+        input_schema = tool.get("inputSchema")
+        if isinstance(input_schema, dict):
+            descriptor["input_schema"] = input_schema
+        return descriptor

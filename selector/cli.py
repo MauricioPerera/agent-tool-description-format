@@ -9,11 +9,17 @@ from textwrap import shorten
 from typing import Iterable, List, Optional
 
 from .catalog import ATDFToolRecord, ToolCatalog
+from .storage import CatalogStorage
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Inspect ATDF tool descriptors and build a normalized catalog.",
+    )
+    parser.add_argument(
+        "--storage",
+        type=str,
+        help="Path to the SQLite database used for persistent catalog storage.",
     )
     parser.add_argument(
         "--dir",
@@ -42,11 +48,21 @@ def build_parser() -> argparse.ArgumentParser:
         default=0,
         help="Limit number of tools displayed in the summary (0 = no limit).",
     )
+    parser.add_argument(
+        "--servers",
+        nargs="*",
+        help="Filter catalog listing by server URL identifiers.",
+    )
+    parser.add_argument(
+        "--tools",
+        nargs="*",
+        help="Filter catalog listing by specific tool identifiers.",
+    )
     return parser
 
 
 def _render_table(records: Iterable[ATDFToolRecord], limit: int) -> None:
-    header = f"{'tool_id':<30} {'version':<8} {'languages':<12} description"
+    header = f"{'source':<30} {'tool_id':<28} {'version':<8} {'languages':<12} description"
     print(header)
     print("-" * len(header))
     count = 0
@@ -54,8 +70,8 @@ def _render_table(records: Iterable[ATDFToolRecord], limit: int) -> None:
         if limit and count >= limit:
             break
         languages = ",".join(record.languages)
-        description = shorten(record.description or record.when_to_use or "", width=60, placeholder="…")
-        print(f"{record.tool_id:<30} {record.schema_version:<8} {languages:<12} {description}")
+        description = shorten(record.description or record.when_to_use or "", width=50, placeholder="…")
+        print(f"{record.source:<30} {record.tool_id:<28} {record.schema_version:<8} {languages:<12} {description}")
         count += 1
 
 
@@ -76,18 +92,20 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    if not args.dir and not args.mcp:
-        parser.error("Provide at least one source via --dir or --mcp")
+    storage = CatalogStorage(Path(args.storage)) if args.storage else None
+    catalog = ToolCatalog(storage=storage)
 
-    catalog = ToolCatalog()
     loaded = 0
-
     if args.dir:
-        loaded += catalog.load_directory(Path(args.dir), recursive=not args.no_recursive)
+        loaded += catalog.load_directory(
+            Path(args.dir),
+            recursive=not args.no_recursive,
+            server_label=f"file://{Path(args.dir).resolve()}",
+        )
     if args.mcp:
         loaded += catalog.load_from_mcp(args.mcp)
 
-    records = catalog.list_tools()
+    records = catalog.list_tools(sources=args.servers, tool_ids=args.tools)
     if args.format == "json":
         _render_json(records, args.limit)
     else:
@@ -98,7 +116,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         for message in catalog.errors:
             print(f" - {message}")
 
-    return 0 if loaded else 1
+    if storage:
+        storage.close()
+
+    return 0 if (loaded or records) else 1
 
 
 if __name__ == "__main__":  # pragma: no cover
