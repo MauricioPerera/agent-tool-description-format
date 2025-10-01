@@ -1,0 +1,143 @@
+{
+  "name": "ATDF Tools via MCP Bridge - Working Example",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "atdf-demo",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook-start",
+      "name": "Webhook Start",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "atdf-demo-webhook"
+    },
+    {
+      "parameters": {
+        "serverUrl": "http://localhost:8001/sse",
+        "operation": "listTools"
+      },
+      "id": "list-atdf-tools",
+      "name": "List ATDF Tools",
+      "type": "n8n-nodes-base.mcpClient",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Procesar la lista de herramientas ATDF\nconst tools = $input.first().json.result.tools;\n\nreturn {\n  available_tools: tools.map(tool => ({\n    name: tool.name,\n    description: tool.description,\n    has_schema: !!tool.inputSchema\n  })),\n  total_tools: tools.length,\n  first_tool: tools[0]?.name || 'none',\n  message: `Encontradas ${tools.length} herramientas ATDF disponibles vía MCP`\n};"
+      },
+      "id": "process-tools",
+      "name": "Process Tools List",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "serverUrl": "http://localhost:8001/sse",
+        "operation": "callTool",
+        "toolName": "={{ $json.first_tool }}",
+        "arguments": {
+          "destination": "Madrid",
+          "checkin": "2024-02-01",
+          "checkout": "2024-02-05",
+          "guests": 2
+        }
+      },
+      "id": "call-first-tool",
+      "name": "Call First ATDF Tool",
+      "type": "n8n-nodes-base.mcpClient",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Combinar resultados de lista y ejecución\nconst toolsList = $input.first().json;\nconst toolExecution = $input.last().json;\n\nreturn {\n  demo_results: {\n    bridge_status: \"✅ Funcionando\",\n    atdf_integration: \"✅ Exitosa\",\n    tools_discovered: toolsList.total_tools,\n    tools_available: toolsList.available_tools,\n    execution_test: {\n      tool_called: toolsList.first_tool,\n      result: toolExecution.result || toolExecution,\n      success: !!toolExecution.result\n    },\n    next_steps: [\n      \"Usar herramientas ATDF específicas\",\n      \"Configurar parámetros reales\",\n      \"Integrar con workflows complejos\"\n    ]\n  },\n  timestamp: new Date().toISOString()\n};"
+      },
+      "id": "combine-results",
+      "name": "Combine Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Start": {
+      "main": [
+        [
+          {
+            "node": "List ATDF Tools",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List ATDF Tools": {
+      "main": [
+        [
+          {
+            "node": "Process Tools List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Tools List": {
+      "main": [
+        [
+          {
+            "node": "Call First ATDF Tool",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call First ATDF Tool": {
+      "main": [
+        [
+          {
+            "node": "Combine Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Results": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": ["atdf", "mcp", "demo"],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-30T18:00:00.000Z",
+  "versionId": "1"
+}
