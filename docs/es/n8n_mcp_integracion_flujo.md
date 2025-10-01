@@ -34,3 +34,5 @@ Esta guía reúne lo esencial para conectar n8n con el Bridge MCP de ATDF e impo
 - API y autenticación de n8n: `../../n8n_setup_complete.md`
 - Workflow Code v3 (n8n): `../../n8n-workflows/README.md`
 - Guía rápida (ES): `../../GUIA_INTEGRACION_N8N.md`
+- Guía MCP (PT): `../pt/n8n_mcp_server_guide.md`
+ - Índice central n8n + MCP + ATDF: `../n8n_mcp_atdf_index.md`

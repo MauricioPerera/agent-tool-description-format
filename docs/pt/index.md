@@ -7,7 +7,7 @@
 1. **Escolha o esquema certo**
    - 1.x básico (`schema/atdf_schema.json`): descrições essenciais com `tool_id`, `description`, `when_to_use` e `how_to_use`.
    - 2.x avançado (`schema/enhanced_atdf_schema.json`): acrescenta `metadata`, `localization`, `prerequisites`, `examples` e `feedback`.
-   Consulte a [Compatibilidade de Versões](version_compatibility.md) em caso de dúvida.
+   Consulte a [Compatibilidade de Versões](../web/versions.html) em caso de dúvida.
 
 2. **Escreva o descritor**
 

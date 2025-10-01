@@ -34,3 +34,5 @@ This guide centralizes the essentials to connect n8n with the ATDF MCP Bridge an
 - n8n REST API & Auth: `../../n8n_setup_complete.md`
 - Code v3 Workflow (n8n): `../../n8n-workflows/README.md`
 - Spanish quick-start: `../../GUIA_INTEGRACION_N8N.md`
+- Portuguese MCP guide: `../pt/n8n_mcp_server_guide.md`
+ - Central index n8n + MCP + ATDF: `../n8n_mcp_atdf_index.md`

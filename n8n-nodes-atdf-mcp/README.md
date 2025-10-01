@@ -321,6 +321,15 @@ curl -X POST http://localhost:5678/webhook/atdf-mcp-server \
 - [Documentación n8n](https://docs.n8n.io/)
 - [Guía de desarrollo de nodos n8n](https://docs.n8n.io/integrations/creating-nodes/)
 
+## 📚 Documentación relacionada
+
+- **Índice central n8n + MCP + ATDF**: `../docs/n8n_mcp_atdf_index.md`
+- **Guía MCP (EN)**: `../docs/en/n8n_mcp_server_guide.md`
+- **Guía MCP (PT)**: `../docs/pt/n8n_mcp_server_guide.md`
+- **Guía rápida (ES)**: `../GUIA_INTEGRACION_N8N.md`
+- **API REST y Autenticación (n8n)**: `../n8n_setup_complete.md`
+- **Workflow Code v3 (n8n)**: `../n8n-workflows/README.md`
+
 ## 🤝 Contribución
 
 1. Fork el repositorio
