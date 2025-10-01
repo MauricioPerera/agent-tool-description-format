@@ -1,0 +1,91 @@
+{
+  "name": "Complete Travel Booking via ATDF-MCP (MCP Client)",
+  "id": "complete-travel-atdf-mcp-client",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manualTrigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            { "name": "traveler_name", "value": "Laura Gomez" },
+            { "name": "email", "value": "laura.gomez@example.com" },
+            { "name": "check_in", "value": "2025-10-15" },
+            { "name": "check_out", "value": "2025-10-20" },
+            { "name": "room_type", "value": "suite" },
+            { "name": "departure_city", "value": "Bogota" },
+            { "name": "arrival_city", "value": "Madrid" },
+            { "name": "travel_date", "value": "2025-10-15" }
+          ],
+          "number": [
+            { "name": "guests", "value": 2 }
+          ]
+        }
+      },
+      "id": "setData",
+      "name": "Set Travel Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {
+        "serverUrl": "http://localhost:8001/sse",
+        "operation": "callTool",
+        "toolName": "hotel_reservation",
+        "arguments": {
+          "guest_name": "={{ $json.traveler_name }}",
+          "email": "={{ $json.email }}",
+          "check_in": "={{ $json.check_in }}",
+          "check_out": "={{ $json.check_out }}",
+          "room_type": "={{ $json.room_type }}",
+          "guests": "={{ $json.guests }}"
+        }
+      },
+      "id": "hotelMcp",
+      "name": "Hotel Reservation (MCP)",
+      "type": "n8n-nodes-base.mcpClient",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "serverUrl": "http://localhost:8001/sse",
+        "operation": "callTool",
+        "toolName": "flight_booking",
+        "arguments": {
+          "passenger_name": "={{ $json.traveler_name }}",
+          "email": "={{ $json.email }}",
+          "departure_city": "={{ $json.departure_city }}",
+          "arrival_city": "={{ $json.arrival_city }}",
+          "departure_date": "={{ $json.travel_date }}",
+          "seat_class": "business"
+        }
+      },
+      "id": "flightMcp",
+      "name": "Flight Booking (MCP)",
+      "type": "n8n-nodes-base.mcpClient",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{ json: { summary: { hotel: $node[\"Hotel Reservation (MCP)\"].json, flight: $node[\"Flight Booking (MCP)\"].json } } }];"
+      },
+      "id": "combine",
+      "name": "Combine Results",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "Manual Trigger": { "main": [ [ { "node": "Set Travel Data", "type": "main", "index": 0 } ] ] },
+    "Set Travel Data": { "main": [ [ { "node": "Hotel Reservation (MCP)", "type": "main", "index": 0 }, { "node": "Flight Booking (MCP)", "type": "main", "index": 0 } ] ] },
+    "Hotel Reservation (MCP)": { "main": [ [ { "node": "Combine Results", "type": "main", "index": 0 } ] ] },
+    "Flight Booking (MCP)": { "main": [ [ { "node": "Combine Results", "type": "main", "index": 0 } ] ] }
+  }
+}
