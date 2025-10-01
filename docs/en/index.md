@@ -48,6 +48,7 @@ For enriched error payloads see the [Enriched Responses Guide](enriched_response
 - **[Implementation Examples](../docs/examples.md)** - Examples in multiple languages and tools
 - **[Implementation Guide](./IMPLEMENTATION_GUIDE.md)** - How to implement ATDF
 - **[Best Practices](./BEST_PRACTICES.md)** - Implementation recommendations
+- **[ATDF + MCP + n8n Flow](n8n_mcp_integration_flow.md)** - Architecture and usage options for MCP workflows
 
 ### 📊 **Visual Resources**
 - **[Mermaid Diagrams](../MERMAID_DIAGRAMS.md)** - ATDF flow and architecture diagrams

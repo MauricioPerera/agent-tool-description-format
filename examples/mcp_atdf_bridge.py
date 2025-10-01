@@ -322,6 +322,7 @@ def create_app(atdf_server_url: str) -> web.Application:
     app.router.add_get('/tools', handle_tools_info)
     
     # CORS support
+    @web.middleware
     async def cors_handler(request, handler):
         response = await handler(request)
         response.headers['Access-Control-Allow-Origin'] = '*'

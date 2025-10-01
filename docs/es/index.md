@@ -55,6 +55,7 @@ Este enfoque funcional permite a los agentes de IA seleccionar herramientas basa
 - [Ejemplos](examples.md): Descripciones de herramientas de muestra y cómo crear las tuyas.
 - [Soporte Multilingüe](multilingual.md): Información sobre el uso de múltiples idiomas.
 - [Contribuir](contributing.md): Directrices para contribuir a ATDF.
+- [Flujo ATDF + MCP + n8n](n8n_mcp_integracion_flujo.md): Arquitectura y escenarios de integración.
 - [Guía de Rediseño](redesign_guidelines.md): Consideraciones clave para evolucionar el protocolo.
 - [Historial de Cambios](changelog.md): Historial de versiones y cambios de ATDF.
 
