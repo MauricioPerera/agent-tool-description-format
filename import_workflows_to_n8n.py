@@ -11,6 +11,7 @@ from pathlib import Path
 # Configuración
 N8N_BASE_URL = "http://localhost:5678"
 WORKFLOWS_DIR = "n8n-workflows"
+N8N_API_KEY = os.environ.get("N8N_API_KEY")
 
 def import_workflow(workflow_file_path):
     """Importa un workflow a n8n"""
@@ -25,12 +26,14 @@ def import_workflow(workflow_file_path):
         }
         
         # Hacer la petición POST a n8n
+        headers = {"Content-Type": "application/json"}
+        if N8N_API_KEY:
+            headers["X-N8N-API-KEY"] = N8N_API_KEY
+
         response = requests.post(
             f"{N8N_BASE_URL}/api/v1/workflows",
             json=import_data,
-            headers={
-                "Content-Type": "application/json"
-            }
+            headers=headers
         )
         
         if response.status_code == 201:
@@ -55,7 +58,10 @@ def main():
     
     # Verificar que n8n esté corriendo
     try:
-        response = requests.get(f"{N8N_BASE_URL}/api/v1/workflows")
+        headers = {"Content-Type": "application/json"}
+        if N8N_API_KEY:
+            headers["X-N8N-API-KEY"] = N8N_API_KEY
+        response = requests.get(f"{N8N_BASE_URL}/api/v1/workflows", headers=headers)
         if response.status_code != 200:
             print(f"❌ n8n no está accesible en {N8N_BASE_URL}")
             return
