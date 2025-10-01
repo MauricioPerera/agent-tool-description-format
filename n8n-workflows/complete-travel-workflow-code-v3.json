@@ -1,0 +1,90 @@
+{
+  "name": "Complete Travel Booking via ATDF-MCP (Code v3)",
+  "nodes": [
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            { "name": "traveler_name", "value": "Carlos Mendez" },
+            { "name": "email", "value": "carlos.mendez@example.com" },
+            { "name": "departure_city", "value": "Madrid" },
+            { "name": "arrival_city", "value": "New York" },
+            { "name": "travel_date", "value": "2025-12-28T09:00:00" },
+            { "name": "check_in", "value": "2025-12-28T15:00:00" },
+            { "name": "check_out", "value": "2025-12-30T11:00:00" },
+            { "name": "room_type", "value": "suite" }
+          ],
+          "number": [
+            { "name": "guests", "value": 2 }
+          ]
+        }
+      },
+      "id": "Set Travel Data",
+      "name": "Set Travel Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "language": "JavaScript",
+        "mode": "runOnceForEachItem",
+        "jsCode": "const body = {\n  method: 'tools/call',\n  params: {\n    name: 'hotel_reservation',\n    arguments: {\n      guest_name: $json.traveler_name,\n      email: $json.email,\n      check_in: $json.check_in,\n      check_out: $json.check_out,\n      room_type: $json.room_type,\n      guests: $json.guests\n    }\n  }\n};\nconst resp = await this.helpers.httpRequest({ method: 'POST', url: 'http://localhost:8001/mcp', json: true, body });\nreturn { json: { result: resp.result } };"
+      },
+      "id": "Book Hotel",
+      "name": "Book Hotel",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        540,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "language": "JavaScript",
+        "mode": "runOnceForEachItem",
+        "jsCode": "const body = {\n  method: 'tools/call',\n  params: {\n    name: 'flight_booking',\n    arguments: {\n      passenger_name: $json.traveler_name,\n      email: $json.email,\n      departure_city: $json.departure_city,\n      arrival_city: $json.arrival_city,\n      departure_date: $json.travel_date,\n      seat_class: 'business'\n    }\n  }\n};\nconst resp = await this.helpers.httpRequest({ method: 'POST', url: 'http://localhost:8001/mcp', json: true, body });\nreturn { json: { result: resp.result } };"
+      },
+      "id": "Book Flight",
+      "name": "Book Flight",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        800,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Set Travel Data": {
+      "main": [
+        [
+          {
+            "node": "Book Hotel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Book Hotel": {
+      "main": [
+        [
+          {
+            "node": "Book Flight",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "staticData": null
+}

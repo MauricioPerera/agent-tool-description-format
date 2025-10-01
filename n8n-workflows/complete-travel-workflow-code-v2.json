@@ -1,5 +1,5 @@
 {
-  "name": "Complete Travel Booking via ATDF-MCP (Code)",
+  "name": "Complete Travel Booking via ATDF-MCP (Code v2)",
   "nodes": [
     {
       "parameters": {},
@@ -7,10 +7,7 @@
       "name": "When clicking 'Test workflow'",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [
-        240,
-        300
-      ]
+      "position": [240, 300]
     },
     {
       "parameters": {
@@ -35,25 +32,19 @@
       "name": "Set Travel Data",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.3,
-      "position": [
-        460,
-        300
-      ]
+      "position": [460, 300]
     },
     {
       "parameters": {
         "language": "JavaScript",
         "mode": "runOnceForEachItem",
-        "jsCode": "const body = {\n  method: 'tools/call',\n  params: {\n    name: 'hotel_reservation',\n    arguments: {\n      guest_name: item.json.traveler_name,\n      email: item.json.email,\n      check_in: item.json.check_in,\n      check_out: item.json.check_out,\n      room_type: item.json.room_type,\n      guests: item.json.guests\n    }\n  }\n};\nconst resp = await this.helpers.httpRequest({ method: 'POST', url: 'http://localhost:8001/mcp', json: true, body });\nreturn { json: { result: resp.result } };"
+        "jsCode": "const travel = $node['Set Travel Data'].item.json;\nconst body = {\n  method: 'tools/call',\n  params: {\n    name: 'hotel_reservation',\n    arguments: {\n      guest_name: travel.traveler_name,\n      email: travel.email,\n      check_in: travel.check_in,\n      check_out: travel.check_out,\n      room_type: travel.room_type,\n      guests: travel.guests\n    }\n  }\n};\nconst resp = await this.helpers.httpRequest({ method: 'POST', url: 'http://localhost:8001/mcp', json: true, body });\nreturn { json: { result: resp.result } };"
       },
       "id": "hotel-reservation-003",
       "name": "Book Hotel",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        680,
-        300
-      ]
+      "position": [680, 300]
     },
     {
       "parameters": {
@@ -75,10 +66,7 @@
       "name": "Check Hotel Status",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [
-        900,
-        300
-      ]
+      "position": [900, 300]
     },
     {
       "parameters": {
@@ -90,10 +78,7 @@
       "name": "Book Flight",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [
-        1120,
-        200
-      ]
+      "position": [1120, 200]
     },
     {
       "parameters": {
@@ -115,10 +100,7 @@
       "name": "Check Flight Status",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [
-        1340,
-        200
-      ]
+      "position": [1340, 200]
     },
     {
       "parameters": {
@@ -138,10 +120,7 @@
       "name": "Complete Success Summary",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.3,
-      "position": [
-        1560,
-        100
-      ]
+      "position": [1560, 100]
     },
     {
       "parameters": {
@@ -158,10 +137,7 @@
       "name": "Hotel Error Summary",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.3,
-      "position": [
-        1120,
-        400
-      ]
+      "position": [1120, 400]
     },
     {
       "parameters": {
@@ -178,10 +154,7 @@
       "name": "Flight Error Summary",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.3,
-      "position": [
-        1560,
-        300
-      ]
+      "position": [1560, 300]
     }
   ],
   "connections": {
@@ -206,13 +179,8 @@
   "settings": { "executionOrder": "v1" },
   "versionId": "1",
   "meta": { "templateCredsSetupCompleted": true, "instanceId": "local" },
-  "id": "complete-travel-atdf-mcp-code",
+  "id": "complete-travel-atdf-mcp-code-v2",
   "tags": [
-    {
-      "createdAt": "2025-10-01T07:50:00.000Z",
-      "updatedAt": "2025-10-01T07:50:00.000Z",
-      "id": "atdf-integration",
-      "name": "ATDF Integration"
-    }
+    { "createdAt": "2025-10-01T07:50:00.000Z", "updatedAt": "2025-10-01T07:50:00.000Z", "id": "atdf-integration", "name": "ATDF Integration" }
   ]
 }
