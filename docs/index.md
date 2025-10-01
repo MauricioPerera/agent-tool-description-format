@@ -1,4 +1,4 @@
-﻿# Agent Tool Description Format (ATDF)
+# Agent Tool Description Format (ATDF)
 
 <div align="center">
   <h2>Describe once, reuse everywhere</h2>
@@ -55,6 +55,8 @@ python tools/validate_enhanced.py examples/date_validator.json
 | [Examples Library](examples.md) | Real descriptors, bridges, and SDK snippets ready to run. |
 | [Version Compatibility](en/version_compatibility.md) | How legacy v0.1/v0.2 map to the current 1.x/2.x schemas. |
 | [ATDF + MCP + n8n Flow](atdf_mcp_n8n_integration_flow.md) | Architecture and language-specific guides for workflow automation. |
+| [n8n REST API & Auth](../n8n_setup_complete.md) | How to authenticate and import workflows via REST. |
+| [Code v3 Workflow (n8n)](../n8n-workflows/README.md) | End-to-end travel booking workflow using the MCP Bridge. |
 
 ---
 
@@ -64,6 +66,9 @@ python tools/validate_enhanced.py examples/date_validator.json
     <h3>n8n + MCP + ATDF</h3>
     <p>Run ATDF tools from native MCP nodes or custom ATDF nodes inside n8n workflows.</p>
     <p><a href="en/n8n_mcp_integration_flow.md">English guide →</a></p>
+    <p><a href="../GUIA_INTEGRACION_N8N.md">Spanish quick-start guide →</a></p>
+    <p><a href="../n8n_setup_complete.md">n8n REST API & Authentication →</a></p>
+    <p><a href="../n8n-workflows/README.md#complete-travel-booking-via-atdf-mcp-code-v3">Code v3 workflow documentation →</a></p>
   </div>
   <div class="card">
     <h3>BMAD-METHOD</h3>

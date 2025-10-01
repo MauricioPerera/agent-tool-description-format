@@ -7,7 +7,10 @@
       "name": "Start",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [240, 300]
+      "position": [
+        240,
+        300
+      ]
     },
     {
       "parameters": {
@@ -20,7 +23,10 @@
       "name": "Webhook Trigger",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [240, 460],
+      "position": [
+        240,
+        460
+      ],
       "webhookId": "hotel-reservation-test"
     },
     {
@@ -32,7 +38,10 @@
       "name": "Get Available Tools",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [460, 300]
+      "position": [
+        460,
+        300
+      ]
     },
     {
       "parameters": {
@@ -61,50 +70,44 @@
       "name": "Check Tools Available",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [680, 300]
+      "position": [
+        680,
+        300
+      ]
     },
     {
       "parameters": {
-        "url": "http://localhost:8001/call",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
+        "url": "http://localhost:8001/mcp",
         "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "tool_name",
-              "value": "unknown_tool"
-            },
-            {
-              "name": "arguments",
-              "value": "={{ JSON.stringify({\n  \"hotel_name\": \"Grand Plaza Hotel\",\n  \"check_in_date\": \"2024-03-15\",\n  \"check_out_date\": \"2024-03-18\",\n  \"guest_name\": \"John Doe\",\n  \"room_type\": \"deluxe\",\n  \"guests\": 2\n}) }}"
-            }
-          ]
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
         },
-        "options": {}
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"hotel_reservation\",\n    \"arguments\": {\n      \"guest_name\": \"John Doe\",\n      \"email\": \"john.doe@example.com\",\n      \"check_in\": \"2024-03-15T15:00:00\",\n      \"check_out\": \"2024-03-18T11:00:00\",\n      \"room_type\": \"deluxe\",\n      \"guests\": 2\n    }\n  }\n}"
       },
       "id": "e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b",
       "name": "Call Hotel Reservation Tool",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [900, 200]
+      "position": [
+        900,
+        200
+      ]
     },
     {
       "parameters": {
-        "jsCode": "// Process hotel reservation response\nconst response = $input.all()[0].json;\n\n// Extract reservation details\nconst reservationData = {\n  status: response.success ? 'confirmed' : 'failed',\n  reservation_id: response.reservation_id || 'N/A',\n  hotel_name: 'Grand Plaza Hotel',\n  guest_name: 'John Doe',\n  check_in: '2024-03-15',\n  check_out: '2024-03-18',\n  room_type: 'deluxe',\n  guests: 2,\n  total_cost: response.total_cost || 'N/A',\n  confirmation_number: response.confirmation_number || 'N/A',\n  timestamp: new Date().toISOString(),\n  raw_response: response\n};\n\nreturn {\n  json: reservationData\n};"
+        "jsCode": "// Process hotel reservation response from MCP bridge\nconst rpcResponse = $input.first().json;\nconst content = rpcResponse?.result?.content ?? [];\nconst rawText = content.length ? content[0].text : null;\n\nlet parsed;\ntry {\n  parsed = rawText ? JSON.parse(rawText) : {};\n} catch (error) {\n  parsed = { status: 'failed', parse_error: error.message, raw: rawText };\n}\n\nconst details = parsed.details ?? {};\nconst status = parsed.status ?? 'failed';\n\nconst reservationData = {\n  status,\n  reservation_id: parsed.reservation_id ?? 'N/A',\n  hotel_name: 'Grand Plaza Hotel',\n  guest_name: details.guest_name ?? 'John Doe',\n  check_in: details.check_in ?? '2024-03-15T15:00:00',\n  check_out: details.check_out ?? '2024-03-18T11:00:00',\n  room_type: details.room_type ?? 'deluxe',\n  guests: details.guests ?? 2,\n  message: parsed.message ?? null,\n  timestamp: new Date().toISOString(),\n  raw_response: parsed\n};\n\nreturn {\n  json: reservationData\n};\n"
       },
       "id": "f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c",
       "name": "Process Reservation Response",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1120, 200]
+      "position": [
+        1120,
+        200
+      ]
     },
     {
       "parameters": {
@@ -133,7 +136,10 @@
       "name": "Check Reservation Status",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [1340, 200]
+      "position": [
+        1340,
+        200
+      ]
     },
     {
       "parameters": {
@@ -144,7 +150,10 @@
       "name": "Success Notification",
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.1,
-      "position": [1560, 120]
+      "position": [
+        1560,
+        120
+      ]
     },
     {
       "parameters": {
@@ -155,7 +164,10 @@
       "name": "Failure Notification",
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.1,
-      "position": [1560, 280]
+      "position": [
+        1560,
+        280
+      ]
     },
     {
       "parameters": {
@@ -166,7 +178,10 @@
       "name": "No Tools Error",
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.1,
-      "position": [900, 400]
+      "position": [
+        900,
+        400
+      ]
     }
   ],
   "connections": {

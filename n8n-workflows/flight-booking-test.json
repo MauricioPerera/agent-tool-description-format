@@ -7,7 +7,10 @@
       "name": "Start",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [240, 300]
+      "position": [
+        240,
+        300
+      ]
     },
     {
       "parameters": {
@@ -20,7 +23,10 @@
       "name": "Webhook Trigger",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [240, 460],
+      "position": [
+        240,
+        460
+      ],
       "webhookId": "flight-booking-test"
     },
     {
@@ -32,7 +38,10 @@
       "name": "Get Available Tools",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [460, 300]
+      "position": [
+        460,
+        300
+      ]
     },
     {
       "parameters": {
@@ -61,60 +70,57 @@
       "name": "Check Tools Available",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [680, 300]
+      "position": [
+        680,
+        300
+      ]
     },
     {
       "parameters": {
-        "jsCode": "// Generate flight search parameters\nconst searchParams = {\n  origin: 'MAD',\n  destination: 'BCN',\n  departure_date: '2024-03-20',\n  return_date: '2024-03-25',\n  passengers: 1,\n  class: 'economy',\n  passenger_name: 'Jane Smith',\n  passenger_email: 'jane.smith@example.com',\n  passenger_phone: '+34-600-123-456'\n};\n\nreturn {\n  json: searchParams\n};"
+        "jsCode": "// Generate flight booking parameters compatible with the MCP bridge\nconst searchParams = {\n  departure_city: 'Madrid',\n  arrival_city: 'Barcelona',\n  departure_date: '2024-03-20T09:00:00',\n  return_date: '2024-03-25T18:00:00',\n  seat_class: 'economy',\n  passenger_name: 'Jane Smith',\n  email: 'jane.smith@example.com'\n};\n\nreturn {\n  json: searchParams\n};\n"
       },
       "id": "f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c",
       "name": "Prepare Flight Parameters",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [900, 200]
+      "position": [
+        900,
+        200
+      ]
     },
     {
       "parameters": {
-        "url": "http://localhost:8001/call",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
+        "url": "http://localhost:8001/mcp",
         "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "tool_name",
-              "value": "unknown_tool"
-            },
-            {
-              "name": "arguments",
-              "value": "={{ JSON.stringify($json) }}"
-            }
-          ]
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
         },
-        "options": {}
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"flight_booking\",\n    \"arguments\": {\n      \"passenger_name\": \"{{ $json.passenger_name }}\",\n      \"email\": \"{{ $json.email }}\",\n      \"departure_city\": \"{{ $json.departure_city }}\",\n      \"arrival_city\": \"{{ $json.arrival_city }}\",\n      \"departure_date\": \"{{ $json.departure_date }}\",\n      \"return_date\": \"{{ $json.return_date }}\",\n      \"seat_class\": \"{{ $json.seat_class }}\"\n    }\n  }\n}"
       },
       "id": "a7b8c9d0-e1f2-3a4b-5c6d-7e8f9a0b1c2d",
       "name": "Call Flight Booking Tool",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [1120, 200]
+      "position": [
+        1120,
+        200
+      ]
     },
     {
       "parameters": {
-        "jsCode": "// Process flight booking response\nconst response = $input.all()[0].json;\nconst searchParams = $input.all()[1].json;\n\n// Extract booking details\nconst bookingData = {\n  status: response.success ? 'confirmed' : 'failed',\n  booking_reference: response.booking_reference || 'N/A',\n  flight_number: response.flight_number || 'IB1234',\n  origin: searchParams.origin,\n  destination: searchParams.destination,\n  departure_date: searchParams.departure_date,\n  return_date: searchParams.return_date,\n  passenger_name: searchParams.passenger_name,\n  passenger_email: searchParams.passenger_email,\n  class: searchParams.class,\n  passengers: searchParams.passengers,\n  total_price: response.total_price || 'N/A',\n  currency: response.currency || 'EUR',\n  seat_numbers: response.seat_numbers || ['12A'],\n  check_in_url: response.check_in_url || 'https://checkin.airline.com',\n  timestamp: new Date().toISOString(),\n  raw_response: response\n};\n\nreturn {\n  json: bookingData\n};"
+        "jsCode": "// Process flight booking response from MCP bridge\nconst rpcResponse = $input.all()[0].json;\nconst searchParams = $input.all()[1].json;\nconst content = rpcResponse?.result?.content ?? [];\nconst rawText = content.length ? content[0].text : null;\n\nlet parsed;\ntry {\n  parsed = rawText ? JSON.parse(rawText) : {};\n} catch (error) {\n  parsed = { status: 'failed', parse_error: error.message, raw: rawText };\n}\n\nconst details = parsed.details ?? {};\nconst status = parsed.status ?? 'failed';\n\nconst bookingData = {\n  status,\n  booking_reference: parsed.booking_id ?? 'N/A',\n  flight_number: details.flight_number ?? 'IB1234',\n  departure_city: details.departure_city ?? searchParams.departure_city,\n  arrival_city: details.arrival_city ?? searchParams.arrival_city,\n  departure_date: details.departure_date ?? searchParams.departure_date,\n  return_date: details.return_date ?? searchParams.return_date,\n  passenger_name: searchParams.passenger_name,\n  email: searchParams.email,\n  seat_class: details.seat_class ?? searchParams.seat_class,\n  timestamp: new Date().toISOString(),\n  raw_response: parsed\n};\n\nreturn {\n  json: bookingData\n};\n"
       },
       "id": "b8c9d0e1-f2a3-4b5c-6d7e-8f9a0b1c2d3e",
       "name": "Process Booking Response",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1340, 200]
+      "position": [
+        1340,
+        200
+      ]
     },
     {
       "parameters": {
@@ -143,7 +149,10 @@
       "name": "Check Booking Status",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [1560, 200]
+      "position": [
+        1560,
+        200
+      ]
     },
     {
       "parameters": {
@@ -154,7 +163,10 @@
       "name": "Success Notification",
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.1,
-      "position": [1780, 120]
+      "position": [
+        1780,
+        120
+      ]
     },
     {
       "parameters": {
@@ -165,7 +177,10 @@
       "name": "Failure Notification",
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.1,
-      "position": [1780, 280]
+      "position": [
+        1780,
+        280
+      ]
     },
     {
       "parameters": {
@@ -176,7 +191,10 @@
       "name": "No Tools Error",
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.1,
-      "position": [900, 400]
+      "position": [
+        900,
+        400
+      ]
     },
     {
       "parameters": {
@@ -189,7 +207,10 @@
       "name": "Send Confirmation Email",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
-      "position": [2000, 120]
+      "position": [
+        2000,
+        120
+      ]
     }
   ],
   "connections": {

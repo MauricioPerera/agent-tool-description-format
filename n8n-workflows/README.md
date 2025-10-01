@@ -4,6 +4,18 @@
 
 This directory contains n8n workflows that demonstrate the integration between ATDF (Agent Tool Description Format), MCP (Model Context Protocol), and n8n automation platform.
 
+## 🗂️ Table of Contents
+- Overview and Architecture
+- Available Workflows
+- Complete Travel Booking via ATDF-MCP (Code v3)
+- Configuration Requirements
+- MCP Bridge Endpoints
+- Quick Start: Import and Execute
+
+## 🔗 Quick References
+- n8n REST API & Auth: `../n8n_setup_complete.md`
+- Spanish quick-start guide: `../GUIA_INTEGRACION_N8N.md`
+
 ## 🏗️ Architecture
 
 ```

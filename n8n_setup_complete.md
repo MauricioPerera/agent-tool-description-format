@@ -1,5 +1,18 @@
 # ✅ Guía Completa: ATDF + MCP + n8n (FUNCIONANDO)
 
+## 🗂️ Tabla de contenido
+- [🎉 Estado Actual](#-estado-actual-todo-funcionando)
+- [🚀 Configuración Paso a Paso](#-configuración-paso-a-paso)
+- [🔧 Configuraciones Avanzadas](#-configuraciones-avanzadas)
+- [📊 Monitoreo y Debugging](#-monitoreo-y-debugging)
+- [🎯 Resumen de la Solución](#-resumen-de-la-solución)
+- [🎉 ¡Listo para Usar!](#--listo-para-usar)
+- [🔐 Importación por API (REST) y Autenticación](#-importación-por-api-rest-y-autenticación)
+- [🧩 Workflow Code v3](#-workflow-complete-travel-booking-via-atdf-mcp-code-v3)
+- [🧪 Troubleshooting API](#-troubleshooting-api)
+
+> Referencias rápidas: ver `GUIA_INTEGRACION_N8N.md` y `n8n-workflows/README.md` para detalles de importación y ejecución del workflow Code v3.
+
 ## 🎉 Estado Actual: ¡TODO FUNCIONANDO!
 
 - ✅ Bridge ATDF-MCP ejecutándose en `http://localhost:8001`
