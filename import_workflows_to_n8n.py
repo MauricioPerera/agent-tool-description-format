@@ -11,6 +11,7 @@ from pathlib import Path
 # Configuración
 N8N_BASE_URL = "http://localhost:5678"
 WORKFLOWS_DIR = "n8n-workflows"
+WORKFLOW_FILE = os.environ.get("WORKFLOW_FILE")
 N8N_API_KEY = os.environ.get("N8N_API_KEY")
 
 def import_workflow(workflow_file_path):
@@ -20,10 +21,10 @@ def import_workflow(workflow_file_path):
         with open(workflow_file_path, 'r', encoding='utf-8') as f:
             workflow_data = json.load(f)
         
-        # Preparar los datos para la API de n8n
-        import_data = {
-            "workflow": workflow_data
-        }
+        # Preparar los datos para la API de n8n: el endpoint de creación
+        # espera únicamente propiedades permitidas (p.ej. name, nodes, connections, settings)
+        allowed_keys = {"name", "nodes", "connections", "settings"}
+        import_data = {k: v for k, v in workflow_data.items() if k in allowed_keys}
         
         # Hacer la petición POST a n8n
         headers = {"Content-Type": "application/json"}
@@ -36,7 +37,7 @@ def import_workflow(workflow_file_path):
             headers=headers
         )
         
-        if response.status_code == 201:
+        if response.status_code in (200, 201):
             result = response.json()
             print(f"✅ Workflow '{workflow_data['name']}' importado exitosamente")
             print(f"   ID: {result.get('id', 'N/A')}")
@@ -72,14 +73,21 @@ def main():
     
     # Buscar archivos de workflow
     workflows_path = Path(WORKFLOWS_DIR)
-    if not workflows_path.exists():
-        print(f"❌ Directorio {WORKFLOWS_DIR} no encontrado")
-        return
-    
-    workflow_files = list(workflows_path.glob("*.json"))
-    if not workflow_files:
-        print(f"❌ No se encontraron archivos .json en {WORKFLOWS_DIR}")
-        return
+    if WORKFLOW_FILE:
+        # Importar solo un archivo específico
+        wf_path = Path(WORKFLOW_FILE)
+        if not wf_path.exists():
+            print(f"❌ Archivo específico no encontrado: {WORKFLOW_FILE}")
+            return
+        workflow_files = [wf_path]
+    else:
+        if not workflows_path.exists():
+            print(f"❌ Directorio {WORKFLOWS_DIR} no encontrado")
+            return
+        workflow_files = list(workflows_path.glob("*.json"))
+        if not workflow_files:
+            print(f"❌ No se encontraron archivos .json en {WORKFLOWS_DIR}")
+            return
     
     print(f"📁 Encontrados {len(workflow_files)} workflows para importar")
     
