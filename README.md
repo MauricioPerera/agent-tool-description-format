@@ -96,8 +96,9 @@ El **Agent Tool Description Format (ATDF)** es un estándar abierto para describ
 - **[Mejores Prácticas](./docs/BEST_PRACTICES.md)** - Recomendaciones para implementaciones robustas
 - **[Ejemplos](./docs/examples.md)** - Ejemplos en múltiples lenguajes y herramientas
 - **[Compatibilidad de versiones](./docs/en/version_compatibility.md)** - Relación entre las versiones históricas (v0.1/v0.2) y los esquemas actuales (1.x/2.x).
+- **[Flujo ATDF + MCP + n8n](./docs/atdf_mcp_n8n_integration_flow.md)** - Arquitectura y guías paso a paso en varios idiomas.
 
-## 🎯 Plantillas ATDF
+## 🔌 Integraciones Destacadas`r`n`r`n- **n8n + MCP + ATDF**: sigue la [guía de integración](./docs/atdf_mcp_n8n_integration_flow.md) para conectar el bridge ATDF-MCP y ejecutar herramientas desde n8n (nodos nativos o personalizados).`r`n- **Bridge ATDF-MCP local**:`r`n  ```bash`r`n  python examples/fastapi_mcp_integration.py`r`n  python examples/mcp_atdf_bridge.py --port 8001 --atdf-server http://localhost:8000`r`n  ````r`n`r`n## 🎯 Plantillas ATDF
 
 ### 1. **Plantilla de herramienta (esquema 1.x)**
 

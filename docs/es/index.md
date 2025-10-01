@@ -1,72 +1,15 @@
-[Inicio](index.md) | [Especificación](specification.md) | [Ejemplos](examples.md) | [Guía MCP de n8n](n8n_mcp_server_guide.md) | [Contribuir](contributing.md) | [Multilingüe](multilingual.md) | [Historial de Cambios](changelog.md) | [Licencia](license.md)
+﻿[Inicio](index.md) | [Especificación](specification.md) | [Ejemplos](examples.md) | [Guía MCP de n8n](n8n_mcp_server_guide.md) | [Contribuir](contributing.md) | [Multilingüe](multilingual.md) | [Historial de Cambios](changelog.md) | [Licencia](license.md)
 
 **Idiomas:** [English (en)](../en/index.md) | [Español (es)](index.md) | [Português (pt)](../pt/index.md)
 
-## 📚 Documentación Principal
+## 🚀 Inicio Rápido
 
-- **[Especificación ATDF](../docs/ATDF_SPECIFICATION.md)** - Especificación completa del formato
-- **[Conceptos Fundamentales](../docs/CONCEPTS.md)** - Explicación de conceptos clave
-- **[Ejemplos de Implementación](../docs/examples.md)** - Ejemplos en múltiples lenguajes y herramientas
-- **[Guía de Implementación](./IMPLEMENTATION_GUIDE.md)** - Cómo implementar ATDF
-- **[Mejores Prácticas](./BEST_PRACTICES.md)** - Recomendaciones para implementación
-
-### 📊 **Recursos Visuales**
-- **[Diagramas Mermaid](../MERMAID_DIAGRAMS.md)** - Diagramas de flujo y arquitectura ATDF
-
-# Formato de Descripción de Herramientas para Agentes (ATDF)
-
-Bienvenido a la documentación del **Formato de Descripción de Herramientas para Agentes (ATDF)**, un protocolo abierto para describir herramientas funcionalmente para permitir que los agentes de IA las seleccionen y usen basándose en el propósito, contexto y operación, sin depender de detalles específicos de implementación.
-
-## Versión Actual
-
-**Versión actual: 0.2.0** - Consulta el [historial de cambios](changelog.md) para detalles sobre las últimas actualizaciones.
-
-## Introducción
-
-ATDF está diseñado para resolver el problema de la integración de herramientas para agentes de IA. En lugar de requerir nombres de herramientas codificados o APIs técnicas complejas, ATDF proporciona una forma estandarizada de describir herramientas basada en:
-
-1.  **Qué** hace la herramienta
-2.  **Cuándo** debe usarse
-3.  **Cómo** se usa
-
-Este enfoque funcional permite a los agentes de IA seleccionar herramientas basadas en la tarea en cuestión, en lugar de requerir conocimiento específico sobre nombres de herramientas o APIs.
-
-## Características Clave
-
-### Características Principales (v0.1.0)
-- **Formato Simple y Legible por Humanos**: Estructura JSON/YAML fácil de entender.
-- **Agnóstico al Modelo**: Funciona con cualquier modelo de agente de IA.
-- **Agnóstico a la Herramienta**: Describe tanto herramientas físicas (ej., taladros) como herramientas digitales (ej., APIs).
-- **Agnóstico al Prompt**: Selección de herramientas basada en la función, no en nombres específicos.
-- **Validación de Esquema**: Esquema JSON para validar descripciones de herramientas.
-
-### Características Mejoradas (v0.2.0)
-- **Soporte de Metadatos**: Organiza herramientas con información de versión, autor, etiquetas y categoría.
-- **Soporte Multilingüe Enriquecido**: Localización integrada para múltiples idiomas.
-- **Prerrequisitos y Dependencias**: Especifica herramientas, condiciones y permisos requeridos.
-- **Mecanismos de Retroalimentación**: Indicadores de progreso y señales de finalización.
-- **Ejemplos de Uso**: Ejemplos del mundo real con entradas y salidas esperadas.
-- **Tipos de Entrada Complejos**: Soporte para objetos anidados y esquemas avanzados.
-
-## Enlaces Rápidos
-
-- [Especificación](specification.md): Especificación técnica detallada del protocolo ATDF.
-- [Compatibilidad de Versiones](version_compatibility.md): Tabla que relaciona etiquetas antiguas con los esquemas actuales.
-- [Ejemplos](examples.md): Descripciones de herramientas de muestra y cómo crear las tuyas.
-- [Soporte Multilingüe](multilingual.md): Información sobre el uso de múltiples idiomas.
-- [Contribuir](contributing.md): Directrices para contribuir a ATDF.
-- [Flujo ATDF + MCP + n8n](n8n_mcp_integracion_flujo.md): Arquitectura y escenarios de integración.
-- [Guía de Rediseño](redesign_guidelines.md): Consideraciones clave para evolucionar el protocolo.
-- [Historial de Cambios](changelog.md): Historial de versiones y cambios de ATDF.
-
-## Primeros Pasos
-
-1. **Elige el esquema correcto**
+1. **Elige el esquema adecuado**
    - 1.x básico (`schema/atdf_schema.json`): descripciones esenciales con `tool_id`, `description`, `when_to_use` y `how_to_use`.
-   - 2.x mejorado (`schema/enhanced_atdf_schema.json`): agrega `metadata`, `localization`, `prerequisites`, `examples` y `feedback`.
-   Revisa [Compatibilidad de Versiones](version_compatibility.md) si tienes dudas.
+   - 2.x mejorado (`schema/enhanced_atdf_schema.json`): añade `metadata`, `localization`, `prerequisites`, `examples` y `feedback`.
+   Consulta la [Compatibilidad de Versiones](version_compatibility.md) si tienes dudas.
 
-2. **Redacta la descripción**
+2. **Redacta el descriptor**
 
 ```json
 {
@@ -99,31 +42,47 @@ python tools/validate_enhanced.py tu_tool.json
 python tests/run_all_tests.py
 ```
 
-El manejo de errores enriquecidos se explica en la [Guía de Respuestas Enriquecidas](enriched_responses_guide.md).
-## Casos de Uso
+Consulta la [Guía de Respuestas Enriquecidas](enriched_responses_guide.md) para diseñar errores detallados.
 
-ATDF está diseñado para una amplia gama de aplicaciones, incluyendo:
+## 📚 Documentación principal
+- **[Especificación ATDF](../docs/ATDF_SPECIFICATION.md)** – Referencia completa del formato
+- **[Conceptos Fundamentales](../docs/CONCEPTS.md)** – Explicación de los conceptos clave
+- **[Ejemplos de Implementación](../docs/examples.md)** – Casos en múltiples lenguajes y frameworks
+- **[Guía de Implementación](IMPLEMENTATION_GUIDE.md)** – Cómo agregar ATDF a tus herramientas
+- **[Mejores Prácticas](BEST_PRACTICES.md)** – Recomendaciones y patrones comprobados
+- **[Flujo ATDF + MCP + n8n](n8n_mcp_integracion_flujo.md)** – Arquitectura y escenarios de integración
 
-- **Agentes de IA**: Ayudar a los sistemas de IA a seleccionar y usar herramientas apropiadamente.
-- **Robótica**: Describir herramientas físicas para sistemas robóticos.
-- **Integración de API**: Estandarizar descripciones de APIs y servicios web.
-- **Aplicaciones Multimodales**: Unificar diferentes tipos de herramientas en un formato común.
-- **Sistemas Multilingües**: Soportar descripciones de herramientas en diferentes idiomas.
+### Recursos visuales
+- **[Diagramas Mermaid](../MERMAID_DIAGRAMS.md)** – Diagramas de flujo y arquitectura ATDF
 
-## Licencia
+## 🔌 Integraciones destacadas
+- **n8n + MCP + ATDF**: sigue la [guía de integración](n8n_mcp_integracion_flujo.md) para conectar el bridge ATDF-MCP y ejecutar herramientas desde n8n (nodos nativos o personalizados).
+- **Bridge ATDF-MCP local**:
+  ```bash
+  python examples/fastapi_mcp_integration.py
+  python examples/mcp_atdf_bridge.py --port 8001 --atdf-server http://localhost:8000
+  ```
 
-ATDF está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](license.md) para más detalles.
+## ⭐ Características clave
+- **Errores enriquecidos**: contexto completo (`expected`, soluciones, valores sugeridos).
+- **Soporte multilingüe**: localización integrada para descripciones y errores.
+- **Validación automática**: detecta la versión del esquema y valida entradas/salidas.
+- **Interoperabilidad**: SDKs en Python y JavaScript, conversores MCP y nodos para n8n.
 
-## Componentes Principales
+## 📦 Casos de uso
+- **Agentes de IA** que necesitan descubrir herramientas por función y contexto.
+- **APIs y microservicios** que requieren respuestas de error consistentes.
+- **Workflows no-code** (n8n, Zapier) que consumen metadatos declarativos.
+- **Mercados de herramientas** con catálogos multilingües y permisos granulares.
 
-- [**Especificación**](specification.md): Los detalles técnicos del formato
-- [**Ejemplos**](examples.md): Ejemplos de descripciones de herramientas
-- [**Ejemplos de Uso**](../usage_examples.md): Ejemplos prácticos de uso de ATDF
-- [**Soporte Multilingüe**](multilingual.md): Cómo funciona la localización
-- [**Convertidor MCP a ATDF**](../usage_examples.md#convertidor-mcp-a-atdf): Herramientas para convertir desde el formato MCP
-- [**Contribuir**](contributing.md): Cómo contribuir al proyecto
-- [**Registro de Cambios**](changelog.md): Historial de cambios
+## 🤝 Cómo contribuir
+- Revisa la [guía de contribución](contributing.md) para flujos de trabajo, checklist de PR y estilo.
+- Ejecuta `python tests/run_all_tests.py` y `npm test` (en `js/`) antes de enviar cambios.
+- Mantén sincronizadas las traducciones en `docs/en`, `docs/es` y `docs/pt`.
+
+## 📄 Licencia
+ATDF se distribuye bajo la licencia MIT. Consulta [License](license.md) para más detalles.
 
 ---
 
-[Repositorio GitHub](https://github.com/MauricioPerera/agent-tool-description-format) | [Historial de Cambios](changelog.md) 
+**ATDF v2.0.0** – Formato estándar para describir herramientas funcionalmente, habilitando agentes más inteligentes y flujos multilingües con manejo de errores enriquecido.

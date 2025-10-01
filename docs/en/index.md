@@ -1,3 +1,7 @@
+[Home](index.md) | [Specification](specification.md) | [Examples](examples.md) | [n8n MCP Guide](n8n_mcp_server_guide.md) | [Contributing](contributing.md) | [Multilingual](multilingual.md) | [Changelog](changelog.md) | [License](license.md)
+
+**Languages:** [English (en)](index.md) | [Español (es)](../es/index.md) | [Português (pt)](../pt/index.md)
+
 ## 🎯 Quick Start
 
 1. **Pick the right schema**
