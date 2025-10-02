@@ -70,7 +70,13 @@
         "location": "ejemplo_location",
         "bit_id": "ejemplo_bit_id"
       },
-      "expected_output": "Agujero creado con éxito"
+      "expected_output": "Agujero creado con éxito",
+      "goal": "Crear un agujero estándar en una pared de yeso",
+      "input_values": {
+        "location": "x:10,y:20",
+        "bit_id": "BIT_5MM"
+      },
+      "expected_result": "Agujero creado con éxito en pared de yeso de 5mm"
     },
     {
       "title": "Ejemplo de error",
@@ -79,10 +85,13 @@
         "location": "ejemplo_location",
         "bit_id": "ejemplo_bit_id"
       },
-      "expected_output": {
-        "error": "invalid_bit",
-        "message": "La broca seleccionada no es compatible con la superficie"
-      }
+      "expected_output": "Se devuelve el error invalid_bit indicando broca incompatible",
+      "goal": "Intento de perforación con broca incompatible",
+      "input_values": {
+        "location": "x:5,y:12",
+        "bit_id": "BIT_25MM"
+      },
+      "expected_result": "Se devuelve el error invalid_bit indicando broca incompatible"
     }
   ]
 }

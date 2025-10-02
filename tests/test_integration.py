@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 BMAD-ATDF Integration Tests
 Tests for the complete BMAD-ATDF integration
@@ -15,7 +15,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from tools.validator import validate_tool
+from tools.validator import validate_tool_smart
 
 class TestBMADIntegration:
     """Test suite for BMAD-ATDF integration"""
@@ -51,7 +51,7 @@ class TestBMADIntegration:
         
         for example_file in example_files[:3]:  # Test first 3 examples
             try:
-                result = validate_tool(str(example_file))
+                result = validate_tool_smart(str(example_file))
                 assert result is True, f"Example {example_file.name} should be valid"
             except Exception as e:
                 pytest.fail(f"Validation failed for {example_file.name}: {e}")
@@ -152,5 +152,4 @@ class TestBMADDocumentation:
             assert "paths" in api_data, "API docs should have paths section"
 
 if __name__ == "__main__":
-    # Run tests with verbose output
     pytest.main([__file__, "-v"])
