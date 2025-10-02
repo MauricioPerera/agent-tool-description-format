@@ -101,3 +101,29 @@ The selector accumulates successes and failures per tool/server pair and applies
 _Last updated: 2025-10-02_
 
 
+## Client Usage
+
+### Without n8n (HTTP/CLI)
+1. Arranca la pila con `scripts/start_all_services.ps1 -StartupDelay 15` (Windows) o `./scripts/start_all_services.sh` (Linux/macOS).
+2. Solicita recomendaciones directamente:
+   ```bash
+   curl -X POST http://127.0.0.1:8050/recommend \
+     -H "Content-Type: application/json" \
+     -d '{
+           "query": "Necesito reservar un hotel en Madrid",
+           "language": "es",
+           "top_n": 1,
+           "servers": ["http://127.0.0.1:8001/tools"],
+           "allowed_tools": ["hotel_reservation"]
+         }'
+   ```
+3. Consulta `/health` para métricas rápidas (`tool_count`) y detén servicios con `scripts/stop_all_services.*` al finalizar.
+
+### With n8n workflow
+1. Importa `workflow_selector_builtin.json` (`n8n import:workflow --input workflow_selector_builtin.json`).
+2. Ejecuta `n8n execute --id PNvGdiK9rbvmEnKl` o usa la UI.
+3. El flujo ejecuta: selector `/recommend` -> MCP `tools/call` -> Code node con `reservation_id` y detalles.
+4. Logs y evidencias permanecen en `bmad/deliverables/qa/` (por ejemplo `integration_test_results.json`).
+
+
+

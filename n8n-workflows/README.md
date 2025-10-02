@@ -77,7 +77,7 @@ ATDF Server (Port 8000) → MCP Bridge (Port 8001) → ATDF Tool Selector (Port 
 2. `Book Hotel` (Code): calls `hotel_reservation` tool via MCP Bridge.
 3. `Book Flight` (Code): calls `flight_booking` tool via MCP Bridge.
 
-### 5. Hotel Booking via Selector (HTTP) (`workflow_selector_builtin.json` → workflow ID `EJNFSpfWrmNxWKEo`)
+### 5. Hotel Booking via Selector (HTTP) (`workflow_selector_builtin.json` → workflow ID `PNvGdiK9rbvmEnKl`)
 
 **Purpose**: Demonstrate how to consume the selector service and MCP bridge using only core n8n nodes (no custom packages).
 
@@ -85,7 +85,7 @@ ATDF Server (Port 8000) → MCP Bridge (Port 8001) → ATDF Tool Selector (Port 
 - `HTTP Request` node posts to `http://127.0.0.1:8050/recommend`.
 - Second `HTTP Request` node posts to `http://127.0.0.1:8001/mcp` using the selector response.
 - `Code` node parses JSON-RPC responses into structured data.
-- CLI-friendly: `n8n execute --id EJNFSpfWrmNxWKEo` (requires selector + bridge running).
+- CLI-friendly: `n8n execute --id PNvGdiK9rbvmEnKl` (requires selector + bridge running).
 
 ## ⚙️ Configuration Requirements
 
@@ -112,10 +112,18 @@ Scripts `../scripts/start_all_services.sh` and `../scripts/start_all_services.ba
 n8n import:workflow --input n8n-workflows/hotel-reservation-test.json
 
 # Execute selector-driven workflow (after importing workflow_selector_builtin.json)
-n8n execute --id EJNFSpfWrmNxWKEo
+n8n execute --id PNvGdiK9rbvmEnKl
 ```
 
 For automated startup use the scripts in `../scripts/`. For manual commands, see `../estado_final_integracion.md`.
 
 Happy automating! 🚀
+
+## Selector Client Quick Reference
+
+- Scripts para servicios: `scripts/start_all_services.ps1 -StartupDelay 15` (Windows) / `./scripts/start_all_services.sh` (Linux/macOS) y sus pares `stop_all_services.*`.
+- Uso sin n8n: realizar POST a `http://127.0.0.1:8050/recommend` (ver ejemplo en `docs/tool_selector.md`).
+- Uso con n8n: `n8n execute --id PNvGdiK9rbvmEnKl` tras importar `workflow_selector_builtin.json`.
+- Evidencias de QA: `bmad/deliverables/qa/validation_test_results.json`, `integration_test_results.json`, `performance_benchmarks.json`.
+
 
