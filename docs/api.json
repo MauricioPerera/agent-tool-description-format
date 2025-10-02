@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "BMAD-ATDF API",
+    "title": "ATDF Internal Ops API",
     "version": "1.0.0",
-    "description": "API for BMAD-ATDF integration"
+    "description": "Internal API used by the BMAD coordination tooling; not part of the public ATDF protocol."
   },
   "servers": [
     {

@@ -1,5 +1,7 @@
 # BMAD-METHOD Integration with ATDF
 
+> **Internal use only:** BMAD-METHOD is internal coordination tooling for the ATDF team and is not part of the ATDF protocol.
+
 ## Overview
 
 This document describes the integration of BMAD-METHOD (Behavioral Multi-Agent Development) with the Agent Tool Description Format (ATDF) project. This integration enables AI-driven agile development workflows specifically tailored for ATDF enhancement and tool ecosystem expansion.

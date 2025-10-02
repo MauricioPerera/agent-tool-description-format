@@ -68,7 +68,7 @@ To contribute new tool descriptions:
 - [ ] Validate all modified descriptors with `tools/validator.py` (1.x) and `tools/validate_enhanced.py` (2.x).
 - [ ] Run `python tests/run_all_tests.py`; if the JS SDK changes, also run `npm test` inside `js/`.
 - [ ] Update localized documentation in `docs/es` and `docs/pt` when text changes affect users.
-- [ ] Attach or link BMAD workflow updates if the change impacts `bmad.config.yml` or integration scripts.
+- [ ] (Internal team) Attach or link BMAD workflow updates if the change impacts `bmad.config.yml` or integration scripts.
 - [ ] Provide a short testing summary in the PR description.
 - **Code Style**:
   - For Python, follow [PEP 8](https://www.python.org/dev/peps/pep-0008/) guidelines.

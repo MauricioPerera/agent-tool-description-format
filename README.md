@@ -360,79 +360,14 @@ Las plantillas funcionan en cualquier herramienta:
 - Manejo de errores uniforme
 - Documentación automática
 
-## 🤖 BMAD-METHOD Integration
+## 🔒 Tooling interno (BMAD)
 
-### ¿Qué es BMAD-METHOD?
+BMAD-METHOD es un framework que usamos únicamente para coordinar tareas del equipo ATDF. No forma parte del protocolo ATDF ni de los entregables públicos, así que puedes ignorarlo si solo te interesa adoptar ATDF.
 
-**BMAD-METHOD** (Behavioral Multi-Agent Development) es un framework de desarrollo ágil impulsado por IA que utiliza agentes especializados para manejar diferentes aspectos del desarrollo de software. Esta integración permite workflows de desarrollo específicamente adaptados para ATDF.
+- El equipo interno puede consultar `README_BMAD.md` y `docs/BMAD_INTEGRATION.md` para procedimientos y scripts.
+- Los recursos `bmad/`, `install_bmad.*` y comandos `npm run bmad:*` se conservan como apoyo interno.
+- Usuarios externos no necesitan instalar ni ejecutar BMAD para trabajar con ATDF.
 
-### 🚀 Instalación Rápida
-
-#### Windows
-```batch
-install_bmad.bat
-```
-
-#### Linux/macOS
-```bash
-chmod +x install_bmad.sh
-./install_bmad.sh
-```
-
-### 🎯 Agentes Especializados
-
-| Agente | Especialización | Responsabilidades |
-|--------|----------------|-------------------|
-| **ATDF Specialist** | Experto en dominio ATDF | Diseño de esquemas, manejo de errores, integración de herramientas |
-| **BMAD Orchestrator** | Coordinación multi-agente | Gestión de workflows, distribución de tareas, control de calidad |
-| **Analyst** | Análisis de requisitos | Historias de usuario, análisis de necesidades |
-| **Architect** | Diseño de sistemas | Arquitectura técnica, patrones de diseño |
-| **Developer** | Implementación | Desarrollo de código, soluciones técnicas |
-| **QA** | Aseguramiento de calidad | Estrategias de testing, validación |
-
-### 📋 Workflows Disponibles
-
-#### 1. **ATDF Enhancement** (`bmad/workflows/atdf-enhancement.yml`)
-- **Propósito**: Agregar nuevas características a ATDF
-- **Fases**: Planificación → Diseño → Implementación → Testing → Despliegue
-- **Agentes**: ATDF Specialist, Architect, Developer, QA, PM
-
-#### 2. **Tool Integration** (`bmad/workflows/tool-integration.yml`)
-- **Propósito**: Integrar ATDF con frameworks externos
-- **Frameworks objetivo**: FastAPI, MCP, OpenAPI, N8N, Zapier
-- **Fases**: Análisis → Diseño → Implementación → Testing → Documentación
-
-### 🛠️ Comandos Disponibles
-
-```bash
-# Gestión BMAD
-npm run bmad:update    # Actualizar BMAD-METHOD
-npm run bmad:status    # Verificar estado de BMAD
-npm run bmad:tools     # Listar herramientas disponibles
-npm run bmad:agents    # Listar agentes configurados
-
-# Comandos de Orquestador
-*help                  # Mostrar comandos disponibles
-*status               # Estado actual del proyecto
-*agents               # Listar todos los agentes
-*workflows            # Mostrar workflows disponibles
-*start [workflow]     # Iniciar workflow específico
-*assign [agent] [task] # Asignar tarea a agente específico
-```
-
-### 📚 Documentación BMAD
-
-- **[Guía de Integración BMAD](./docs/BMAD_INTEGRATION.md)** - Documentación completa de la integración
-- **[Configuración BMAD](./bmad.config.yml)** - Configuración del proyecto
-- **[Definiciones de Agentes](./bmad/agents/)** - Agentes especializados
-- **[Workflows](./bmad/workflows/)** - Procesos de desarrollo definidos
-
-### 🎯 Cómo Empezar con BMAD
-
-1. **Instalar BMAD-METHOD**: Ejecutar script de instalación
-2. **Subir Agente**: Cargar `bmad/agents/bmad-orchestrator.md` en tu plataforma de IA preferida
-3. **Comenzar**: Usar comando `*help` o `*status`
-4. **Ejecutar Workflow**: `*start atdf-enhancement` para nuevas características
 
 ## 📊 Beneficios
 
@@ -444,7 +379,6 @@ npm run bmad:agents    # Listar agentes configurados
 | **Extensibilidad** | Fácil de extender para casos de uso específicos |
 | **Mantenibilidad** | Código más limpio y fácil de mantener |
 | **No-Code Friendly** | Funciona perfectamente con herramientas visuales |
-| **Desarrollo Ágil** | Workflows estructurados con BMAD-METHOD |
 | **Calidad Automatizada** | Testing y validación automática con agentes especializados |
 
 ## 🔗 Enlaces Útiles

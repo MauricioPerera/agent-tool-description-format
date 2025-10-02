@@ -123,7 +123,7 @@ _Last updated: 2025-10-02_
 1. Importa `workflow_selector_builtin.json` (`n8n import:workflow --input workflow_selector_builtin.json`).
 2. Ejecuta `n8n execute --id PNvGdiK9rbvmEnKl` o usa la UI.
 3. El flujo ejecuta: selector `/recommend` -> MCP `tools/call` -> Code node con `reservation_id` y detalles.
-4. Logs y evidencias permanecen en `bmad/deliverables/qa/` (por ejemplo `integration_test_results.json`).
+4. Logs y evidencias internas permanecen en `bmad/deliverables/qa/` (por ejemplo `integration_test_results.json`).
 
 
 

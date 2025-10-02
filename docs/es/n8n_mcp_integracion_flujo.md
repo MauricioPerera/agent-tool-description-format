@@ -1,3 +1,4 @@
+> **Selector Client enlaces rápidos:** [Guía de uso](../tool_selector.md#client-usage) | [Resumen QA](../estado_final_integracion.md#selector-client-qa-status) | [README de workflows](../n8n-workflows/README.md#selector-client-quick-reference)
 
 Esta guía reúne lo esencial para conectar n8n con el Bridge MCP de ATDF e importar workflows verificados (Code v3).
 

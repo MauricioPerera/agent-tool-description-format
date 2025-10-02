@@ -124,7 +124,7 @@ Happy automating! 🚀
 - Scripts para servicios: `scripts/start_all_services.ps1 -StartupDelay 15` (Windows) / `./scripts/start_all_services.sh` (Linux/macOS) y sus pares `stop_all_services.*`.
 - Uso sin n8n: realizar POST a `http://127.0.0.1:8050/recommend` (ver ejemplo en `docs/tool_selector.md`).
 - Uso con n8n: `n8n execute --id PNvGdiK9rbvmEnKl` tras importar `workflow_selector_builtin.json`.
-- Evidencias de QA: `bmad/deliverables/qa/validation_test_results.json`, `integration_test_results.json`, `performance_benchmarks.json`.
+- Evidencias internas de QA: `bmad/deliverables/qa/validation_test_results.json`, `integration_test_results.json`, `performance_benchmarks.json`.
 
 
 

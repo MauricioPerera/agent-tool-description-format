@@ -40,7 +40,7 @@ Enhanced documents add optional fields such as `metadata.version`, `metadata.tag
 
 ## Integrations
 - **n8n + MCP**: Multilingual guides under `docs/en|es|pt/n8n_mcp_*` explain architecture, native MCP nodes, and custom ATDF nodes (`n8n-nodes-atdf-mcp/`).
-- **BMAD-METHOD**: See `docs/BMAD_INTEGRATION.md` and `bmad/` for agents, workflows, and orchestration.
+- **BMAD-METHOD (internal tooling)**: See `docs/BMAD_INTEGRATION.md` and `bmad/` for agents, workflows, and orchestration.
 - **Monitoring & Telemetry**: `docs/monitoring.md` covers metrics pipelines; sample dashboards live in `monitoring/`.
 
 ## Usage Patterns
@@ -59,4 +59,4 @@ Enhanced documents add optional fields such as `metadata.version`, `metadata.tag
 ## Governance
 - Use Conventional Commits.
 - Keep `docs/en`, `docs/es`, and `docs/pt` in sync.
-- Follow the PR checklist in `docs/en/contributing.md` (schema version, validation, tests, translations, BMAD workflows if applicable).
+- Follow the PR checklist in `docs/en/contributing.md` (schema version, validation, tests, translations, BMAD workflows if applicable for internal coordination).

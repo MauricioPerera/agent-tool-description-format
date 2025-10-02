@@ -5,6 +5,12 @@
 **Fecha de finalización**: 2025-10-02  
 **Estado**: 🟢 OPERATIVO - Todos los servicios funcionando correctamente
 
+## Selector Client QA Status
+
+- ✅ Workflows selector + MCP + n8n verificados el 2025-10-02 (hotel, vuelo y demo CLI).
+- 🧪 Evidencias internas en `bmad/deliverables/qa/` (`integration_test_results.json`, `validation_test_results.json`).
+- 🔁 Última ejecución CLI: `n8n execute --id EJNFSpfWrmNxWKEo` con recomendaciones correctas del selector.
+
 ## 🏗️ Arquitectura Implementada
 
 ```
@@ -13,7 +19,7 @@ ATDF Server (Puerto 8000) → MCP Bridge (Puerto 8001) → ATDF Tool Selector (P
 
 ### Componentes Activos
 
-1. **ATDF Server** 
+1. **ATDF Server**
    - ✅ Endpoint: `http://localhost:8000`
    - 🧰 Inicio: `python -m examples.fastapi_mcp_integration` (automatizado por `scripts/start_all_services.*`)
    - 📈 Estado: Operativo
@@ -200,7 +206,7 @@ curl http://localhost:5678
 - Cliente: Carlos Mendez (carlos.mendez@example.com)
 - Fechas: 28-30 Diciembre 2025
 - Habitación: Suite para 2 huéspedes
-- **Resultado**: ✅ Reserva confirmada
+- **Resultado**: ✅ Reserva confirmada  
 - **ID**: a9f4b196-f6e8-45b7-bffb-02109f5a07fd
 
 **Paso 2 - Reserva de Vuelo**:
@@ -255,5 +261,4 @@ La integración ATDF + MCP + n8n está **COMPLETAMENTE FUNCIONAL** y lista para 
 
 ---
 *Última actualización: 2025-10-02 - Integración completa con selector + workflows CLI*
-
 

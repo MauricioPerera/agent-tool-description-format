@@ -65,9 +65,9 @@ python tools/validate_enhanced.py examples/date_validator.json
 <div class="cards">\n<div class="card">
     <h3>Selector Client</h3>
     <p>Selector HTTP -> MCP bridge -> n8n workflow end-to-end.</p>
-    <p><a href="tool_selector.md#client-usage">Client usage guide</a></p>
-    <p><a href="../estado_final_integracion.md#cliente-selector-–-resumen-de-uso">Integration status</a></p>
-    <p><a href="../n8n-workflows/README.md#selector-client-quick-reference">n8n workflow reference</a></p>
+    <p><a href="tool_selector.md#without-n8n-httpcli">HTTP/CLI usage</a></p>
+    <p><a href="tool_selector.md#with-n8n-workflow">n8n workflow walkthrough</a></p>
+    <p><a href="../estado_final_integracion.md#selector-client-qa-status">QA status overview</a></p>
   </div>
 
   <div class="card">
@@ -87,6 +87,11 @@ python tools/validate_enhanced.py examples/date_validator.json
     <p><a href="monitoring.md">Monitoring guide →</a></p>
   </div>
 </div>
+
+### Selector Client Highlights
+- **HTTP/CLI usage:** [Run calls directly](tool_selector.md#without-n8n-httpcli)
+- **n8n workflow:** [Jump into the n8n workflow](../n8n-workflows/README.md#selector-client-quick-reference)
+- **QA snapshot:** [Review selector validation](../estado_final_integracion.md#selector-client-qa-status)
 
 > 💡 Need localized quick-starts? Visit the language hubs above to get the same playbook in Spanish and Portuguese.
 

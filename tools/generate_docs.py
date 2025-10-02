@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-BMAD Documentation Generator
-Generates comprehensive documentation for BMAD-ATDF integration
+BMAD internal tooling generator
+Generates documentation for the ATDF team's BMAD coordination assets
 """
 
 import json
@@ -122,9 +122,9 @@ def generate_api_docs():
     api_docs = {
         "openapi": "3.0.0",
         "info": {
-            "title": "BMAD-ATDF API",
+            "title": "ATDF Internal Ops API",
             "version": "1.0.0",
-            "description": "API for BMAD-ATDF integration"
+            "description": "Internal API used by the BMAD coordination tooling"
         },
         "servers": [
             {"url": "http://localhost:8000", "description": "Development server"}
@@ -199,7 +199,7 @@ def generate_api_docs():
 
 def main():
     """Main documentation generation function"""
-    print("🔧 Generating BMAD documentation...")
+    print("🔧 Generating BMAD internal documentation...")
     
     # Create docs directory
     os.makedirs("docs", exist_ok=True)

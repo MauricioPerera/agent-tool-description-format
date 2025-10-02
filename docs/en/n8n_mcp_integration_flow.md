@@ -1,3 +1,4 @@
+> **Selector Client quick links:** [Usage guide](../tool_selector.md#client-usage) | [QA status](../estado_final_integracion.md#selector-client-qa-status) | [Workflow README](../n8n-workflows/README.md#selector-client-quick-reference)
 
 ## Integration Architecture
 
