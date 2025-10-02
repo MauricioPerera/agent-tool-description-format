@@ -1,0 +1,5 @@
+metric,value,source
+selector_highlight,1,docs/index.md#selector-client-highlights
+localized_banners,3,docs/en|es|pt/n8n_mcp_*
+qa_reports,4,bmad/deliverables/qa
+start_stop_scripts,4,scripts/start_all_services*,scripts/stop_all_services*

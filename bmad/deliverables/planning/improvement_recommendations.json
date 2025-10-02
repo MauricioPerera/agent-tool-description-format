@@ -1,0 +1,23 @@
+{
+  "generated_at": "2025-10-02T15:43:57",
+  "initiative": "ATDF Selector + MCP + n8n",
+  "new_assets": [
+    "scripts/start_all_services.ps1",
+    "scripts/start_all_services.sh",
+    "scripts/stop_all_services.ps1",
+    "scripts/stop_all_services.sh",
+    "estado_final_integracion.md",
+    "n8n-workflows/README.md",
+    "docs/tool_selector.md"
+  ],
+  "integration_scope": {
+    "http_cli": "docs/tool_selector.md#without-n8n-httpcli",
+    "n8n_workflow": "n8n-workflows/README.md#selector-client-quick-reference",
+    "qa_status": "estado_final_integracion.md#selector-client-qa-status"
+  },
+  "summary": {
+    "documentation": "Selector Client destacado en docs/index.md con enlaces a uso HTTP/CLI, flujo n8n y QA.",
+    "automation": "Scripts start/stop multiplataforma documentados y validados en suites BMAD.",
+    "qa": "Suites y reportes en bmad/deliverables/qa cubren validación, integración, performance y seguridad."
+  }
+}

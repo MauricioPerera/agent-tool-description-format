@@ -1,0 +1,15 @@
+{
+  "alternatives": [
+    {
+      "name": "MCP-only workflows",
+      "gap": "Sin ranking multinodo ni QA consolidada",
+      "atdf_advantage": "Selector HTTP con benchmarks y suites BMAD"
+    },
+    {
+      "name": "n8n REST import manual",
+      "gap": "Scripts de arranque faltantes, documentación dispersa",
+      "atdf_advantage": "Start/stop unificados y README actualizado"
+    }
+  ],
+  "summary": "ATDF ofrece flujos documentados end-to-end con QA interna y scripts multiplataforma."
+}

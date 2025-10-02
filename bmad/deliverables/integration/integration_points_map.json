@@ -1,0 +1,14 @@
+{
+  "fastapi_mcp": {
+    "bridge": "examples/mcp_atdf_bridge.py",
+    "selector_endpoint": "http://127.0.0.1:8050/recommend",
+    "mcp_endpoint": "http://127.0.0.1:8001/mcp"
+  },
+  "n8n": {
+    "workflow_id": "PNvGdiK9rbvmEnKl",
+    "import_file": "n8n-workflows/workflow_selector_builtin.json",
+    "scripts": [
+      "scripts/start_all_services.*"
+    ]
+  }
+}

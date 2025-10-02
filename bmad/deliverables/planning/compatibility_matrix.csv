@@ -1,0 +1,5 @@
+component,notes
+docs/index.md,Selector Client Highlights enlaza HTTP/CLI+n8n+QA
+docs/en|es|pt/n8n_mcp_*.md,Banners iniciales referencian guía selector
+estado_final_integracion.md,Incluye QA status con ancla selector interno
+n8n-workflows/README.md,Quick Reference lista scripts y evidencias internas

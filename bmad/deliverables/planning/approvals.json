@@ -1,0 +1,21 @@
+{
+  "deliverable": "ATDF automation and QA package",
+  "signoff": [
+    {
+      "role": "pm",
+      "name": "Auto-Signoff",
+      "date": "2025-10-05"
+    },
+    {
+      "role": "qa",
+      "name": "Auto-Signoff",
+      "date": "2025-10-05"
+    },
+    {
+      "role": "atdf_specialist",
+      "name": "Auto-Signoff",
+      "date": "2025-10-05"
+    }
+  ],
+  "notes": "Documentación y artefactos de QA revisados tras integración selector."
+}

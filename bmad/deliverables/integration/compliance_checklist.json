@@ -1,0 +1,10 @@
+{
+  "selector_health": "estado_final_integracion.md#verificacion-de-estado",
+  "workflow_docs": "n8n-workflows/README.md#selector-client-quick-reference",
+  "qa_artifacts": "bmad/deliverables/qa/",
+  "docs_links": [
+    "docs/index.md#selector-client-highlights",
+    "docs/en/n8n_mcp_integration_flow.md",
+    "docs/tool_selector.md"
+  ]
+}
