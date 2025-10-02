@@ -1,84 +1,75 @@
 #!/bin/bash
 
-echo "ðŸ›‘ Stopping ATDF + MCP + n8n Integration Services"
-echo "================================================"
+set -u
 
-# Function to stop a service by PID file
+echo "Stopping ATDF + MCP + n8n integration services"
+echo "=============================================="
+
 stop_service_by_pid() {
-    local service_name=$1
+    local name=$1
     local pid_file=$2
-    
-    if [ -f "$pid_file" ]; then
-        local pid=$(cat "$pid_file")
-        echo "ðŸ” Stopping $service_name (PID: $pid)..."
-        
-        if kill -0 "$pid" 2>/dev/null; then
-            kill "$pid"
+
+    if [ -f "${pid_file}" ]; then
+        local pid
+        pid=$(cat "${pid_file}")
+        echo "Stopping ${name} (PID ${pid})"
+        if kill -0 "${pid}" >/dev/null 2>&1; then
+            kill "${pid}" >/dev/null 2>&1
             sleep 2
-            
-            # Force kill if still running
-            if kill -0 "$pid" 2>/dev/null; then
-                echo "âš ï¸  Force killing $service_name..."
-                kill -9 "$pid"
+            if kill -0 "${pid}" >/dev/null 2>&1; then
+                echo "Force killing ${name}"
+                kill -9 "${pid}" >/dev/null 2>&1
             fi
-            
-            echo "âœ… $service_name stopped"
+            echo "${name} stopped"
         else
-            echo "âš ï¸  $service_name was not running"
+            echo "${name} was not running"
         fi
-        
-        rm -f "$pid_file"
+        rm -f "${pid_file}"
     else
-        echo "âš ï¸  No PID file found for $service_name"
+        echo "No PID file for ${name}"
     fi
 }
 
-# Function to stop services by port
 stop_service_by_port() {
-    local service_name=$1
+    local name=$1
     local port=$2
-    
-    echo "ðŸ” Looking for $service_name on port $port..."
-    
+
+    echo "Checking ${name} on port ${port}"
     if command -v lsof >/dev/null 2>&1; then
-        local pid=$(lsof -ti :$port)
-        if [ ! -z "$pid" ]; then
-            echo "ðŸ›‘ Stopping $service_name (PID: $pid)..."
-            kill "$pid" 2>/dev/null
+        local pid
+        pid=$(lsof -ti :"${port}")
+        if [ -n "${pid}" ]; then
+            echo "Stopping ${name} (PID ${pid})"
+            kill "${pid}" >/dev/null 2>&1
             sleep 2
-            
-            # Force kill if still running
-            if kill -0 "$pid" 2>/dev/null; then
-                echo "âš ï¸  Force killing $service_name..."
-                kill -9 "$pid" 2>/dev/null
+            if kill -0 "${pid}" >/dev/null 2>&1; then
+                echo "Force killing ${name}"
+                kill -9 "${pid}" >/dev/null 2>&1
             fi
-            echo "âœ… $service_name stopped"
+            echo "${name} stopped"
         else
-            echo "âš ï¸  $service_name not found on port $port"
+            echo "${name} not running on port ${port}"
         fi
     else
-        echo "âš ï¸  lsof not available, cannot stop by port"
+        echo "lsof not available – cannot stop ${name} by port"
     fi
 }
 
-# Stop services by PID files first
-stop_service_by_pid "ATDF Server" ".atdf_server.pid"
-stop_service_by_pid "MCP Bridge" ".mcp_bridge.pid"
-stop_service_by_pid "ATDF Selector" ".selector.pid"
-
-# Fallback: stop by port
-echo
-echo "ðŸ” Checking for remaining services by port..."
-stop_service_by_port "ATDF Server" "8000"
-stop_service_by_port "MCP Bridge" "8001"
-stop_service_by_port "ATDF Selector" "8050"
-
-# Note about n8n
-echo
-echo "ðŸ“Š Note: n8n (port 5678) should be stopped manually if needed:"
-echo "   â€¢ If started with npx: Press Ctrl+C in the terminal"
-echo "   â€¢ If running as service: Use appropriate service management commands"
+stop_service_by_pid "ATDF server" ".atdf_server.pid"
+stop_service_by_pid "MCP bridge" ".mcp_bridge.pid"
+stop_service_by_pid "ATDF selector" ".selector.pid"
 
 echo
-echo "âœ… Service cleanup complete!"
-echo "=========================="
+
+echo "Checking for remaining services by port"
+stop_service_by_port "ATDF server" "8000"
+stop_service_by_port "MCP bridge" "8001"
+stop_service_by_port "ATDF selector" "8050"
+
+echo
+
+echo "If n8n was started manually (port 5678) stop it from its terminal or service manager"
+
+echo
+
+echo "Service cleanup completed"
