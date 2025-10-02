@@ -1,0 +1,26 @@
+﻿{
+  "suite": "security_scan_manual",
+  "executed_at": "2025-10-02T17:30:00Z",
+  "tools": ["bandit", "pip-audit", "nmap"],
+  "results": [
+    {
+      "tool": "bandit",
+      "target": "selector/api.py",
+      "summary": "No high severity issues",
+      "details": []
+    },
+    {
+      "tool": "pip-audit",
+      "target": "requirements.txt",
+      "summary": "0 vulnerabilidades",
+      "details": []
+    },
+    {
+      "tool": "nmap",
+      "target": "localhost",
+      "summary": "Puertos expuestos: 8000, 8001, 8050, 5678",
+      "details": ["Todos restringidos a loopback"]
+    }
+  ],
+  "status": "pass"
+}

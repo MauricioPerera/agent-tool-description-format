@@ -40,9 +40,9 @@ function Is-Running {
     param([string]$Name)
     $pidFile = Join-Path $root $pidMap[$Name]
     if (Test-Path $pidFile) {
-        $pid = Get-Content $pidFile | Select-Object -First 1
-        if ($pid -and (Get-Process -Id $pid -ErrorAction SilentlyContinue)) {
-            return $pid
+        $servicePid = Get-Content $pidFile | Select-Object -First 1
+        if ($servicePid -and (Get-Process -Id $servicePid -ErrorAction SilentlyContinue)) {
+            return $servicePid
         }
         Remove-Item $pidFile -ErrorAction SilentlyContinue
     }
@@ -118,4 +118,5 @@ Write-Host '  - n8n-workflows/README.md'
 Write-Host '  - estado_final_integracion.md'
 
 Write-Host 'Startup complete.' -ForegroundColor Cyan
+
 

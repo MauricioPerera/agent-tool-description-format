@@ -1,0 +1,31 @@
+﻿{
+  "deliverable": "ATDF automation and QA package",
+  "approval_roles": ["pm", "qa", "atdf_specialist"],
+  "criteria": {
+    "scripts": {
+      "ps_start": "scripts/start_all_services.ps1 arranca servicios y permite parametrizar StartupDelay",
+      "ps_stop": "scripts/stop_all_services.ps1 detiene procesos vía PID o puerto y limpia archivos",
+      "bash_parity": "scripts/start_all_services.sh y scripts/stop_all_services.sh ofrecen funcionalidad equivalente"
+    },
+    "documentation": {
+      "estado_final_integracion": "Sección 'Scripts de Inicio Rápido' enumera bat/ps1/bash",
+      "selector_doc": "docs/tool_selector.md describe wrappers para Windows y Linux/macOS",
+      "n8n_readme": "n8n-workflows/README.md enlaza scripts actualizados"
+    },
+    "qa_artifacts": {
+      "suites_present": [
+        "validation_test_suite.py",
+        "integration_test_suite.py",
+        "performance_test_suite.py"
+      ],
+      "reports_present": [
+        "validation_test_results.json",
+        "integration_test_results.json",
+        "performance_benchmarks.json",
+        "security_test_results.json"
+      ],
+      "coverage_target": ">=0.90",
+      "selector_latency_target": "<= 150 ms promedio"
+    }
+  }
+}

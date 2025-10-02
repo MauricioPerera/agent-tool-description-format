@@ -1,0 +1,33 @@
+﻿user_stories:
+  - id: ATDF-AUTO-001
+    role: "Como ingeniero de plataforma"
+    need: "quiero iniciar la pila ATDF + MCP + Selector con un solo comando"
+    benefit: "para habilitar flujos n8n sin intervención manual"
+    acceptance:
+      - "`scripts/start_all_services.ps1` inicia los tres servicios y reporta health checks"
+      - "Existe equivalente Bash (`start_all_services.sh`) con la misma cobertura"
+      - "La ejecución termina con código 0 cuando los servicios responden"
+  - id: ATDF-AUTO-002
+    role: "Como ingeniero de plataforma"
+    need: "quiero detener los servicios sin rastrear manualmente PIDs"
+    benefit: "para liberar recursos y evitar conflictos de puertos"
+    acceptance:
+      - "`scripts/stop_all_services.ps1` cierra procesos y elimina PID files"
+      - "`scripts/stop_all_services.sh` implementa lógica equivalente en Linux/macOS"
+      - "El script informa si algún servicio no estaba en ejecución"
+  - id: ATDF-DOC-003
+    role: "Como PM"
+    need: "necesito documentación actualizada con los nuevos entry points"
+    benefit: "para orientar a los equipos BMAD sin depender de soporte ad-hoc"
+    acceptance:
+      - "estado_final_integracion.md documenta scripts PS/Bash"
+      - "n8n-workflows/README.md refleja los comandos start/stop multiplataforma"
+      - "docs/tool_selector.md aclara wrappers para Windows"
+  - id: ATDF-QA-004
+    role: "Como QA"
+    need: "quiero una suite documentada para validar selector + MCP"
+    benefit: "para cumplir con el gate del workflow `testing` de BMAD"
+    acceptance:
+      - "Existen archivos de suite (`*_test_suite.py`) y reportes JSON/MD"
+      - "Resultados especifican cobertura >= 90% y benchmarks de selector"
+      - "Incluye recomendaciones de optimización y seguridad"

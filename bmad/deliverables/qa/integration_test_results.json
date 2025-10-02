@@ -1,0 +1,27 @@
+﻿{
+  "suite": "integration_test_suite.py",
+  "executed_at": "2025-10-02T17:20:00Z",
+  "dependencies": [
+    "scripts/start_all_services.ps1",
+    "n8n execute --id EJNFSpfWrmNxWKEo"
+  ],
+  "tests": [
+    {
+      "id": "test_n8n_selector_workflow_executes",
+      "status": "pending",
+      "note": "Requires n8n CLI; documented for manual/CI execution"
+    },
+    {
+      "id": "test_selector_recommendation_payload",
+      "status": "pending",
+      "note": "Curl-call documented; to be run when selector está activo"
+    },
+    {
+      "id": "test_mcp_bridge_response",
+      "status": "pending",
+      "note": "Validate JSON-RPC 2.0 payload con reserva hotel"
+    }
+  ],
+  "instructions": "Ejecutar tras levantar servicios con scripts/start_all_services.ps1 (StartupDelay=15).",
+  "expected_outcome": "Todos los tests deben devolver status_code 0 y reservation_id en la respuesta MCP."
+}

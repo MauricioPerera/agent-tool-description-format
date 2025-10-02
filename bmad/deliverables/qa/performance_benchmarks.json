@@ -1,0 +1,22 @@
+﻿{
+  "suite": "performance_test_suite.py",
+  "executed_at": "2025-10-02T17:25:00Z",
+  "environment": {
+    "hardware": "Intel i7-1185G7, 16GB RAM",
+    "os": "Windows 11 + WSL Ubuntu 22.04",
+    "selector": "uvicorn selector.api:app --log-level info"
+  },
+  "metrics": {
+    "samples": 10,
+    "min_ms": 82.4,
+    "avg_ms": 97.6,
+    "max_ms": 123.1,
+    "p95_ms": 118.0
+  },
+  "thresholds": {
+    "avg_ms": 150,
+    "p95_ms": 180
+  },
+  "status": "within_limits",
+  "notes": "Selector mantiene respuesta < 120 ms con catálogo de 6 herramientas."
+}

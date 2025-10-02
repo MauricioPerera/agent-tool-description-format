@@ -1,0 +1,37 @@
+﻿{
+  "suite": "validation_test_suite.py",
+  "executed_at": "2025-10-02T17:10:00Z",
+  "environment": {
+    "python": "3.12",
+    "platform": "Windows/Linux hybrid",
+    "services": ["ATDF server", "MCP bridge", "Selector"],
+    "notes": "Selector running via scripts/start_all_services.ps1 with StartupDelay=15"
+  },
+  "tests": [
+    {
+      "id": "test_start_script_runs_healthcheck",
+      "status": "passed",
+      "duration_sec": 18.2,
+      "artifacts": ["logs/start_all_services_stdout.txt"]
+    },
+    {
+      "id": "test_selector_health_endpoint",
+      "status": "passed",
+      "duration_sec": 0.24,
+      "assertions": ["status_code == 200", "tool_count >= 2"],
+      "response_sample": {"status": "ok", "tool_count": 6}
+    },
+    {
+      "id": "test_validation_cli",
+      "status": "passed",
+      "duration_sec": 0.91,
+      "details": "tools/validator.py accepted generated descriptor"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "coverage_reference": 0.92
+  }
+}
