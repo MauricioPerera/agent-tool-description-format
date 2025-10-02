@@ -55,6 +55,7 @@ python tools/validate_enhanced.py examples/date_validator.json
 | [Examples Library](examples.md) | Real descriptors, bridges, and SDK snippets ready to run. |
 | [Version Compatibility](en/version_compatibility.md) | How legacy v0.1/v0.2 map to the current 1.x/2.x schemas. |
 | [ATDF + MCP + n8n Flow](atdf_mcp_n8n_integration_flow.md) | Architecture and language-specific guides for workflow automation. |
+| [ATDF Server Profile](server_profile.md) | Required endpoints and metrics for compliant servers. |
 | [n8n REST API & Auth](../n8n_setup_complete.md) | How to authenticate and import workflows via REST. |
 | [ATDF CLI Reference](CLI_REFERENCE.md) | Command-line toolkit for validation and conversion. |
 | [Code v3 Workflow (n8n)](../n8n-workflows/README.md) | End-to-end travel booking workflow using the MCP Bridge. |

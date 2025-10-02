@@ -1,4 +1,4 @@
-Ôªø# AEP-004: ATDF Server Profile v1
+# AEP-004: ATDF Server Profile v1
 
 ## Status
 Planned
@@ -7,12 +7,12 @@ Planned
 Architecture council
 
 ## Problem Statement
-El servidor FastAPI de ejemplo demuestra buenas pr√°cticas, pero no existe un perfil formal de endpoints/m√©tricas obligatorio para implementaciones ATDF.
+El servidor FastAPI de ejemplo demuestra buenas pr·cticas, pero no existe un perfil formal de endpoints/mÈtricas obligatorio para implementaciones ATDF.
 
 ## Proposal
-- Definir perfil de servidor ATDF Server Profile v1 con endpoints m√≠nimos (GET /tools, GET /tools/{id}, POST /tools/validate, POST /convert/mcp, POST /search, GET /metrics, GET /health).
-- Actualizar ejemplo FastAPI para cumplir 100% con el perfil y documentar autenticaci√≥n opcional.
-- Publicar contrato OpenAPI y gu√≠a de conformidad.
+- Definir perfil de servidor ATDF Server Profile v1 con endpoints mÌnimos (GET /tools, GET /tools/{id}, POST /tools/validate, POST /convert/mcp, POST /search, GET /metrics, GET /health).
+- Actualizar ejemplo FastAPI para cumplir 100% con el perfil y documentar autenticaciÛn opcional.
+- Publicar contrato OpenAPI y guÌa de conformidad.
 
 ## Acceptance Criteria
 - Documento de perfil publicado en docs/ con reglas claras.
