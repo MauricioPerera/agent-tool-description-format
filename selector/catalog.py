@@ -375,10 +375,20 @@ class ToolCatalog:
     @staticmethod
     def _convert_mcp_tool(tool: Dict[str, object]) -> Dict[str, object]:
         """Convert an MCP tool entry into an ATDF-like structure."""
+        raw_description = tool.get("description", "")
+        description = raw_description or ""
+        when_to_use: Optional[str] = None
+        if isinstance(raw_description, str):
+            marker = "When to use:"
+            if marker in raw_description:
+                before, after = raw_description.split(marker, 1)
+                description = before.strip()
+                when_to_use = after.strip()
         descriptor: Dict[str, object] = {
             "tool_id": tool.get("name"),
-            "description": tool.get("description", ""),
+            "description": description,
             "schema_version": "1.0.0",
+            "when_to_use": when_to_use,
             "how_to_use": {
                 "inputs": [],
                 "outputs": {
@@ -387,7 +397,29 @@ class ToolCatalog:
                 },
             },
         }
+        inputs: List[Dict[str, object]] = []
         input_schema = tool.get("inputSchema")
         if isinstance(input_schema, dict):
-            descriptor["input_schema"] = input_schema
+            properties = input_schema.get("properties")
+            if isinstance(properties, dict):
+                for name, meta in properties.items():
+                    if not isinstance(meta, dict):
+                        continue
+                    inputs.append(
+                        {
+                            "name": str(name),
+                            "type": str(meta.get("type", "string")),
+                            "description": str(meta.get("description", "")),
+                        }
+                    )
+            if inputs:
+                descriptor["how_to_use"]["inputs"] = inputs
+        descriptor["how_to_use"]["outputs"]["success"] = descriptor["how_to_use"]["outputs"].get("success") or "The tool executed successfully."
+        if not descriptor.get("when_to_use"):
+            usage_hint = tool.get("when_to_use")
+            if isinstance(usage_hint, str) and usage_hint:
+                descriptor["when_to_use"] = usage_hint
+        default_lang = tool.get("language")
+        if isinstance(default_lang, str) and default_lang:
+            descriptor["languages"] = [default_lang]
         return descriptor
