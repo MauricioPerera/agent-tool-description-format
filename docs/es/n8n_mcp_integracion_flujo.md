@@ -1,4 +1,3 @@
-# Guía de integración n8n + MCP + ATDF
 
 Esta guía reúne lo esencial para conectar n8n con el Bridge MCP de ATDF e importar workflows verificados (Code v3).
 
@@ -36,3 +35,4 @@ Esta guía reúne lo esencial para conectar n8n con el Bridge MCP de ATDF e impo
 - Guía rápida (ES): `../../GUIA_INTEGRACION_N8N.md`
 - Guía MCP (PT): `../pt/n8n_mcp_server_guide.md`
  - Índice central n8n + MCP + ATDF: `../n8n_mcp_atdf_index.md`
+

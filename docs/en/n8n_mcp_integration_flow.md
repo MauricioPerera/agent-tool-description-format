@@ -1,4 +1,3 @@
-﻿# ATDF + MCP + n8n Integration Flow
 
 ## Integration Architecture
 
@@ -103,14 +102,14 @@ graph TB
 
 | Approach | Benefits |
 |----------|----------|
-| Native MCP nodes | ✅ Zero extra installation · ✅ Pure MCP interoperability · ✅ Great for demos |
-| Custom ATDF-MCP nodes | ✅ Full ATDF metadata · ✅ Automatic localization · ✅ Built-in validation · ✅ UI tailored for ATDF |
+| Native MCP nodes | ? Zero extra installation � ? Pure MCP interoperability � ? Great for demos |
+| Custom ATDF-MCP nodes | ? Full ATDF metadata � ? Automatic localization � ? Built-in validation � ? UI tailored for ATDF |
 
 ## Data Flow
 
 ```
 1. The ATDF server exposes tools and metadata
-2. The bridge translates ATDF → MCP
+2. The bridge translates ATDF ? MCP
 3. n8n connects over MCP via SSE/WebSocket
 4. Nodes execute tools with ATDF parameters
 5. Enriched responses return to n8n for processing
@@ -138,3 +137,4 @@ python examples/mcp_atdf_bridge.py --port 8001 --atdf-server http://localhost:80
 - [n8n MCP guide](n8n_mcp_server_guide.md)
 - [ATDF version compatibility](version_compatibility.md)
 - Sample flow: `examples/n8n_mcp_comparison_workflow.json`
+

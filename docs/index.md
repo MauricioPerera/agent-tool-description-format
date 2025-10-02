@@ -62,7 +62,14 @@ python tools/validate_enhanced.py examples/date_validator.json
 ---
 
 ## 🔌 Featured integrations
-<div class="cards">
+<div class="cards">\n<div class="card">
+    <h3>Selector Client</h3>
+    <p>Selector HTTP -> MCP bridge -> n8n workflow end-to-end.</p>
+    <p><a href="tool_selector.md#client-usage">Client usage guide</a></p>
+    <p><a href="../estado_final_integracion.md#cliente-selector-–-resumen-de-uso">Integration status</a></p>
+    <p><a href="../n8n-workflows/README.md#selector-client-quick-reference">n8n workflow reference</a></p>
+  </div>
+
   <div class="card">
     <h3>n8n + MCP + ATDF</h3>
     <p>Run ATDF tools from native MCP nodes or custom ATDF nodes inside n8n workflows.</p>
@@ -73,9 +80,6 @@ python tools/validate_enhanced.py examples/date_validator.json
     <p><a href="n8n_mcp_atdf_index.md">Central index →</a></p>
   </div>
   <div class="card">
-    <h3>BMAD-METHOD</h3>
-    <p>Automate multi-agent development with BMAD orchestrators, ATDF specialists, and QA agents.</p>
-    <p><a href="BMAD_INTEGRATION.md">Integration playbook →</a></p>
   </div>
   <div class="card">
     <h3>Monitoring & Telemetry</h3>
@@ -101,3 +105,8 @@ Pull requests are welcome! Review the [contributing checklist](en/contributing.m
 <div align="center">
   <a href="../README.md">Back to repository README</a>
 </div>
+
+
+
+
+

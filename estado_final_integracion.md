@@ -255,10 +255,5 @@ La integraciÃ³n ATDF + MCP + n8n estÃ¡ **COMPLETAMENTE FUNCIONAL** y lista para 
 
 ---
 *Ãšltima actualizaciÃ³n: 2025-10-02 - IntegraciÃ³n completa con selector + workflows CLI*
-## Cliente Selector – Resumen de uso
-
-- **CLI sin n8n**: con la pila activa (`scripts/start_all_services.*`), realiza POST a `http://127.0.0.1:8050/recommend`; la respuesta incluye `tool_id`, `score` y metadatos.
-- **Workflow n8n**: importa `workflow_selector_builtin.json` y ejecuta `n8n execute --id PNvGdiK9rbvmEnKl` (o desde la UI). Secuencia: selector -> MCP -> parseo.
-- **QA**: suites y reportes en `bmad/deliverables/qa/` documentan validación, integración y performance del cliente.
 
 
