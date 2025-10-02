@@ -58,6 +58,7 @@ Ajusta los campos según la complejidad de tu herramienta. Para un descriptor 1.
 ```bash
 python tools/validator.py tu_tool.json --schema schema/atdf_schema.json
 python tools/validate_enhanced.py tu_tool.json
+atdf validate tu_tool.json --smart
 ```
 
 Ejecuta `python tests/run_all_tests.py` para validar todo el SDK y ejemplos si modificas código.# Agent Tool Description Format (ATDF)

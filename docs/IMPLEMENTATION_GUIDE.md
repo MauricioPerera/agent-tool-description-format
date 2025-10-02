@@ -788,3 +788,19 @@ def monitor_execution(func: Callable) -> Callable:
 **Nota**: Esta guía proporciona una base sólida para implementar ATDF. Adapta los ejemplos a tu lenguaje y framework específico, manteniendo la compatibilidad con la especificación ATDF.
 
 **Documentación**: [https://mauricioperera.github.io/agent-tool-description-format/](https://mauricioperera.github.io/agent-tool-description-format/) 
+
+## Contrato del validador
+
+- `validate_tool(source, schema_file=None, ignore_additional_properties=False)` retorna `True/False` y nunca lanza excepciones. El parámetro `source` acepta rutas (`str`/`Path`) o diccionarios en memoria.
+- `validate_tool_smart(source, schema_basic=None, schema_enhanced=None)` detecta el esquema apropiado y aplica `ignore_additional_properties=True` para descriptores 1.x.
+- Ambos métodos registran los errores a través del logger `atdf_validator`; el consumidor decide si abortar el flujo según el valor booleano de retorno.
+
+```python
+from tools.validator import validate_tool_smart
+
+payload = {...}
+if not validate_tool_smart(payload):
+    raise ValueError('Descriptor inválido')
+```
+
+> También puedes validar desde la CLI con `atdf validate path/to/tool.json --smart`.

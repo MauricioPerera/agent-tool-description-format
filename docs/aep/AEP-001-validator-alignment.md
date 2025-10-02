@@ -1,23 +1,23 @@
-ï»¿# AEP-001: Validator & MCP Pipeline Alignment
+# AEP-001: Validator & MCP Pipeline Alignment
 
 ## Status
-Planned
+In Progress
 
 ## Owner
 Core validation team (QA + Developer)
 
 ## Problem Statement
-El conversor MCPâ†’ATDF y pipelines de validaciÃ³n requieren soporte para validar estructuras en memoria. Actualmente alidate_tool_smart solo acepta rutas, lo que obliga a escribir archivos temporales o falla.
+El conversor MCP?ATDF y pipelines de validación requieren soporte para validar estructuras en memoria. Actualmente alidate_tool_smart solo acepta rutas, lo que obliga a escribir archivos temporales o falla.
 
 ## Proposal
-- Incorporar soporte nativo para dicts (alidate_tool_dict) reutilizando la lÃ³gica existente.
-- Ajustar alidate_tool_smart para delegar en la nueva funciÃ³n cuando reciba un dict.
-- Actualizar suite de tests y documentaciÃ³n con contratos claros (modo estricto vs laxo).
+- Incorporar soporte nativo para dicts (alidate_tool_dict) reutilizando la lógica existente.
+- Ajustar alidate_tool_smart para delegar en la nueva función cuando reciba un dict.
+- Actualizar suite de tests y documentación con contratos claros (modo estricto vs laxo).
 
 ## Acceptance Criteria
-- ConversiÃ³n en lote MCPâ†’ATDF funciona sin archivos temporales.
-- Nuevas pruebas cubren validaciÃ³n en memoria y por archivo.
-- DocumentaciÃ³n describe el contrato del validador.
+- Conversión en lote MCP?ATDF funciona sin archivos temporales.
+- Nuevas pruebas cubren validación en memoria y por archivo.
+- Documentación describe el contrato del validador.
 
 ## Dependencies
 Ninguna externa; se coordina con EPIC ATDF-EPIC-001.

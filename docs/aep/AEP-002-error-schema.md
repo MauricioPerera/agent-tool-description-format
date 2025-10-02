@@ -1,7 +1,7 @@
 ﻿# AEP-002: ATDF Error Schema Standardization
 
 ## Status
-Planned
+Completed
 
 ## Owner
 Documentation & API consortium

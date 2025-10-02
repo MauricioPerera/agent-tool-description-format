@@ -1,7 +1,7 @@
 ﻿# AEP-003: ATDF CLI Toolkit
 
 ## Status
-Planned
+In Progress
 
 ## Owner
 Tooling working group
