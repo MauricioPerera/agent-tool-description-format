@@ -25,4 +25,10 @@ Enriquece in-place un descriptor básico añadiendo metadata/localización heur�
 atdf enrich schema/examples/basic_tool.json
 ```
 
+### `atdf search`
+Busca la herramienta más adecuada frente a un objetivo.
+```
+atdf search schema/examples "reservar un hotel en Madrid" --language es
+```
+
 Para más opciones ejecute `atdf --help`.

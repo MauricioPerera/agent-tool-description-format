@@ -1,4 +1,4 @@
-﻿import json
+import json
 import sys
 from pathlib import Path
 from click.testing import CliRunner
@@ -10,11 +10,11 @@ if str(project_root) not in sys.path:
 from cli.main import cli
 
 
-def make_basic_tool():
+def make_basic_tool(tool_id="sample", description="Sample tool", when="Use for tests"):
     return {
-        "tool_id": "sample",
-        "description": "Sample tool",
-        "when_to_use": "Use for tests",
+        "tool_id": tool_id,
+        "description": description,
+        "when_to_use": when,
         "how_to_use": {
             "inputs": [
                 {"name": "text", "type": "string", "description": "Text"}
@@ -84,3 +84,22 @@ def test_cli_convert_enhanced(tmp_path):
     enhanced = json.loads(target.read_text())
     assert enhanced.get("schema_version") == "2.0.0"
     assert enhanced.get("metadata", {}).get("author") == "QA"
+
+
+def test_cli_search(tmp_path):
+    # create matching tool
+    sample = make_basic_tool(tool_id="translator_enhanced", description="Text translator", when="Use this tool to translate text")
+    (tmp_path / "sample.json").write_text(json.dumps(sample))
+    other = make_basic_tool(tool_id="other", description="Otra herramienta", when="Para tareas distintas")
+    (tmp_path / "other.json").write_text(json.dumps(other))
+
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        "search",
+        str(tmp_path),
+        "translate some text to french"
+    ])
+
+    assert result.exit_code == 0
+    data = json.loads(result.output)
+    assert data.get("tool_id") == "translator_enhanced"
