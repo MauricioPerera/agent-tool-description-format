@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ATDF Error Response",
+  "description": "Schema for ATDF-compliant error payloads returned by tools or servers.",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "description": "Overall status of the response.",
+      "enum": [
+        "error"
+      ]
+    },
+    "errors": {
+      "type": "array",
+      "description": "List of individual error details.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "URI identifying the error type.",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string",
+            "description": "Short, human-readable summary of the error.",
+            "minLength": 1
+          },
+          "detail": {
+            "type": "string",
+            "description": "Detailed explanation of the error.",
+            "minLength": 1
+          },
+          "instance": {
+            "type": "string",
+            "description": "Unique identifier for this error occurrence.",
+            "minLength": 1
+          },
+          "tool_name": {
+            "type": "string",
+            "description": "Name of the tool that generated the error.",
+            "minLength": 1
+          },
+          "parameter_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Input parameter related to the error."
+          },
+          "suggested_value": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Suggested value to fix the error."
+          },
+          "context": {
+            "type": "object",
+            "description": "Additional context for debugging.",
+            "additionalProperties": true
+          },
+          "code": {
+            "type": "string",
+            "description": "Implementation-specific error code."
+          }
+        },
+        "required": [
+          "type",
+          "title",
+          "detail",
+          "instance",
+          "tool_name"
+        ]
+      }
+    },
+    "meta": {
+      "type": "object",
+      "description": "Optional metadata about the error response.",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "errors"
+  ],
+  "additionalProperties": false
+}

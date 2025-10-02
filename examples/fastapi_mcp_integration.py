@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 import json
 import time
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Literal
 from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
 
 app = FastAPI(title='ATDF FastAPI MCP Integration', version='2.0.0')
@@ -111,7 +111,11 @@ class ATDFErrorDetail(BaseModel):
     context: Optional[Dict[str, Any]] = None
 
 class ATDFErrorResponse(BaseModel):
+    status: Literal["error"] = "error"
     errors: List[ATDFErrorDetail]
+
+    class Config:
+        extra = 'forbid'
 
 # Global exception handler for Pydantic validation errors
 @app.exception_handler(ValidationError)
@@ -139,7 +143,7 @@ async def validation_exception_handler(request: Request, exc: ValidationError):
     
     return JSONResponse(
         status_code=400,
-        content=ATDFErrorResponse(errors=errors).dict()
+        content=ATDFErrorResponse(errors=errors).model_dump(exclude_none=True)
     )
 
 # Global exception handler for FastAPI RequestValidationError
@@ -168,7 +172,7 @@ async def request_validation_exception_handler(request: Request, exc: RequestVal
     
     return JSONResponse(
         status_code=400,
-        content=ATDFErrorResponse(errors=errors).dict()
+        content=ATDFErrorResponse(errors=errors).model_dump(exclude_none=True)
     )
 
 # Pydantic Models for API
@@ -228,7 +232,7 @@ def create_atdf_error_response(
     
     return JSONResponse(
         status_code=400,
-        content=ATDFErrorResponse(errors=[error_detail]).dict()
+        content=ATDFErrorResponse(errors=[error_detail]).model_dump(exclude_none=True)
     )
 
 @app.get('/metrics')

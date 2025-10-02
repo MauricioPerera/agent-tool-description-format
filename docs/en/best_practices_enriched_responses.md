@@ -2,6 +2,8 @@
 
 ## Overview
 
+> **Schema reference:** see [`schema/error_atdf.json`](../schema/error_atdf.json) for the canonical JSON schema.
+
 This guide provides best practices for implementing the Enriched Response Standard in ATDF tools. Following these practices ensures consistent, helpful, and maintainable error handling across all your tools.
 
 ## 🎯 Core Principles

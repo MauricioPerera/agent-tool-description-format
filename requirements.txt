@@ -10,3 +10,4 @@ pandas>=1.0.0      # Manipulación de datos, a menudo una dependencia
 # Requisitos opcionales para búsqueda vectorial
 lancedb>=0.1.17
 sentence-transformers>=2.2.2 
+click>=8.0.0

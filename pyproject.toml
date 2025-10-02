@@ -154,3 +154,5 @@ module = [
     "numpy.*",
 ]
 ignore_missing_imports = true
+[project.scripts]
+atdf = "cli.__init__.main:cli"

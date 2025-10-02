@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 BMAD-ATDF Integration Tests
 Tests for the complete BMAD-ATDF integration
@@ -8,6 +8,7 @@ import json
 import os
 import sys
 import pytest
+import jsonschema
 import requests
 from pathlib import Path
 
@@ -16,6 +17,7 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from tools.validator import validate_tool_smart
+from examples.fastapi_mcp_integration import create_atdf_error_response
 
 class TestBMADIntegration:
     """Test suite for BMAD-ATDF integration"""
@@ -40,6 +42,47 @@ class TestBMADIntegration:
         assert "type" in schema, "Schema should have a type property"
         assert "properties" in schema, "Schema should have properties"
     
+    def test_error_schema_exists(self):
+        schema_path = project_root / "schema" / "error_atdf.json"
+        assert schema_path.exists(), "error_atdf schema should exist"
+
+    def test_error_schema_valid_sample(self):
+        schema_path = project_root / "schema" / "error_atdf.json"
+        with open(schema_path, 'r', encoding='utf-8') as f:
+            error_schema = json.load(f)
+        sample = {
+            "status": "error",
+            "errors": [
+                {
+                    "type": "https://api.example.com/errors/validation-error",
+                    "title": "Validation Error",
+                    "detail": "Parameter validation failed",
+                    "instance": "/api/errors/sample",
+                    "tool_name": "sample_tool",
+                    "parameter_name": "field",
+                    "suggested_value": None,
+                    "context": {"field_path": ["field"]}
+                }
+            ]
+        }
+        jsonschema.validate(sample, error_schema)
+
+    def test_create_error_response_matches_schema(self):
+        schema_path = project_root / "schema" / "error_atdf.json"
+        with open(schema_path, 'r', encoding='utf-8') as f:
+            error_schema = json.load(f)
+        response = create_atdf_error_response(
+            error_type="https://api.example.com/errors/internal-error",
+            title="Internal Error",
+            detail="Unexpected failure",
+            tool_name="sample_tool",
+            parameter_name="field",
+            context={"debug": True}
+        )
+        payload = json.loads(response.body.decode())
+        jsonschema.validate(payload, error_schema)
+        assert payload.get("status") == "error"
+
     def test_example_tools_validation(self):
         """Test that example tools validate against ATDF schema"""
         examples_dir = project_root / "schema" / "examples"
@@ -153,3 +196,4 @@ class TestBMADDocumentation:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+

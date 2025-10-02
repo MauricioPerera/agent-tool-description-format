@@ -186,6 +186,8 @@ ATDF es un **formato JSON estandarizado** que define **plantillas reutilizables*
 
 ### 2. Plantilla de Respuestas de Error ATDF
 
+El esquema JSON oficial de errores está disponible en [`schema/error_atdf.json`](../schema/error_atdf.json).
+
 #### Estructura de Error (Plantilla Básica)
 ```json
 {
