@@ -1,0 +1,60 @@
+{
+  "name": "Hotel Booking via Selector (HTTP)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "start-node",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:8050/recommend",
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json",
+        "options": { "headers": { "Content-Type": "application/json" } },
+        "jsonBody": "={{ ({ query: 'Necesito reservar un hotel en Madrid', language: 'es', top_n: 1, servers: ['http://127.0.0.1:8001/tools'] }) }}"
+      },
+      "id": "selector-http",
+      "name": "Call Selector",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [420, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:8001/mcp",
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json",
+        "options": { "headers": { "Content-Type": "application/json" } },
+        "jsonBody": "={{ const result = $json.results?.[0]; const toolId = result?.tool_id || 'hotel_reservation'; return { method: 'tools/call', params: { name: toolId, arguments: { guest_name: 'Roberto Alvarez', email: 'roberto.alvarez@example.com', check_in: '2025-12-05T15:00:00', check_out: '2025-12-08T11:00:00', room_type: 'deluxe', guests: 2 } } }; }}"
+      },
+      "id": "mcp-node",
+      "name": "Call MCP Tool",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const rpcResponse = $input.first().json; const content = rpcResponse?.result?.content ?? []; const rawText = content.length ? content[0].text : null; let parsed; try { parsed = rawText ? JSON.parse(rawText) : {}; } catch (error) { parsed = { status: 'failed', parse_error: error.message, raw: rawText }; } return { json: parsed };"
+      },
+      "id": "code-node",
+      "name": "Parse Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [920, 300]
+    }
+  ],
+  "connections": {
+    "Start": { "main": [[{ "node": "Call Selector", "type": "main", "index": 0 }]] },
+    "Call Selector": { "main": [[{ "node": "Call MCP Tool", "type": "main", "index": 0 }]] },
+    "Call MCP Tool": { "main": [[{ "node": "Parse Response", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}
