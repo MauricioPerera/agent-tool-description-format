@@ -1,0 +1,10 @@
+{
+    "id":  "1ecd53d6-f1da-44bb-a0f2-30618fe16333",
+    "name":  "ATDF Selector Local",
+    "type":  "atdfSelectorApi",
+    "data":  {
+                 "serverUrl":  "http://127.0.0.1:8050",
+                 "apiKey":  "",
+                 "timeout":  20000
+             }
+}
