@@ -1,135 +1,63 @@
 {
-    "name":  "Hotel Booking via Selector + MCP",
-    "nodes":  [
-                  {
-                      "parameters":  {
-
-                                     },
-                      "id":  "start-node",
-                      "name":  "Start",
-                      "type":  "n8n-nodes-base.manualTrigger",
-                      "typeVersion":  1,
-                      "position":  [
-                                       200,
-                                       300
-                                   ]
-                  },
-                  {
-                      "parameters":  {
-                                         "query":  "Necesito reservar un hotel en Madrid",
-                                         "language":  "es",
-                                         "topN":  1,
-                                         "servers":  "[\"http://127.0.0.1:8001/tools\"]"
-                                     },
-                      "id":  "selector-node",
-                      "name":  "Tool Selector",
-                      "type":  "n8n-nodes-atdf-mcp.atdfToolSelector",
-                      "typeVersion":  1,
-                      "position":  [
-                                       420,
-                                       300
-                                   ],
-                      "credentials":  {
-                                          "atdfSelectorApi":  {
-                                                                  "id":  {
-                                                                             "value":  "1ecd53d6-f1da-44bb-a0f2-30618fe16333\r\n",
-                                                                             "PSPath":  "D:\\repos\\Nueva carpeta (12)\\agent-tool-description-format\\cred_atdf_selector.meta",
-                                                                             "PSParentPath":  "D:\\repos\\Nueva carpeta (12)\\agent-tool-description-format",
-                                                                             "PSChildName":  "cred_atdf_selector.meta",
-                                                                             "PSDrive":  {
-                                                                                             "CurrentLocation":  "repos\\Nueva carpeta (12)\\agent-tool-description-format",
-                                                                                             "Name":  "D",
-                                                                                             "Provider":  "Microsoft.PowerShell.Core\\FileSystem",
-                                                                                             "Root":  "D:\\",
-                                                                                             "Description":  "Discototote",
-                                                                                             "MaximumSize":  null,
-                                                                                             "Credential":  "System.Management.Automation.PSCredential",
-                                                                                             "DisplayRoot":  null
-                                                                                         },
-                                                                             "PSProvider":  {
-                                                                                                "ImplementingType":  "Microsoft.PowerShell.Commands.FileSystemProvider",
-                                                                                                "HelpFile":  "System.Management.Automation.dll-Help.xml",
-                                                                                                "Name":  "FileSystem",
-                                                                                                "PSSnapIn":  "Microsoft.PowerShell.Core",
-                                                                                                "ModuleName":  "Microsoft.PowerShell.Core",
-                                                                                                "Module":  null,
-                                                                                                "Description":  "",
-                                                                                                "Capabilities":  52,
-                                                                                                "Home":  "C:\\Users\\Rckflr",
-                                                                                                "Drives":  "C D E"
-                                                                                            },
-                                                                             "ReadCount":  1
-                                                                         }
-                                                              }
-                                      }
-                  },
-                  {
-                      "parameters":  {
-                                         "url":  "http://127.0.0.1:8001/mcp",
-                                         "method":  "POST",
-                                         "sendBody":  true,
-                                         "specifyBody":  "json",
-                                         "options":  {
-                                                         "headers":  {
-                                                                         "Content-Type":  "application/json"
-                                                                     }
-                                                     },
-                                         "jsonBody":  "={{ const toolId = .results?.[0]?.tool_id ?? \u0027hotel_reservation\u0027; return { method: \u0027tools/call\u0027, params: { name: toolId, arguments: { guest_name: \u0027Roberto Alvarez\u0027, email: \u0027roberto.alvarez@example.com\u0027, check_in: \u00272025-12-05T15:00:00\u0027, check_out: \u00272025-12-08T11:00:00\u0027, room_type: \u0027deluxe\u0027, guests: 2 } } }; }}"
-                                     },
-                      "id":  "mcp-node",
-                      "name":  "Call MCP Tool",
-                      "type":  "n8n-nodes-base.httpRequest",
-                      "typeVersion":  4.1,
-                      "position":  [
-                                       680,
-                                       300
-                                   ]
-                  },
-                  {
-                      "parameters":  {
-                                         "jsCode":  "const rpcResponse = .first().json; const content = rpcResponse?.result?.content ?? []; const rawText = content.length ? content[0].text : null; let parsed; try { parsed = rawText ? JSON.parse(rawText) : {}; } catch (error) { parsed = { status: \u0027failed\u0027, parse_error: error.message, raw: rawText }; } return { json: parsed };"
-                                     },
-                      "id":  "code-node",
-                      "name":  "Parse Response",
-                      "type":  "n8n-nodes-base.code",
-                      "typeVersion":  2,
-                      "position":  [
-                                       920,
-                                       300
-                                   ]
-                  }
-              ],
-    "connections":  {
-                        "Call MCP Tool":  {
-                                              "main":  [
-                                                           {
-                                                               "node":  "Parse Response",
-                                                               "type":  "main",
-                                                               "index":  0
-                                                           }
-                                                       ]
-                                          },
-                        "Tool Selector":  {
-                                              "main":  [
-                                                           {
-                                                               "node":  "Call MCP Tool",
-                                                               "type":  "main",
-                                                               "index":  0
-                                                           }
-                                                       ]
-                                          },
-                        "Start":  {
-                                      "main":  [
-                                                   {
-                                                       "node":  "Tool Selector",
-                                                       "type":  "main",
-                                                       "index":  0
-                                                   }
-                                               ]
-                                  }
-                    },
-    "active":  false,
-    "settings":  {
-                     "executionOrder":  "v1"
-                 }
+  "name": "Hotel Booking via Selector + MCP",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "start-node",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "query": "Necesito reservar un hotel en Madrid",
+        "language": "es",
+        "topN": 1,
+        "servers": "[\"http://127.0.0.1:8001/tools\"]"
+      },
+      "id": "selector-node",
+      "name": "Tool Selector",
+      "type": "n8n-nodes-atdf-mcp.atdfToolSelector",
+      "typeVersion": 1,
+      "position": [420, 300],
+      "credentials": {
+        "atdfSelectorApi": {
+          "id": "a6821952-0f29-4d7c-8d5d-0a3244185bbc"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:8001/mcp",
+        "method": "POST",
+        "sendBody": true,
+        "specifyBody": "json",
+        "options": { "headers": { "Content-Type": "application/json" } },
+        "jsonBody": "={{ const result = $json.results?.[0]; const toolId = result?.tool_id || 'hotel_reservation'; return { method: 'tools/call', params: { name: toolId, arguments: { guest_name: 'Roberto Alvarez', email: 'roberto.alvarez@example.com', check_in: '2025-12-05T15:00:00', check_out: '2025-12-08T11:00:00', room_type: 'deluxe', guests: 2 } } }; }}"
+      },
+      "id": "mcp-node",
+      "name": "Call MCP Tool",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const rpcResponse = $input.first().json; const content = rpcResponse?.result?.content ?? []; const rawText = content.length ? content[0].text : null; let parsed; try { parsed = rawText ? JSON.parse(rawText) : {}; } catch (error) { parsed = { status: 'failed', parse_error: error.message, raw: rawText }; } return { json: parsed };"
+      },
+      "id": "code-node",
+      "name": "Parse Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [920, 300]
+    }
+  ],
+  "connections": {
+    "Start": { "main": [[{ "node": "Tool Selector", "type": "main", "index": 0 }]] },
+    "Tool Selector": { "main": [[{ "node": "Call MCP Tool", "type": "main", "index": 0 }]] },
+    "Call MCP Tool": { "main": [[{ "node": "Parse Response", "type": "main", "index": 0 }]] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
 }
