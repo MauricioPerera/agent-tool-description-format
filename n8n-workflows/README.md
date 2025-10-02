@@ -118,3 +118,4 @@ n8n execute --id EJNFSpfWrmNxWKEo
 For automated startup use the scripts in `../scripts/`. For manual commands, see `../estado_final_integracion.md`.
 
 Happy automating! 🚀
+

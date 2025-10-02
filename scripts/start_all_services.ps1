@@ -1,5 +1,5 @@
 param(
-    [int]$StartupDelay = 10
+    [int]$StartupDelay = 15
 )
 
 $ErrorActionPreference = 'Stop'
@@ -118,3 +118,4 @@ Write-Host '  - n8n-workflows/README.md'
 Write-Host '  - estado_final_integracion.md'
 
 Write-Host 'Startup complete.' -ForegroundColor Cyan
+

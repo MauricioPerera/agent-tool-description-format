@@ -1,77 +1,77 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -u
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
 
 echo "Starting ATDF + MCP + n8n integration services"
 echo "==============================================="
 
-if [ ! -f "examples/fastapi_mcp_integration.py" ]; then
-    echo "Error: please run this script from the project root directory"
-    echo "Current directory: $(pwd)"
-    exit 1
+if [[ ! -f examples/fastapi_mcp_integration.py ]]; then
+  echo "Error: please run this script from the project root directory" >&2
+  echo "Current directory: $(pwd)" >&2
+  exit 1
 fi
 
-echo "Starting services in sequence..."
-
-echo
+declare -A PID_FILES=(
+  ["ATDF server"]=".atdf_server.pid"
+  ["MCP bridge"]=".mcp_bridge.pid"
+  ["ATDF selector"]=".selector.pid"
+)
 
 check_port() {
-    local port=$1
-    if command -v lsof >/dev/null 2>&1; then
-        lsof -i :"${port}" >/dev/null 2>&1
-    elif command -v netstat >/dev/null 2>&1; then
-        netstat -ln | grep ":${port} " >/dev/null 2>&1
-    else
-        timeout 1 bash -c "echo >/dev/tcp/localhost/${port}" >/dev/null 2>&1
-    fi
+  local port=$1
+  if command -v lsof >/dev/null 2>&1; then
+    lsof -i:"${port}" >/dev/null 2>&1
+  elif command -v ss >/dev/null 2>&1; then
+    ss -ltnp "sport = :${port}" >/dev/null 2>&1
+  elif command -v netstat >/dev/null 2>&1; then
+    netstat -ln | grep -q ":${port} "
+  else
+    timeout 1 bash -c "</dev/tcp/127.0.0.1/${port}" >/dev/null 2>&1 || return 1
+    return 0
+  fi
 }
 
-ROOT_DIR="$(pwd)"
-SELECTOR_DB="${ROOT_DIR}/selector_workflow.db"
-MCP_TOOLS_URL="http://localhost:8001/tools"
+save_pid() {
+  local name=$1 pid=$2
+  local file="${PID_FILES[$name]}"
+  printf '%s\n' "$pid" >"$file"
+}
 
-# ATDF server
-echo "Starting ATDF server on port 8000..."
-if check_port 8000; then
-    echo "Port 8000 already in use â€“ skipping"
-else
-    python -m examples.fastapi_mcp_integration &
-    ATDF_PID=$!
-    echo "ATDF server PID: ${ATDF_PID}"
-    sleep 5
-fi
+start_service() {
+  local name=$1 delay=$2
+  shift 2
 
-# MCP bridge
-echo "Starting MCP bridge on port 8001..."
-if check_port 8001; then
-    echo "Port 8001 already in use â€“ skipping"
-else
-    python examples/mcp_atdf_bridge.py --port 8001 --atdf-server http://localhost:8000 &
-    MCP_PID=$!
-    echo "MCP bridge PID: ${MCP_PID}"
-    sleep 3
-fi
+  if [[ -f ${PID_FILES[$name]} ]] && kill -0 "$(cat "${PID_FILES[$name]}")" 2>/dev/null; then
+    echo "$name already running (PID $(cat "${PID_FILES[$name]}"))."
+    return
+  fi
 
-# Selector API
-echo "Starting ATDF selector on port 8050..."
-if check_port 8050; then
-    echo "Port 8050 already in use â€“ skipping"
-else
-    PYTHONPATH="${ROOT_DIR}" \
-    ATDF_MCP_TOOLS_URL="${MCP_TOOLS_URL}" \
-    ATDF_SELECTOR_DB="${SELECTOR_DB}" \
-        python -m uvicorn selector.api:app --host 127.0.0.1 --port 8050 --log-level info &
-    SELECTOR_PID=$!
-    echo "Selector PID: ${SELECTOR_PID}"
-    sleep 3
-fi
+  echo "Starting $name..."
+  "$@" &
+  local pid=$!
+  save_pid "$name" "$pid"
+  echo "$name PID: $pid"
+  sleep "$delay"
+}
 
-# n8n status
+ROOT_ENV=(
+  "PYTHONPATH=$ROOT_DIR"
+  "ATDF_MCP_TOOLS_URL=http://localhost:8001/tools"
+  "ATDF_SELECTOR_DB=$ROOT_DIR/selector_workflow.db"
+)
+
+start_service "ATDF server" 5 python -m examples.fastapi_mcp_integration
+start_service "MCP bridge" 3 python examples/mcp_atdf_bridge.py --port 8001 --atdf-server http://localhost:8000
+start_service "ATDF selector" 3 env "${ROOT_ENV[@]}" python -m uvicorn selector.api:app --host 127.0.0.1 --port 8050 --log-level info
+
 echo "Checking n8n on port 5678..."
 if check_port 5678; then
-    echo "n8n already running"
+  echo "n8n already running"
 else
-    echo "n8n not detected â€“ start manually with 'npx n8n'"
+  echo "n8n not detected - start manually with 'npx n8n'"
 fi
 
 echo
@@ -80,14 +80,12 @@ echo "Waiting for services to initialise..."
 sleep 10
 
 check_service() {
-    local name=$1
-    local url=$2
-    echo "Checking ${name}..."
-    if curl -s "${url}" >/dev/null 2>&1; then
-        echo "${name} responding at ${url}"
-    else
-        echo "${name} not responding"
-    fi
+  local name=$1 url=$2
+  if curl -fsS "$url" >/dev/null 2>&1; then
+    echo "$name responding ($url)"
+  else
+    echo "$name not responding ($url)"
+  fi
 }
 
 check_service "ATDF server" "http://localhost:8000/tools"
@@ -97,7 +95,7 @@ check_service "n8n" "http://localhost:5678"
 
 echo
 
-echo "Available services:"
+echo "Services available:"
 echo "  - ATDF server:   http://localhost:8000"
 echo "  - MCP bridge:    http://localhost:8001"
 echo "  - ATDF selector: http://localhost:8050"
@@ -119,17 +117,7 @@ echo "  - estado_final_integracion.md"
 
 echo
 
-echo "To stop services run: scripts/stop_all_services.sh"
+echo "To stop services use: scripts/stop_all_services.sh"
 
-if [ -n "${ATDF_PID:-}" ]; then
-    echo "${ATDF_PID}" > .atdf_server.pid
-fi
-if [ -n "${MCP_PID:-}" ]; then
-    echo "${MCP_PID}" > .mcp_bridge.pid
-fi
-if [ -n "${SELECTOR_PID:-}" ]; then
-    echo "${SELECTOR_PID}" > .selector.pid
-fi
-
-echo "Press Ctrl+C to exit"
+echo "Services are running in the background. Press Ctrl+C to stop following logs."
 wait

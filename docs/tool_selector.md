@@ -26,7 +26,7 @@ The helper scripts start all three Python services (ATDF server, MCP bridge, sel
 # Linux / macOS
 ./scripts/start_all_services.sh
 
-# Windows
+# Windows (PowerShell wrapper)
 scripts\start_all_services.bat
 ```
 
@@ -88,7 +88,7 @@ The selector accumulates successes and failures per tool/server pair and applies
 
 - The n8n workflow `workflow_selector_builtin.json` demonstrates how to consume the selector using standard `HTTP Request` nodes and fall back to `hotel_reservation` if no recommendation is returned.
 - `selector_workflow.db` ships pre-populated after `scripts/start_all_services.sh` runs once (loads `schema/examples` plus MCP `/tools`).
-- When developing locally, stop the selector with `scripts/stop_all_services.sh` (kills port 8050 and removes `.selector.pid`).
+- When developing locally, stop the selector with `scripts/stop_all_services.sh` on Linux/macOS or `scripts/stop_all_services.bat` on Windows (both remove PID files and terminate listeners).
 
 ## Known Gaps / Next Steps
 
@@ -99,3 +99,5 @@ The selector accumulates successes and failures per tool/server pair and applies
 
 ---
 _Last updated: 2025-10-02_
+
+
