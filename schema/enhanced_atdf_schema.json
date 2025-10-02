@@ -147,6 +147,10 @@
                     }
                   }
                 }
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Indicates whether the parameter is mandatory."
               }
             },
             "required": ["name", "type"],

@@ -1,0 +1,160 @@
+{
+  "dashboard": {
+    "title": "ATDF Migration Overview",
+    "tags": [
+      "atdf",
+      "migration"
+    ],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Converted Tools per Minute",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate(atdf_migration_converted_total[5m])",
+            "legendFormat": "Converted/min"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 0,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 1
+                },
+                {
+                  "color": "red",
+                  "value": 5
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Validation Failures",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate(atdf_migration_validation_failures_total[5m])",
+            "legendFormat": "Failures/min"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 8,
+          "y": 0
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 0.5
+                },
+                {
+                  "color": "red",
+                  "value": 1
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Tool Selection Accuracy (Top-5)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "avg_over_time(atdf_tool_selection_accuracy{window='top5'}[15m])",
+            "legendFormat": "Accuracy"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 16,
+          "y": 0
+        },
+        "yAxes": [
+          {
+            "format": "percent",
+            "label": "Accuracy"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Execution Latency p95",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(atdf_tool_execution_duration_seconds_bucket[5m]))",
+            "legendFormat": "p95"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 8
+        },
+        "yAxes": [
+          {
+            "format": "s",
+            "label": "Seconds"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Tool Usage Share",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "sum by (tool_name) (rate(atdf_tool_executions_total[5m]))",
+            "legendFormat": "{{tool_name}}"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 8
+        }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "refresh": "10s",
+    "schemaVersion": 27,
+    "version": 1
+  }
+}

@@ -1,0 +1,55 @@
+name: atdf-migration-checklist
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - docs/mcp_to_atdf_migration_checklist.md
+      - scripts/run_atdf_migration.py
+      - tools/mcp_converter.py
+      - tools/validator.py
+      - tools/converter.py
+      - tests/fixtures/mcp_tools_sample.json
+      - .github/workflows/atdf-migration.yml
+
+jobs:
+  migrate-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: Run sample migration
+        run: |
+          python scripts/run_atdf_migration.py tests/fixtures/mcp_tools_sample.json --basic-dir tmp/atdf_basic --enhanced-dir tmp/atdf_enh
+
+      - name: Validate enhanced output
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          from tools.validator import validate_tool_smart
+
+          enhanced_dir = Path('tmp/atdf_enh')
+          failures = []
+          for tool_file in enhanced_dir.glob('*.json'):
+              if not validate_tool_smart(tool_file):
+                  failures.append(str(tool_file))
+          if failures:
+              print('Validation failed for:', failures)
+              sys.exit(1)
+          PY
+
+      - name: Show generated files
+        run: ls tmp/atdf_enh

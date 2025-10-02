@@ -1,0 +1,49 @@
+{
+  "tools": [
+    {
+      "name": "translate_text",
+      "description": "Traduce texto a un idioma objetivo",
+      "annotations": {
+        "context": "Usar cuando necesites traducir textos cortos o medianos"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Texto a traducir"
+          },
+          "target_language": {
+            "type": "string",
+            "description": "Código ISO del idioma de destino"
+          }
+        },
+        "required": [
+          "text",
+          "target_language"
+        ]
+      }
+    },
+    {
+      "name": "summarize_article",
+      "description": "Genera un resumen corto de un artículo",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Artículo completo"
+          },
+          "language": {
+            "type": "string",
+            "description": "Código ISO del idioma del output",
+            "default": "es"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      }
+    }
+  ]
+}

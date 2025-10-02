@@ -39,3 +39,11 @@
 - [ ] Plan de rollout (beta → GA) con puntos de reversa.
 - [ ] Capturar métricas de adopción (ver `adoption_metrics.csv`).
 - [ ] Programar retroalimentación con equipos de herramientas/agents.
+
+
+## Automatización de referencia
+- Ejecuta `scripts/run_atdf_migration.py` para orquestar conversión y validación (usa `tests/fixtures/mcp_tools_sample.json` como plantilla).
+- Workflow CI: `.github/workflows/atdf-migration.yml` valida conversiones en cada PR relacionado.
+
+## Observabilidad sugerida
+- Dashboard Grafana: `monitoring/grafana/dashboards/atdf-migration-overview.json` con métricas de conversión, fallos y accuracy de selección.
