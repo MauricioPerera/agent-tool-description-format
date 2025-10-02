@@ -1,27 +1,28 @@
 {
     "suite":  "integration_test_suite.py",
-    "executed_at":  "2025-10-02T12:27:23Z",
+    "executed_at":  "2025-10-02T12:46:30Z",
     "dependencies":  [
                          "scripts/start_all_services.ps1",
-                         "n8n execute --id EJNFSpfWrmNxWKEo"
+                         "n8n execute --id PNvGdiK9rbvmEnKl"
                      ],
     "tests":  [
                   {
                       "id":  "test_n8n_selector_workflow_executes",
-                      "status":  "skipped",
-                      "note":  "n8n workflow EJNFSpfWrmNxWKEo no disponible en entorno local"
+                      "status":  "passed",
+                      "duration_sec":  58.4
                   },
                   {
                       "id":  "test_selector_recommendation_payload",
                       "status":  "passed",
-                      "duration_sec":  1.1
+                      "duration_sec":  1.15
                   },
                   {
                       "id":  "test_mcp_bridge_response",
                       "status":  "passed",
-                      "duration_sec":  1.4
+                      "duration_sec":  1.37
                   }
               ],
     "instructions":  "Ejecutar tras levantar servicios con scripts/start_all_services.ps1 (StartupDelay=15).",
     "expected_outcome":  "Todos los tests deben devolver status_code 0 y reservation_id en la respuesta MCP."
 }
+

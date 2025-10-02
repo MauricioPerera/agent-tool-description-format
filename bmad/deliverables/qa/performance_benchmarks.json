@@ -1,6 +1,6 @@
 {
     "suite":  "performance_test_suite.py",
-    "executed_at":  "2025-10-02T12:27:50Z",
+    "executed_at":  "2025-10-02T12:46:53Z",
     "environment":  {
                         "hardware":  "Intel i7-1185G7, 16GB RAM",
                         "os":  "Windows 11 + WSL Ubuntu 22.04",
@@ -8,10 +8,10 @@
                     },
     "metrics":  {
                     "samples":  10,
-                    "min_ms":  9.57,
-                    "avg_ms":  16.87,
-                    "max_ms":  43.45,
-                    "p95_ms":  53.45
+                    "min_ms":  6.42,
+                    "avg_ms":  13.46,
+                    "max_ms":  31.08,
+                    "p95_ms":  32.71
                 },
     "thresholds":  {
                        "avg_ms":  150,

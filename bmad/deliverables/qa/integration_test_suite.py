@@ -3,12 +3,13 @@ Generated for BMAD workflow task T2 (Integration Testing).
 """
 
 import json
+import os
 import shutil
 import subprocess
 
 import pytest
 
-N8N_WORKFLOW_ID = "EJNFSpfWrmNxWKEo"  # Hotel Booking via Selector (HTTP)
+N8N_WORKFLOW_ID = "PNvGdiK9rbvmEnKl"  # Hotel Booking via Selector (HTTP)
 
 
 def _require_cli(cli_name: str):
@@ -20,11 +21,15 @@ def _require_cli(cli_name: str):
 
 def run_n8n_workflow():
     executable = _require_cli("n8n")
+    env = os.environ.copy()
+    env.setdefault("N8N_ENCRYPTION_KEY", "CNTY5zHiKLuJ7KFJdPUoAw4T8+JApD6P")
+    env.setdefault("N8N_USER_FOLDER", os.path.join(os.path.expanduser("~"), ".n8n"))
     result = subprocess.run(
         [executable, "execute", "--id", N8N_WORKFLOW_ID],
         capture_output=True,
         text=True,
         check=False,
+        env=env,
     )
     return result
 

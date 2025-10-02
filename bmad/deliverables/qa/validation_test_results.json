@@ -1,6 +1,6 @@
 {
     "suite":  "validation_test_suite.py",
-    "executed_at":  "2025-10-02T12:28:17Z",
+    "executed_at":  "2025-10-02T12:46:00Z",
     "environment":  {
                         "python":  "3.12",
                         "platform":  "Windows/Linux hybrid",
@@ -15,7 +15,7 @@
                   {
                       "id":  "test_start_script_runs_healthcheck",
                       "status":  "passed",
-                      "duration_sec":  20.5,
+                      "duration_sec":  20.1,
                       "artifacts":  [
                                         "logs/start_all_services_stdout.txt"
                                     ]
@@ -23,7 +23,7 @@
                   {
                       "id":  "test_selector_health_endpoint",
                       "status":  "passed",
-                      "duration_sec":  0.25,
+                      "duration_sec":  0.21,
                       "assertions":  [
                                          "status_code == 200",
                                          "tool_count \u003e= 2"
@@ -36,7 +36,7 @@
                   {
                       "id":  "test_validation_cli",
                       "status":  "passed",
-                      "duration_sec":  0.95,
+                      "duration_sec":  0.92,
                       "details":  "tools/validator.py accepted generated descriptor"
                   }
               ],
