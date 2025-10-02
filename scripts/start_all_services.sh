@@ -10,7 +10,7 @@ if [ ! -f "examples/fastapi_mcp_integration.py" ]; then
     exit 1
 fi
 
-echo "📋 Starting services in sequence..."
+echo "📃 Starting services in sequence..."
 echo
 
 # Function to check if a port is in use
@@ -26,6 +26,10 @@ check_port() {
     fi
 }
 
+ROOT_DIR="$(pwd)"
+SELECTOR_DB="$ROOT_DIR/selector_workflow.db"
+MCP_TOOLS_URL="http://localhost:8001/tools"
+
 # Start ATDF Server
 echo "🔧 Starting ATDF Server on port 8000..."
 if check_port 8000; then
@@ -38,13 +42,25 @@ else
 fi
 
 # Start MCP Bridge
-echo "🌉 Starting MCP Bridge on port 8001..."
+echo "🌐 Starting MCP Bridge on port 8001..."
 if check_port 8001; then
     echo "⚠️  Port 8001 is already in use. Skipping MCP Bridge startup."
 else
     python examples/mcp_atdf_bridge.py --port 8001 --atdf-server http://localhost:8000 &
     MCP_PID=$!
     echo "   Started with PID: $MCP_PID"
+    sleep 3
+fi
+
+# Start Selector API
+echo "🔎 Starting ATDF Selector on port 8050..."
+if check_port 8050; then
+    echo "⚠️  Port 8050 is already in use. Skipping Selector startup."
+else
+    PYTHONPATH="$ROOT_DIR" ATDF_MCP_TOOLS_URL="$MCP_TOOLS_URL" ATDF_SELECTOR_DB="$SELECTOR_DB" \
+        python -m uvicorn selector.api:app --host 127.0.0.1 --port 8050 --log-level info &
+    SELECTOR_PID=$!
+    echo "   Started with PID: $SELECTOR_PID"
     sleep 3
 fi
 
@@ -83,23 +99,26 @@ check_service() {
 # Check all services
 check_service "ATDF Server" "http://localhost:8000/tools"
 check_service "MCP Bridge" "http://localhost:8001/tools"
+check_service "ATDF Selector" "http://localhost:8050/health"
 check_service "n8n" "http://localhost:5678"
 
 echo
 echo "🎉 Integration Setup Complete!"
 echo "=============================="
 echo
-echo "📋 Available Services:"
-echo "  • ATDF Server: http://localhost:8000"
-echo "  • MCP Bridge:  http://localhost:8001"
-echo "  • n8n:         http://localhost:5678"
+echo "📃 Available Services:"
+echo "  • ATDF Server:   http://localhost:8000"
+echo "  • MCP Bridge:    http://localhost:8001"
+echo "  • ATDF Selector: http://localhost:8050"
+echo "  • n8n:           http://localhost:5678"
 echo
 echo "📁 Available Workflows:"
 echo "  • n8n-workflows/hotel-reservation-test.json"
 echo "  • n8n-workflows/flight-booking-test.json"
 echo "  • n8n-workflows/complete-travel-booking.json"
+echo "  • workflow_selector_builtin.json (CLI selector demo)"
 echo
-echo "📖 Documentation:"
+echo "📚 Documentation:"
 echo "  • n8n-workflows/README.md"
 echo "  • estado_final_integracion.md"
 echo
@@ -112,6 +131,9 @@ if [ ! -z "$ATDF_PID" ]; then
 fi
 if [ ! -z "$MCP_PID" ]; then
     echo $MCP_PID > .mcp_bridge.pid
+fi
+if [ ! -z "$SELECTOR_PID" ]; then
+    echo $SELECTOR_PID > .selector.pid
 fi
 
 echo "Press Ctrl+C to exit..."
