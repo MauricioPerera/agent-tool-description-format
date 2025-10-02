@@ -1,18 +1,17 @@
-from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel, EmailStr, Field, validator, ValidationError
 from datetime import datetime, timedelta
 from uuid import uuid4
+from pathlib import Path
 import json
 import time
 from typing import Dict, List, Optional, Any, Literal
 from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
-
-app = FastAPI(title='ATDF FastAPI MCP Integration', version='2.0.0')
-
-# Add CORS middleware
+from jsonschema import validators as jsonschema_validators, ValidationError as JSONValidationError
+from improved_loader import select_tool_by_goal, detect_language
+from tools.mcp_converter import mcp_to_atdf
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -298,7 +297,7 @@ async def get_tools():
         ),
         localization={
             "es": ATDFLocalization(
-                description="Realizar una reserva de hotel con validación y manejo de errores ATDF",
+                description="Realizar una reserva de hotel con validaciÃ³n y manejo de errores ATDF",
                 when_to_use="Cuando un usuario quiere reservar alojamiento en un hotel"
             ),
             "en": ATDFLocalization(
@@ -355,8 +354,8 @@ async def get_tools():
         ),
         localization={
             "es": ATDFLocalization(
-                description="Reservar un vuelo con validación y manejo de errores ATDF",
-                when_to_use="Cuando un usuario quiere reservar viajes aéreos entre ciudades"
+                description="Reservar un vuelo con validaciÃ³n y manejo de errores ATDF",
+                when_to_use="Cuando un usuario quiere reservar viajes aÃ©reos entre ciudades"
             ),
             "en": ATDFLocalization(
                 description="Book a flight with validation and ATDF error handling",
