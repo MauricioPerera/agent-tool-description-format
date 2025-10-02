@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Literal
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -31,6 +31,12 @@ class RecommendRequest(BaseModel):
     servers: Optional[List[str]] = Field(None, description="Filter by server URLs registered in the catalog")
     allowed_tools: Optional[List[str]] = Field(None, description="Restrict ranking to specific tool identifiers")
 
+
+class FeedbackRequest(BaseModel):
+    tool_id: str = Field(..., description="ATDF tool identifier")
+    server: str = Field(..., description="Server URL or source identifier")
+    outcome: Literal['success', 'error'] = Field(..., description="Result of the execution")
+    detail: Optional[str] = Field(None, description="Optional context or error message")
 
 class RecommendResponse(BaseModel):
     count: int
@@ -131,3 +137,17 @@ def reload_catalog(request: ReloadRequest) -> dict:
         "loaded": loaded,
         "errors": list(_catalog.errors),
     }
+
+@app.post("/feedback", tags=["ranking"])
+def submit_feedback(payload: FeedbackRequest) -> dict:
+    if not _catalog.storage:
+        raise HTTPException(status_code=400, detail="Feedback requires persistent storage")
+    _catalog.storage.record_feedback(
+        server_url=payload.server,
+        tool_id=payload.tool_id,
+        outcome=payload.outcome,
+        detail=payload.detail,
+    )
+    summary = _catalog.storage.feedback_summary() if _catalog.storage else {}
+    key = f"{payload.server}::{payload.tool_id}"
+    return {"status": "recorded", "stats": summary.get(key, {"success": 0, "error": 0})}

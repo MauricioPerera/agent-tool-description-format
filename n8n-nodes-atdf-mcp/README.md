@@ -359,4 +359,11 @@ Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](L
 - ✅ Metadatos ATDF completos
 - ✅ Compatibilidad MCP total
 
-## Uso del nodo ATDF Tool Selector\\n\\n1. Configure las credenciales **ATDF Selector API** con la URL del servicio selector (/recommend).\\n2. Añada el nodo **ATDF Tool Selector** antes del MCP Client en su workflow y defina la consulta en lenguaje natural.\\n3. Opcionalmente filtre por servidores MCP registrados o por IDs permitidos para reducir el conjunto de herramientas.\\n4. Utilice el resultado (results) para alimentar el nodo MCP Client o cualquier lógica personalizada.\\n\\n
+## Uso del nodo ATDF Tool Selector
+
+1. Configure las credenciales **ATDF Selector API** con la URL del servicio selector (/recommend).
+2. Añada el nodo **ATDF Tool Selector** antes del MCP Client en su workflow y defina la consulta en lenguaje natural.
+3. Opcionalmente filtre por servidores MCP registrados o por IDs permitidos para reducir el conjunto de herramientas.
+4. Utilice el resultado (`results`) para alimentar el nodo MCP Client o cualquier lógica personalizada.
+
+

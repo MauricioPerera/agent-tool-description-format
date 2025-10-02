@@ -56,9 +56,21 @@ class ToolRanker:
 
         tokens = self._tokenize(query)
         results: List[RankedTool] = []
+        feedback = getattr(self.catalog, 'feedback_summary', lambda: {})()
 
         for record in self.catalog.list_tools(sources=sources, tool_ids=tool_ids):
             score, reasons = self._score_record(record, tokens, preferred_language)
+            key = f"{record.source}::{record.tool_id}"
+            stats = feedback.get(key) if feedback else None
+            if stats:
+                success = int(stats.get('success', 0) or 0)
+                error = int(stats.get('error', 0) or 0)
+                if success:
+                    score += min(success, 3) * 0.5
+                    reasons.append(f"historical successes: {success}")
+                if error:
+                    score -= min(error, 3) * 0.75
+                    reasons.append(f"historical errors: {error}")
             if score <= 0:
                 continue
             results.append(RankedTool(score=score, record=record, reasons=reasons))

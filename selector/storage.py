@@ -54,6 +54,26 @@ class CatalogStorage:
                 FOREIGN KEY(server_id) REFERENCES servers(id) ON DELETE CASCADE,
                 UNIQUE(server_id, tool_id)
             );
+
+            CREATE TABLE IF NOT EXISTS feedback (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                server_id INTEGER NOT NULL,
+                tool_id TEXT NOT NULL,
+                outcome TEXT NOT NULL CHECK(outcome IN ('success','error')),
+                detail TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY(server_id) REFERENCES servers(id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS feedback (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                server_id INTEGER NOT NULL,
+                tool_id TEXT NOT NULL,
+                outcome TEXT NOT NULL CHECK(outcome IN ('success','error')),
+                detail TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY(server_id) REFERENCES servers(id) ON DELETE CASCADE
+            );
             """
         )
         self._conn.commit()
@@ -212,6 +232,39 @@ class CatalogStorage:
                 }
             )
         return records
+    def record_feedback(
+        self,
+        *,
+        server_url: str,
+        tool_id: str,
+        outcome: str,
+        detail: Optional[str] = None,
+    ) -> None:
+        if outcome not in {'success', 'error'}:
+            raise ValueError("outcome must be 'success' or 'error'")
+        server_id = self.register_server(server_url)
+        self._conn.execute("INSERT INTO feedback (server_id, tool_id, outcome, detail) VALUES (?, ?, ?, ?)", (server_id, tool_id, outcome, detail))
+        self._conn.commit()
+
+    def feedback_summary(self) -> Dict[str, Dict[str, int]]:
+        query = (
+            "SELECT s.url AS server_url, f.tool_id, "
+            "       SUM(CASE WHEN f.outcome = 'success' THEN 1 ELSE 0 END) AS success_count, "
+            "       SUM(CASE WHEN f.outcome = 'error' THEN 1 ELSE 0 END) AS error_count "
+            "FROM feedback f JOIN servers s ON s.id = f.server_id "
+            "GROUP BY s.url, f.tool_id"
+        )
+        cur = self._conn.execute(query)
+        summary: Dict[str, Dict[str, int]] = {}
+        for row in cur.fetchall():
+            key = f"{row['server_url']}::{row['tool_id']}"
+            summary[key] = {
+                'success': int(row['success_count'] or 0),
+                'error': int(row['error_count'] or 0),
+            }
+        return summary
+
+    # ------------------------------------------------------------------
 
     # ------------------------------------------------------------------
     # Convenience

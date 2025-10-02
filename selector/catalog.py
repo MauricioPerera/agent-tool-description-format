@@ -230,6 +230,11 @@ class ToolCatalog:
             records = [record for record in records if record.tool_id in tool_id_set]
         return sorted(records, key=lambda record: (record.source, record.tool_id))
 
+    def feedback_summary(self) -> Dict[str, Dict[str, int]]:
+        if not self.storage:
+            return {}
+        return self.storage.feedback_summary()
+
     # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------

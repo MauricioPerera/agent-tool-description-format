@@ -1,4 +1,4 @@
-# ATDF Tool Selector (Work in Progress)
+﻿# ATDF Tool Selector (Work in Progress)
 
 This document tracks the implementation of the ATDF-aware tool selector,
 note-worthy for providing catalog aggregation, persistence, and ranking of tool
@@ -65,17 +65,32 @@ Environment variables:
 - Synchronisation marks missing tools as inactive, allowing safe rollbacks and
   change detection when a tool is removed upstream.
 
+## Feedback API
+
+Use POST /feedback para registrar el resultado de una ejecución y ajustar el ranking:
+
+``ash
+curl -X POST http://127.0.0.1:8050/feedback \
+  -H "Content-Type: application/json" \
+  -d '{\n    "tool_id": "hotel_reservation",\n    "server": "http://localhost:8001/tools",\n    "outcome": "success"\n  }'
+```
+
+El selector acumula éxitos y errores por herramienta/origen y aplica un ajuste
+(+0.5 por éxito, -0.75 por error, hasta tres eventos) al calcular nuevas recomendaciones.
+
+
+
 ## Known Gaps / Next Steps
 
 1. **Semantic ranking** – plug sentence embeddings (e.g. `sentence-transformers`)
    and LanceDB/pgvector for similarity search beyond keyword heuristics.
-2. **Feedback loop** – ingest ATDF error payloads to boost/penalise tools based on
-   runtime success rate and expose a `/feedback` endpoint.
-3. **Observability** – expose Prometheus metrics (queries served, latency,
+2. **Observability** – expose Prometheus metrics (queries served, latency,
    precision) and integrate with the existing monitoring stack.
-4. **Integration tests** – add end-to-end tests that hit `/recommend` while the
+3. **Integration tests** – add end-to-end tests that hit /recommend while the
    MCP bridge serves live data and validate n8n node integration.
-5. **Admin tooling** – add CLI/API commands to remove servers, inspect inactive
+4. **Admin tooling** – add CLI/API commands to remove servers, inspect inactive
+   tools, and trigger selective re-syncs.
+4. **Admin tooling** – add CLI/API commands to remove servers, inspect inactive
    tools, and trigger selective re-syncs.
 
 ---
