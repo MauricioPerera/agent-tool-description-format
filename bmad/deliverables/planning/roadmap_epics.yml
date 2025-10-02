@@ -1,0 +1,53 @@
+﻿epics:
+  - id: ATDF-EPIC-001
+    name: "Validator & MCP Pipeline Alignment"
+    objective: "Permitir validación consistente en memoria o por archivo y sincronizar pruebas."
+    status: "planned"
+    tasks:
+      - id: ATDF-TASK-001
+        description: "Agregar validate_tool_dict y actualizar tests de validator."
+        owner: "QA/Dev"
+        status: "planned"
+      - id: ATDF-TASK-002
+        description: "Actualizar documentación de contrato del validador."
+        owner: "Docs"
+        status: "planned"
+  - id: ATDF-EPIC-002
+    name: "ATDF Error Schema Standardization"
+    objective: "Definir payload normativo de errores ATDF y ejemplos."
+    status: "planned"
+    tasks:
+      - id: ATDF-TASK-003
+        description: "Publicar schema/error_atdf.json con validaciones."
+        owner: "Dev"
+        status: "planned"
+      - id: ATDF-TASK-004
+        description: "Añadir ejemplos y guías en docs/ErrorHandling.md."
+        owner: "Docs"
+        status: "planned"
+  - id: ATDF-EPIC-003
+    name: "ATDF CLI Toolkit"
+    objective: "Entregar CLI oficial con comandos validate/convert/enrich/search."
+    status: "planned"
+    tasks:
+      - id: ATDF-TASK-005
+        description: "Implementar CLI mínima (validate/convert/enrich)."
+        owner: "Dev"
+        status: "planned"
+      - id: ATDF-TASK-006
+        description: "Empaquetar CLI y documentar en README."
+        owner: "Docs"
+        status: "planned"
+  - id: ATDF-EPIC-004
+    name: "ATDF Server Profile"
+    objective: "Publicar perfil oficial de endpoints ATDF y servidor FastAPI de referencia."
+    status: "planned"
+    tasks:
+      - id: ATDF-TASK-007
+        description: "Definir especificación de endpoints y métricas."
+        owner: "Architect"
+        status: "planned"
+      - id: ATDF-TASK-008
+        description: "Actualizar ejemplo FastAPI para cumplir con el perfil."
+        owner: "Dev"
+        status: "planned"
