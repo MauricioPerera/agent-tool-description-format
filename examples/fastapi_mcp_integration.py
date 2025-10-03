@@ -13,7 +13,7 @@ from fastapi.responses import JSONResponse, Response
 from jsonschema import ValidationError as JSONValidationError
 from jsonschema import validators as jsonschema_validators
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
-from pydantic import BaseModel, EmailStr, Field, ValidationError, validator
+from pydantic import BaseModel, EmailStr, Field, ValidationError
 from uuid import uuid4
 
 from improved_loader import detect_language, select_tool_by_goal
@@ -466,13 +466,6 @@ class HotelReservationRequest(BaseModel):
     room_type: Literal["single", "double", "suite"]
     guests: int = Field(..., ge=1, le=4)
 
-    @validator("check_out")
-    def validate_stay(cls, value: datetime, values: Dict[str, Any]) -> datetime:
-        check_in = values.get("check_in")
-        if check_in and value <= check_in:
-            raise ValueError("Check-out must occur after check-in")
-        return value
-
 
 class FlightBookingRequest(BaseModel):
     passenger_name: str = Field(..., min_length=1)
@@ -482,22 +475,6 @@ class FlightBookingRequest(BaseModel):
     departure_date: datetime
     return_date: Optional[datetime] = None
     seat_class: Literal["economy", "business", "first"]
-
-    @validator("arrival_city")
-    def cities_must_differ(cls, value: str, values: Dict[str, Any]) -> str:
-        departure = values.get("departure_city")
-        if departure and value.lower() == departure.lower():
-            raise ValueError("Arrival city must differ from departure city")
-        return value
-
-    @validator("return_date")
-    def return_after_departure(cls, value: Optional[datetime], values: Dict[str, Any]) -> Optional[datetime]:
-        if value is None:
-            return value
-        departure = values.get("departure_date")
-        if departure and value <= departure:
-            raise ValueError("Return date must be after departure date")
-        return value
 
 
 class MCPConvertRequest(BaseModel):
@@ -588,7 +565,7 @@ async def handle_request_validation_error(request: Request, exc: RequestValidati
                 code="validation_error",
             )
         )
-    return create_error_response(request, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, errors=errors)
+    return create_error_response(request, status_code=status.HTTP_400_BAD_REQUEST, errors=errors)
 @app.get("/metrics")
 async def metrics() -> Response:
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
@@ -806,6 +783,24 @@ async def reserve_hotel(request: Request, payload: HotelReservationRequest) -> A
                 code="invalid_dates",
             )
             return create_error_response(request, status_code=status.HTTP_400_BAD_REQUEST, errors=[error])
+        if check_out <= check_in:
+            ERROR_COUNT.labels(error_type="invalid_dates", tool_name=tool_name).inc()
+            TOOL_EXECUTIONS.labels(tool_name=tool_name, status="error").inc()
+            error = build_error_detail(
+                request,
+                error_type=f"{ERROR_NAMESPACE}/invalid-date",
+                title="Invalid stay duration",
+                detail="Check-out must occur after check-in.",
+                tool_name=tool_name,
+                parameter_name="check_out",
+                suggested_value=isoformat_utc(check_in + timedelta(days=1)),
+                context={
+                    "check_in": isoformat_utc(check_in),
+                    "check_out": isoformat_utc(check_out),
+                },
+                code="invalid_dates",
+            )
+            return create_error_response(request, status_code=status.HTTP_400_BAD_REQUEST, errors=[error])
         reservation_id = str(uuid4())
         reservation = {
             "reservation_id": reservation_id,
@@ -863,6 +858,44 @@ async def book_flight(request: Request, payload: FlightBookingRequest) -> Any:
                 code="invalid_dates",
             )
             return create_error_response(request, status_code=status.HTTP_400_BAD_REQUEST, errors=[error])
+        if payload.arrival_city.strip().lower() == payload.departure_city.strip().lower():
+            ERROR_COUNT.labels(error_type="invalid_route", tool_name=tool_name).inc()
+            TOOL_EXECUTIONS.labels(tool_name=tool_name, status="error").inc()
+            error = build_error_detail(
+                request,
+                error_type=f"{ERROR_NAMESPACE}/invalid-route",
+                title="Arrival city must differ from departure city",
+                detail="Please choose a different arrival city.",
+                tool_name=tool_name,
+                parameter_name="arrival_city",
+                suggested_value=None,
+                context={
+                    "departure_city": payload.departure_city,
+                    "arrival_city": payload.arrival_city,
+                },
+                code="invalid_route",
+            )
+            return create_error_response(request, status_code=status.HTTP_400_BAD_REQUEST, errors=[error])
+        if payload.return_date is not None:
+            return_dt = to_utc(payload.return_date)
+            if return_dt <= departure:
+                ERROR_COUNT.labels(error_type="invalid_dates", tool_name=tool_name).inc()
+                TOOL_EXECUTIONS.labels(tool_name=tool_name, status="error").inc()
+                error = build_error_detail(
+                    request,
+                    error_type=f"{ERROR_NAMESPACE}/invalid-date",
+                    title="Invalid return date",
+                    detail="Return must be scheduled after departure.",
+                    tool_name=tool_name,
+                    parameter_name="return_date",
+                    suggested_value=isoformat_utc(departure + timedelta(days=1)),
+                    context={
+                        "departure_date": isoformat_utc(departure),
+                        "return_date": isoformat_utc(return_dt),
+                    },
+                    code="invalid_dates",
+                )
+                return create_error_response(request, status_code=status.HTTP_400_BAD_REQUEST, errors=[error])
         booking_id = str(uuid4())
         booking = {
             "booking_id": booking_id,
