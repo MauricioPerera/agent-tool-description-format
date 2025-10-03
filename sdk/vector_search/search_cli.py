@@ -31,7 +31,7 @@ class ATDFSearchCLI:
         self.vector_store = None
         self.db_path = "./atdf_vector_db"
         self.model_name = "all-MiniLM-L6-v2"
-        self.collection_name = "atdf_tools"
+        self.table_name = "atdf_tools"
 
     async def initialize(self, db_path: Optional[str] = None) -> bool:
         """
@@ -49,7 +49,7 @@ class ATDFSearchCLI:
         self.vector_store = ATDFVectorStore(
             db_path=self.db_path,
             model_name=self.model_name,
-            collection_name=self.collection_name,
+            table_name=self.table_name,
         )
 
         return await self.vector_store.initialize()
