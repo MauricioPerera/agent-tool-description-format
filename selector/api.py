@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import List, Optional, Literal
+from typing import List, Literal, Optional
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -24,19 +24,32 @@ app = FastAPI(title="ATDF Tool Selector", version="0.2.0")
 
 
 class RecommendRequest(BaseModel):
-    query: str = Field(..., min_length=1, description="User request or task description")
+    query: str = Field(
+        ..., min_length=1, description="User request or task description"
+    )
     top_n: int = Field(5, ge=1, le=50)
-    language: Optional[str] = Field(None, description="Preferred language code (e.g. 'en', 'es')")
-    include_raw: bool = Field(False, description="Return full ATDF descriptor in the results")
-    servers: Optional[List[str]] = Field(None, description="Filter by server URLs registered in the catalog")
-    allowed_tools: Optional[List[str]] = Field(None, description="Restrict ranking to specific tool identifiers")
+    language: Optional[str] = Field(
+        None, description="Preferred language code (e.g. 'en', 'es')"
+    )
+    include_raw: bool = Field(
+        False, description="Return full ATDF descriptor in the results"
+    )
+    servers: Optional[List[str]] = Field(
+        None, description="Filter by server URLs registered in the catalog"
+    )
+    allowed_tools: Optional[List[str]] = Field(
+        None, description="Restrict ranking to specific tool identifiers"
+    )
 
 
 class FeedbackRequest(BaseModel):
     tool_id: str = Field(..., description="ATDF tool identifier")
     server: str = Field(..., description="Server URL or source identifier")
-    outcome: Literal['success', 'error'] = Field(..., description="Result of the execution")
+    outcome: Literal["success", "error"] = Field(
+        ..., description="Result of the execution"
+    )
     detail: Optional[str] = Field(None, description="Optional context or error message")
+
 
 class RecommendResponse(BaseModel):
     count: int
@@ -138,10 +151,13 @@ def reload_catalog(request: ReloadRequest) -> dict:
         "errors": list(_catalog.errors),
     }
 
+
 @app.post("/feedback", tags=["ranking"])
 def submit_feedback(payload: FeedbackRequest) -> dict:
     if not _catalog.storage:
-        raise HTTPException(status_code=400, detail="Feedback requires persistent storage")
+        raise HTTPException(
+            status_code=400, detail="Feedback requires persistent storage"
+        )
     _catalog.storage.record_feedback(
         server_url=payload.server,
         tool_id=payload.tool_id,

@@ -40,8 +40,18 @@ async def main():
     )
     
     # Mostrar resultados
-    for i, tool in enumerate(results):
-        print(f"{i+1}. {tool.tool_id} - {tool.description}")
+    for i, (tool, score) in enumerate(results):
+        print(f"{i+1}. {tool.tool_id} (score: {score:.2f}) - {tool.description}")
+
+    # Si necesitas compatibilidad con código que espera solo herramientas
+    legacy_results = toolbox.find_tools_by_text(
+        'comunicarme con alguien',
+        language='es',
+        use_vector_search=True,
+        return_scores=False,
+    )
+    for tool in legacy_results:
+        print(f"{tool.tool_id} - {tool.description}")
 
 if __name__ == "__main__":
     asyncio.run(main())
@@ -94,8 +104,15 @@ toolbox = ATDFToolbox({'vector_store': vector_store})
 # Método 2: Después de crear el toolbox
 toolbox.set_vector_store(vector_store)
 
-# Uso en búsqueda de herramientas
+# Uso en búsqueda de herramientas (recuperando herramienta y puntuación)
 results = toolbox.find_tools_by_text("consulta", use_vector_search=True)
+
+# O bien, obtener solo herramientas para código heredado
+legacy_results = toolbox.find_tools_by_text(
+    "consulta",
+    use_vector_search=True,
+    return_scores=False,
+)
 
 # Uso en selección automática
 best_tool = toolbox.select_tool_for_task("objetivo", use_vector_search=True)

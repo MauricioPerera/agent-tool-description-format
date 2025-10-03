@@ -1,25 +1,22 @@
+/** @type {import('eslint').Linter.Config} */
 module.exports = {
+  root: true,
   env: {
     browser: true,
-    es2021: true,
     node: true,
-    jest: true,
+    es2023: true,
   },
-  extends: [
-    'eslint:recommended',
-    '@typescript-eslint/recommended',
-    'plugin:jest/recommended',
-    'prettier',
-  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 'latest',
+    ecmaVersion: 2023,
     sourceType: 'module',
   },
-  plugins: [
-    '@typescript-eslint',
-    'jest',
-    'prettier',
+  plugins: ['@typescript-eslint', 'jest', 'prettier'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:jest/recommended',
+    'plugin:prettier/recommended',
   ],
   rules: {
     'prettier/prettier': 'error',
@@ -32,6 +29,12 @@ module.exports = {
     'no-var': 'error',
   },
   overrides: [
+    {
+      files: ['**/*.js'],
+      rules: {
+        '@typescript-eslint/no-var-requires': 'off',
+      },
+    },
     {
       files: ['*.test.js', '*.test.ts', '**/__tests__/**/*'],
       env: {
@@ -48,10 +51,5 @@ module.exports = {
       },
     },
   ],
-  ignorePatterns: [
-    'dist/',
-    'coverage/',
-    'node_modules/',
-    '*.min.js',
-  ],
+  ignorePatterns: ['dist/', 'coverage/', 'node_modules/', '*.min.js'],
 };

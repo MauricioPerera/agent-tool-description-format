@@ -2,7 +2,6 @@ const ATDFTool = require('./ATDFTool');
 const ATDFToolbox = require('./ATDFToolbox');
 const MCPConverter = require('./MCPConverter');
 const fs = require('fs');
-const path = require('path');
 
 /**
  * Carga una herramienta desde un archivo JSON
@@ -15,7 +14,9 @@ function loadToolFromFile(filePath) {
     const toolData = JSON.parse(fileContent);
     return new ATDFTool(toolData);
   } catch (error) {
-    console.error(`Error al cargar la herramienta desde ${filePath}: ${error.message}`);
+    console.error(
+      `Error al cargar la herramienta desde ${filePath}: ${error.message}`
+    );
     return null;
   }
 }
@@ -56,5 +57,5 @@ module.exports = {
   // Exportar funciones del conversor MCP
   mcpToAtdf: MCPConverter.mcpToAtdf,
   convertMcpFile: MCPConverter.convertMcpFile,
-  batchConvertMcp: MCPConverter.batchConvert
-}; 
+  batchConvertMcp: MCPConverter.batchConvert,
+};

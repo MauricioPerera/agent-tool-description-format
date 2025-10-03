@@ -67,7 +67,9 @@ class ATDFToolbox {
       this.addTool(tool);
       return tool;
     } catch (error) {
-      console.error(`Error al cargar la herramienta desde ${filePath}: ${error.message}`);
+      console.error(
+        `Error al cargar la herramienta desde ${filePath}: ${error.message}`
+      );
       return null;
     }
   }
@@ -101,7 +103,9 @@ class ATDFToolbox {
 
       return loadedCount;
     } catch (error) {
-      console.error(`Error al cargar herramientas desde ${directoryPath}: ${error.message}`);
+      console.error(
+        `Error al cargar herramientas desde ${directoryPath}: ${error.message}`
+      );
       return 0;
     }
   }
@@ -119,23 +123,25 @@ class ATDFToolbox {
     if (!searchText) return [];
 
     // Normalizar el texto de búsqueda
-    const normalizedText = caseSensitive 
-      ? searchText 
+    const normalizedText = caseSensitive
+      ? searchText
       : searchText.toLowerCase();
 
     return this.tools.filter(tool => {
       // Obtener textos a buscar en el idioma adecuado
-      const description = caseSensitive 
-        ? tool.getDescription(language) 
+      const description = caseSensitive
+        ? tool.getDescription(language)
         : tool.getDescription(language).toLowerCase();
-      
-      const whenToUse = caseSensitive 
-        ? tool.getWhenToUse(language) 
+
+      const whenToUse = caseSensitive
+        ? tool.getWhenToUse(language)
         : tool.getWhenToUse(language).toLowerCase();
 
       // Comprobar coincidencias
-      return description.includes(normalizedText) || 
-             whenToUse.includes(normalizedText);
+      return (
+        description.includes(normalizedText) ||
+        whenToUse.includes(normalizedText)
+      );
     });
   }
 
@@ -148,13 +154,13 @@ class ATDFToolbox {
    */
   findBestTool(goal, options = {}) {
     if (!goal) return null;
-    
+
     const { language } = options;
     const results = this.searchTools(goal, { language });
-    
+
     if (results.length === 0) return null;
     if (results.length === 1) return results[0];
-    
+
     // Si hay múltiples resultados, podríamos implementar una lógica más sofisticada
     // para elegir el mejor, por ahora simplemente devolvemos el primero
     return results[0];
@@ -177,4 +183,4 @@ class ATDFToolbox {
   }
 }
 
-module.exports = ATDFToolbox; 
+module.exports = ATDFToolbox;

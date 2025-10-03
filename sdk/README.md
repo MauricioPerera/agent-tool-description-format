@@ -35,9 +35,18 @@ toolbox.load_tool_from_file("schema/examples/hole_maker.json")
 ### Buscar herramientas
 
 ```python
-# Buscar herramientas por texto
+# Buscar herramientas por texto con puntuaciones
 herramientas = toolbox.find_tools_by_text("hacer un agujero", language="es")
-for herramienta in herramientas:
+for herramienta, score in herramientas:
+    print(f"- {herramienta.tool_id} (score: {score:.2f}): {herramienta.description}")
+
+# Para código legado que espera solo herramientas, desactiva las puntuaciones
+solo_herramientas = toolbox.find_tools_by_text(
+    "hacer un agujero",
+    language="es",
+    return_scores=False,
+)
+for herramienta in solo_herramientas:
     print(f"- {herramienta.tool_id}: {herramienta.description}")
 ```
 

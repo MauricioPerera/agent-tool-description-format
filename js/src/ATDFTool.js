@@ -8,10 +8,17 @@ class ATDFTool {
    */
   constructor(toolData) {
     // Comprobar que tenemos los campos obligatorios
-    const requiredFields = ['tool_id', 'description', 'when_to_use', 'how_to_use'];
+    const requiredFields = [
+      'tool_id',
+      'description',
+      'when_to_use',
+      'how_to_use',
+    ];
     for (const field of requiredFields) {
       if (!toolData[field]) {
-        throw new Error(`Campo obligatorio '${field}' no encontrado en la descripción de la herramienta`);
+        throw new Error(
+          `Campo obligatorio '${field}' no encontrado en la descripción de la herramienta`
+        );
       }
     }
 
@@ -33,8 +40,14 @@ class ATDFTool {
    * @returns {string} Descripción de la herramienta
    */
   getDescription(language) {
-    if (language && this.data.localization && this.data.localization[language]) {
-      return this.data.localization[language].description || this.data.description;
+    if (
+      language &&
+      this.data.localization &&
+      this.data.localization[language]
+    ) {
+      return (
+        this.data.localization[language].description || this.data.description
+      );
     }
     return this.data.description;
   }
@@ -45,8 +58,14 @@ class ATDFTool {
    * @returns {string} Descripción de cuándo usar la herramienta
    */
   getWhenToUse(language) {
-    if (language && this.data.localization && this.data.localization[language]) {
-      return this.data.localization[language].when_to_use || this.data.when_to_use;
+    if (
+      language &&
+      this.data.localization &&
+      this.data.localization[language]
+    ) {
+      return (
+        this.data.localization[language].when_to_use || this.data.when_to_use
+      );
     }
     return this.data.when_to_use;
   }
@@ -148,7 +167,7 @@ class ATDFTool {
     const schema = {
       type: 'object',
       properties: {},
-      required: []
+      required: [],
     };
 
     for (const input of this.inputs) {
@@ -157,7 +176,7 @@ class ATDFTool {
       } else {
         schema.properties[input.name] = {
           type: input.type,
-          description: input.description
+          description: input.description,
         };
       }
 
@@ -170,4 +189,4 @@ class ATDFTool {
   }
 }
 
-module.exports = ATDFTool; 
+module.exports = ATDFTool;
