@@ -10,6 +10,7 @@ import os
 import sys
 import json
 import asyncio
+import logging
 from pathlib import Path
 
 # Añadir directorio padre al path para importaciones
@@ -18,6 +19,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Importar desde el SDK
 from sdk.atdf_sdk import load_tools_from_directory
 from sdk.vector_search import ATDFVectorStore
+
+logger = logging.getLogger(__name__)
 
 
 # Ruta de ejemplo para herramientas y base de datos
@@ -137,9 +140,9 @@ async def search_examples(vector_store: ATDFVectorStore) -> None:
                     if "tags" in metadata and metadata["tags"]:
                         print(f"      Etiquetas: {', '.join(metadata['tags'])}")
                 except (json.JSONDecodeError, TypeError) as exc:
-                    print(
-                        "      No se pudieron interpretar los metadatos del resultado: "
-                        f"{exc}"
+                    logger.warning(
+                        "No se pudieron interpretar los metadatos del resultado: %s",
+                        exc,
                     )
 
 
