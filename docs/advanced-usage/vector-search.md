@@ -9,6 +9,8 @@ Esta guía muestra cómo usar [LanceDB](https://lancedb.github.io/lancedb/) como
 
 LanceDB permite hacer búsqueda por similitud vectorial usando embeddings de texto, y es ideal para usar localmente sin necesidad de un servidor externo.
 
+> ℹ️ **Datos de ejemplo**: El repositorio incluye descriptores listos para usar en `examples/output/`. El script `examples/vector_search_example.py` ya apunta a ese directorio mediante `TOOLS_DIR` para crear el índice.
+
 ---
 
 ## ✨ Beneficios de esta extensión

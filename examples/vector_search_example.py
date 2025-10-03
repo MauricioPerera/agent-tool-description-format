@@ -4,6 +4,9 @@ Ejemplo de uso del módulo de búsqueda vectorial de herramientas ATDF.
 
 Este script demuestra cómo utilizar el módulo ATDFVectorStore para
 indexar y buscar herramientas ATDF utilizando vectores semánticos.
+
+Los descriptores de herramientas de muestra viven en ``examples/output/``.
+Actualiza ``TOOLS_DIR`` si copias este script a otro proyecto.
 """
 
 import asyncio
@@ -19,9 +22,10 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from sdk.atdf_sdk import load_tools_from_directory
 from sdk.vector_search import ATDFVectorStore
 
-# Ruta de ejemplo para herramientas y base de datos
-TOOLS_DIR = os.path.join(os.path.dirname(__file__), "..", "examples", "tools")
-DB_PATH = os.path.join(os.path.dirname(__file__), "..", "examples", "vector_db")
+# Directorios de ejemplo: los descriptores viven en `examples/output/`
+BASE_DIR = Path(__file__).resolve().parent
+TOOLS_DIR = BASE_DIR / "output"
+DB_PATH = BASE_DIR / "vector_db"
 
 
 async def create_index() -> ATDFVectorStore:
@@ -32,7 +36,16 @@ async def create_index() -> ATDFVectorStore:
         Instancia de ATDFVectorStore inicializada
     """
     print(f"Cargando herramientas desde {TOOLS_DIR}...")
-    tools = load_tools_from_directory(Path(TOOLS_DIR))
+    if not TOOLS_DIR.exists():
+        print(f"El directorio de herramientas no existe: {TOOLS_DIR}")
+        print("Actualiza TOOLS_DIR para apuntar a un directorio con archivos JSON/YAML de herramientas.")
+        sys.exit(1)
+
+    try:
+        tools = load_tools_from_directory(TOOLS_DIR)
+    except NotADirectoryError:
+        print(f"La ruta especificada no es un directorio válido: {TOOLS_DIR}")
+        sys.exit(1)
 
     if not tools:
         print(f"No se encontraron herramientas en {TOOLS_DIR}")
@@ -42,7 +55,7 @@ async def create_index() -> ATDFVectorStore:
     print(f"Se cargaron {len(tools)} herramientas")
 
     # Crear almacén vectorial
-    vector_store = ATDFVectorStore(db_path=DB_PATH)
+    vector_store = ATDFVectorStore(db_path=str(DB_PATH))
 
     # Inicializar y crear índice
     await vector_store.initialize()
