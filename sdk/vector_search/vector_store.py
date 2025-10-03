@@ -483,6 +483,15 @@ class ATDFVectorStore:
     ) -> List[Dict[str, Any]]:
         return self._run_blocking(self.search_tools(query, options))
 
+    def search(
+        self,
+        query: str,
+        options: Optional[Dict[str, Any]] = None,
+    ) -> List[Dict[str, Any]]:
+        """Realizar una búsqueda utilizando la API síncrona."""
+
+        return self.search_tools_sync(query, options)
+
     def find_best_tool_sync(
         self,
         query: str,

@@ -143,7 +143,11 @@ class ATDFToolbox:
                 options["limit"] = limit
 
             try:
-                results = self.vector_store.search_tools_sync(query, options)
+                search_fn = getattr(self.vector_store, "search", None)
+                if search_fn is None:
+                    search_fn = self.vector_store.search_tools_sync
+
+                results = search_fn(query, options)
 
                 tools_with_scores: List[Tuple[ATDFTool, float]] = []
                 for tool_data in results or []:
@@ -463,7 +467,11 @@ class ATDFSDK:
             )
 
         # Realizar búsqueda vectorial
-        results = self.vector_store.search_tools_sync(
+        search_fn = getattr(self.vector_store, "search", None)
+        if search_fn is None:
+            search_fn = self.vector_store.search_tools_sync
+
+        results = search_fn(
             query, {"limit": limit, "score_threshold": score_threshold}
         )
 
