@@ -17,7 +17,7 @@ import asyncio
 import logging
 import time
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 # Configurar logging
 logging.basicConfig(
@@ -198,7 +198,7 @@ def print_header(title: str) -> None:
     print("=" * 80)
 
 
-def print_tool_result(index: int, tool: ATDFTool, score: float = None) -> None:
+def print_tool_result(index: int, tool: ATDFTool, score: Optional[float] = None) -> None:
     """Imprimir información sobre una herramienta"""
     print(f"\n{index+1}. {tool.tool_id}")
     print(f"   Descripción: {tool.description}")
@@ -218,29 +218,31 @@ async def compare_search_methods(toolbox: ATDFToolbox, query: str, language: str
     
     # Búsqueda normal
     start_time = time.time()
-    normal_results = toolbox.find_tools_by_text(query, language)
+    normal_kwargs = {"language": language} if language else {}
+    normal_results = toolbox.find_tools_by_text(query, **normal_kwargs)
     normal_time = time.time() - start_time
     
     print(f"\n🔍 Búsqueda normal (tiempo: {normal_time:.4f}s)")
     if normal_results:
-        for i, tool in enumerate(normal_results):
-            print_tool_result(i, tool)
+        for i, (tool, score) in enumerate(normal_results):
+            print_tool_result(i, tool, score)
     else:
         print("   No se encontraron resultados")
     
     # Búsqueda vectorial (si está disponible)
     if toolbox.vector_store:
         start_time = time.time()
-        vector_results = toolbox.find_tools_by_text(query, language, use_vector_search=True)
+        vector_kwargs = {"language": language} if language else {}
+        vector_results = toolbox.find_tools_by_text(
+            query,
+            use_vector_search=True,
+            **vector_kwargs,
+        )
         vector_time = time.time() - start_time
         
         print(f"\n🧠 Búsqueda vectorial (tiempo: {vector_time:.4f}s)")
         if vector_results:
-            for i, tool in enumerate(vector_results):
-                # Intentar obtener puntuación si está disponible
-                score = None
-                if hasattr(tool, '_data') and 'score' in tool._data:
-                    score = tool._data['score']
+            for i, (tool, score) in enumerate(vector_results):
                 print_tool_result(i, tool, score)
         else:
             print("   No se encontraron resultados")

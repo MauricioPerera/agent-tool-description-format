@@ -43,12 +43,137 @@ class ATDFToolbox:
     Clase para mantener compatibilidad con tests antiguos.
     Wrapper alrededor de los componentes actuales del SDK.
     """
-    
+
     def __init__(self):
         self.tools = []
-    
+        self.vector_store = None
+
     def __len__(self):
         return len(self.tools)
+
+    def add_tool(self, tool_data: Union[Dict[str, Any], ATDFTool]) -> Optional[ATDFTool]:
+        """Agregar una herramienta al toolbox."""
+
+        if isinstance(tool_data, ATDFTool):
+            tool = tool_data
+        elif isinstance(tool_data, dict):
+            try:
+                if 'how_to_use' in tool_data:
+                    tool = self._create_legacy_tool(tool_data)
+                else:
+                    tool = ATDFTool(tool_data)
+            except Exception as exc:
+                logger.error(f"No se pudo agregar la herramienta: {exc}")
+                return None
+        else:
+            raise TypeError("add_tool espera un diccionario o una instancia de ATDFTool")
+
+        self.tools.append(tool)
+        return tool
+
+    def set_vector_store(self, vector_store: "ATDFVectorStore") -> None:
+        """Asociar un almacén vectorial al toolbox."""
+
+        self.vector_store = vector_store
+
+    def _coerce_tool(self, tool_like: Union[Dict[str, Any], "ATDFTool"]) -> ATDFTool:
+        if isinstance(tool_like, ATDFTool):
+            return tool_like
+        return ATDFTool(tool_like)
+
+    def _fallback_search(
+        self,
+        query: str,
+        *,
+        limit: Optional[int] = None,
+    ) -> List[Tuple[ATDFTool, float]]:
+        query_lower = query.lower()
+        matches: List[ATDFTool] = []
+
+        for tool in self.tools:
+            haystack = " ".join(filter(None, [
+                tool.name,
+                tool.description,
+                getattr(tool, "when_to_use", ""),
+                " ".join(tag for tag in (tool.tags or [])),
+            ])).lower()
+
+            if query_lower in haystack:
+                matches.append(tool)
+
+        selected: List[ATDFTool]
+        if matches:
+            selected = matches
+        else:
+            selected = self.tools.copy()
+
+        if limit is not None:
+            selected = selected[:limit]
+
+        return [(tool, 0.0) for tool in selected]
+
+    def find_tools_by_text(
+        self,
+        query: str,
+        *,
+        use_vector_search: bool = False,
+        language: str = "es",
+        limit: Optional[int] = None,
+        return_scores: bool = True,
+    ) -> Union[List[Tuple[ATDFTool, float]], List[ATDFTool]]:
+        """Buscar herramientas mediante texto libre."""
+
+        if use_vector_search and self.vector_store is not None:
+            options = {"language": language}
+            if limit is not None:
+                options["limit"] = limit
+
+            try:
+                results = self.vector_store.search_tools_sync(query, options)
+
+                tools_with_scores: List[Tuple[ATDFTool, float]] = []
+                for tool_data in results or []:
+                    score_raw = tool_data.get("score", 0.0)
+                    try:
+                        score = float(score_raw) if score_raw is not None else 0.0
+                    except (TypeError, ValueError):
+                        logger.debug(
+                            "No se pudo convertir la puntuación a float; se usará 0.0"
+                        )
+                        score = 0.0
+
+                    tools_with_scores.append((self._coerce_tool(tool_data), score))
+
+                if tools_with_scores:
+                    return (
+                        tools_with_scores
+                        if return_scores
+                        else [tool for tool, _ in tools_with_scores]
+                    )
+            except Exception as exc:
+                logger.warning(f"Fallo en búsqueda vectorial: {exc}")
+
+        fallback = self._fallback_search(query, limit=limit)
+        return fallback if return_scores else [tool for tool, _ in fallback]
+
+    def select_tool_for_task(
+        self,
+        query: str,
+        *,
+        use_vector_search: bool = False,
+        language: str = "es",
+    ) -> Optional[ATDFTool]:
+        """Seleccionar la herramienta más relevante para una tarea."""
+
+        tools_with_scores = self.find_tools_by_text(
+            query,
+            use_vector_search=use_vector_search,
+            language=language,
+            limit=1,
+            return_scores=True,
+        )
+
+        return tools_with_scores[0][0] if tools_with_scores else None
     
     def load_tool_from_file(self, file_path: Union[str, Path]) -> bool:
         """Cargar una herramienta desde un archivo."""
@@ -234,7 +359,7 @@ class ATDFSDK:
                 
                 # Añadir al vector store si está disponible
                 if self.vector_store:
-                    self.vector_store.add_tool(tool.to_dict())
+                    self.vector_store.add_tool_sync(tool.to_dict())
             except Exception as e:
                 logger.error(f"Error al procesar herramienta desde {file_path}: {str(e)}")
         
@@ -265,7 +390,7 @@ class ATDFSDK:
                 
                 # Añadir al vector store si está disponible
                 if self.vector_store:
-                    self.vector_store.add_tool(tool.to_dict())
+                    self.vector_store.add_tool_sync(tool.to_dict())
             except Exception as e:
                 logger.error(f"Error al procesar herramienta desde directorio {directory_path}: {str(e)}")
         
@@ -301,20 +426,23 @@ class ATDFSDK:
             )
         
         # Realizar búsqueda vectorial
-        results = self.vector_store.search(
-            query=query,
-            limit=limit,
-            score_threshold=score_threshold
+        results = self.vector_store.search_tools_sync(
+            query,
+            {"limit": limit, "score_threshold": score_threshold}
         )
-        
+
         # Convertir resultados a instancias de ATDFTool
         tools_with_scores = []
-        for tool_dict, score in results:
+        for tool_dict in results:
             try:
+                score = tool_dict.get("score")
                 tool = create_tool_instance(tool_dict)
-                tools_with_scores.append((tool, score))
+                tools_with_scores.append((tool, score if score is not None else 0.0))
             except Exception as e:
-                 logger.error(f"Error al crear instancia de herramienta desde resultado de búsqueda: {str(e)}")
+                logger.error(
+                    "Error al crear instancia de herramienta desde resultado de búsqueda: %s",
+                    str(e),
+                )
         
         return tools_with_scores
     
@@ -344,7 +472,7 @@ class ATDFSDK:
         
         # Si no se encuentra y está disponible la búsqueda vectorial
         if self.vector_store:
-            tool_dict = self.vector_store.get_tool_by_id(tool_id)
+            tool_dict = self.vector_store.get_tool_by_id_sync(tool_id)
             if tool_dict:
                 try:
                     return create_tool_instance(tool_dict)
@@ -373,7 +501,7 @@ class ATDFSDK:
             
             # Añadir al vector store si está disponible
             if self.vector_store:
-                self.vector_store.add_tool(tool.to_dict())
+                self.vector_store.add_tool_sync(tool.to_dict())
             
             return tool
         except Exception as e:

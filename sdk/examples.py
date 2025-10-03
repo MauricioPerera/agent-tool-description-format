@@ -70,20 +70,30 @@ def ejemplo_buscar_herramientas(toolbox):
     # Buscar herramientas en español
     print("1. Buscando herramientas en español relacionadas con 'agujero':")
     resultados_es = toolbox.find_tools_by_text("hacer un agujero", language="es")
-    for tool in resultados_es:
-        print(f"   - {tool.tool_id}: {tool.description}")
+    for tool, score in resultados_es:
+        print(f"   - {tool.tool_id} (score: {score:.2f}): {tool.description}")
+
+    # Compatibilidad: obtener solo herramientas sin puntuaciones
+    solo_es = toolbox.find_tools_by_text(
+        "hacer un agujero",
+        language="es",
+        return_scores=False,
+    )
+    print("   → Solo herramientas (modo legado):")
+    for tool in solo_es:
+        print(f"     * {tool.tool_id}: {tool.description}")
     
     # Buscar herramientas en inglés
     print("\n2. Buscando herramientas en inglés relacionadas con 'translate':")
     resultados_en = toolbox.find_tools_by_text("translate text", language="en")
-    for tool in resultados_en:
-        print(f"   - {tool.tool_id}: {tool.description}")
+    for tool, score in resultados_en:
+        print(f"   - {tool.tool_id} (score: {score:.2f}): {tool.description}")
     
     # Buscar herramientas con un idioma no especificado (usará el predeterminado)
     print("\n3. Buscando herramientas con texto genérico sin especificar idioma:")
     resultados = toolbox.find_tools_by_text("paint")
-    for tool in resultados:
-        print(f"   - {tool.tool_id}: {tool.description}")
+    for tool, score in resultados:
+        print(f"   - {tool.tool_id} (score: {score:.2f}): {tool.description}")
 
 
 def ejemplo_seleccion_automatica(toolbox):

@@ -47,13 +47,31 @@ class ATDFTool(BaseModel):
     prerequisites: Optional[Dict[str, Any]] = {}
     feedback: Optional[Dict[str, Any]] = {}
     
-    def __init__(self, **data):
+    def __init__(self, data: Optional[Dict[str, Any]] = None, **kwargs):
+        """Permitir inicialización con diccionarios o argumentos nombrados."""
+
+        # Soportar el patrón legado ATDFTool(tool_dict)
+        if data is not None:
+            if not isinstance(data, dict):
+                raise TypeError("ATDFTool espera un diccionario o argumentos nombrados")
+
+            if kwargs:
+                merged = {**data, **kwargs}
+            else:
+                merged = data
+        else:
+            merged = kwargs
+
         # Manejar el alias entre id y tool_id
-        if 'tool_id' in data and 'id' not in data:
-            data['id'] = data['tool_id']
-        elif 'id' in data and 'tool_id' not in data:
-            data['tool_id'] = data['id']
-        super().__init__(**data)
+        if 'tool_id' in merged and 'id' not in merged:
+            merged['id'] = merged['tool_id']
+        elif 'id' in merged and 'tool_id' not in merged:
+            merged['tool_id'] = merged['id']
+
+        if 'name' not in merged and 'tool_id' in merged:
+            merged['name'] = merged['tool_id']
+
+        super().__init__(**merged)
     
     @property
     def inputs(self):
@@ -62,7 +80,7 @@ class ATDFTool(BaseModel):
     
     def to_dict(self) -> Dict[str, Any]:
         """Convertir a diccionario."""
-        result = self.dict(exclude_none=True)
+        result = self.model_dump(exclude_none=True)
         # Asegurar que tool_id siempre esté presente en la salida
         if 'id' in result and 'tool_id' not in result:
             result['tool_id'] = result['id']

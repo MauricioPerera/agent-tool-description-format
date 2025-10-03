@@ -330,10 +330,12 @@ class TestVectorSearchIntegration(unittest.TestCase):
         
         # Ejecutar búsqueda con vector_search=True
         results = self.toolbox.find_tools_by_text("enviar mensaje", use_vector_search=True)
-        
+
         # Verificar
         self.assertEqual(len(results), 1)
-        self.assertEqual(results[0].tool_id, "test_tool_1")
+        tool, score = results[0]
+        self.assertEqual(tool.tool_id, "test_tool_1")
+        self.assertIsInstance(score, float)
         mock_search_tools.assert_called_once()
     
     @mock.patch.object(ATDFVectorStore, 'search_tools')
@@ -378,14 +380,27 @@ class TestVectorSearchIntegration(unittest.TestCase):
         
         # Ejecutar búsqueda con vector_search=True, debería caer en fallback
         results = self.toolbox.find_tools_by_text("correo", use_vector_search=True)
-        
+
         # Verificar que encontró resultados usando la búsqueda normal
         self.assertTrue(len(results) > 0)
         # Verificar que al menos uno de los resultados es sobre correo
-        has_email_tool = any(tool.tool_id == "test_tool_1" for tool in results)
+        has_email_tool = any(tool.tool_id == "test_tool_1" for tool, _ in results)
+        self.assertTrue(all(isinstance(score, float) for _, score in results))
         self.assertTrue(has_email_tool)
         mock_search_tools.assert_called_once()
 
+    def test_find_tools_without_scores_for_legacy_consumers(self):
+        """Permite recuperar solo herramientas para código legado."""
+
+        results = self.toolbox.find_tools_by_text(
+            "correo",
+            use_vector_search=False,
+            return_scores=False,
+        )
+
+        self.assertTrue(results)
+        self.assertTrue(all(isinstance(tool, ATDFTool) for tool in results))
+
 
 if __name__ == '__main__':
-    unittest.main() 
+    unittest.main()
