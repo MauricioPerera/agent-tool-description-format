@@ -10,12 +10,14 @@ DB_CANDIDATES = [
     "n8n.db",
 ]
 
+
 def find_db_path():
     for name in DB_CANDIDATES:
         p = os.path.join(DB_DIR, name)
         if os.path.exists(p):
             return p
     raise FileNotFoundError(f"No se encontró base de datos en {DB_DIR}")
+
 
 def query_workflow_id(db_path, name_like):
     con = sqlite3.connect(db_path)
@@ -29,6 +31,7 @@ def query_workflow_id(db_path, name_like):
         return rows
     finally:
         con.close()
+
 
 def main():
     db_path = find_db_path()
@@ -46,6 +49,7 @@ def main():
                 print(f" - id={r[0]} name={r[1]}")
             return
     print("No se encontró el workflow por nombre. Exporta y revisa manualmente.")
+
 
 if __name__ == "__main__":
     main()

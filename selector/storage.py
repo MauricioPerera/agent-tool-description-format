@@ -232,6 +232,7 @@ class CatalogStorage:
                 }
             )
         return records
+
     def record_feedback(
         self,
         *,
@@ -240,10 +241,13 @@ class CatalogStorage:
         outcome: str,
         detail: Optional[str] = None,
     ) -> None:
-        if outcome not in {'success', 'error'}:
+        if outcome not in {"success", "error"}:
             raise ValueError("outcome must be 'success' or 'error'")
         server_id = self.register_server(server_url)
-        self._conn.execute("INSERT INTO feedback (server_id, tool_id, outcome, detail) VALUES (?, ?, ?, ?)", (server_id, tool_id, outcome, detail))
+        self._conn.execute(
+            "INSERT INTO feedback (server_id, tool_id, outcome, detail) VALUES (?, ?, ?, ?)",
+            (server_id, tool_id, outcome, detail),
+        )
         self._conn.commit()
 
     def feedback_summary(self) -> Dict[str, Dict[str, int]]:
@@ -259,8 +263,8 @@ class CatalogStorage:
         for row in cur.fetchall():
             key = f"{row['server_url']}::{row['tool_id']}"
             summary[key] = {
-                'success': int(row['success_count'] or 0),
-                'error': int(row['error_count'] or 0),
+                "success": int(row["success_count"] or 0),
+                "error": int(row["error_count"] or 0),
             }
         return summary
 

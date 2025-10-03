@@ -56,15 +56,15 @@ class ToolRanker:
 
         tokens = self._tokenize(query)
         results: List[RankedTool] = []
-        feedback = getattr(self.catalog, 'feedback_summary', lambda: {})()
+        feedback = getattr(self.catalog, "feedback_summary", lambda: {})()
 
         for record in self.catalog.list_tools(sources=sources, tool_ids=tool_ids):
             score, reasons = self._score_record(record, tokens, preferred_language)
             key = f"{record.source}::{record.tool_id}"
             stats = feedback.get(key) if feedback else None
             if stats:
-                success = int(stats.get('success', 0) or 0)
-                error = int(stats.get('error', 0) or 0)
+                success = int(stats.get("success", 0) or 0)
+                error = int(stats.get("error", 0) or 0)
                 if success:
                     score += min(success, 3) * 0.5
                     reasons.append(f"historical successes: {success}")
@@ -91,7 +91,9 @@ class ToolRanker:
     ) -> Tuple[float, List[str]]:
         score = 0.0
         reasons: List[str] = []
-        searchable_text = " ".join(filter(None, [record.tool_id, record.description, record.when_to_use or ""])).lower()
+        searchable_text = " ".join(
+            filter(None, [record.tool_id, record.description, record.when_to_use or ""])
+        ).lower()
         tag_text = " ".join(record.tags).lower()
 
         for token in tokens:
@@ -109,7 +111,9 @@ class ToolRanker:
 
         if preferred_language:
             preferred_language = preferred_language.lower()
-            if any(lang.lower().startswith(preferred_language) for lang in record.languages):
+            if any(
+                lang.lower().startswith(preferred_language) for lang in record.languages
+            ):
                 score += 1.5
                 reasons.append(f"preferred language '{preferred_language}' available")
             else:

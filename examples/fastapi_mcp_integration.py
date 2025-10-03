@@ -1,22 +1,42 @@
 """FastAPI reference server fulfilling the ATDF Server Profile v1."""
 
 import json
+import os
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Literal
-
-from fastapi import Body, FastAPI, Request, status
-from fastapi.exceptions import RequestValidationError
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, Response
-from jsonschema import ValidationError as JSONValidationError
-from jsonschema import validators as jsonschema_validators
-from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
-from pydantic import BaseModel, EmailStr, Field, ValidationError, validator
+from typing import Any, Dict, List, Literal, Optional, Tuple
 from uuid import uuid4
 
+try:  # pragma: no cover - exercised indirectly via fallback tests
+    from fastapi import Body, FastAPI, Request, status
+    from fastapi.exceptions import RequestValidationError
+    from fastapi.middleware.cors import CORSMiddleware
+    from fastapi.responses import JSONResponse, Response
+except ModuleNotFoundError:  # pragma: no cover - fallback when FastAPI is unavailable
+    from examples._fastapi_stub import (  # type: ignore
+        Body,
+        CORSMiddleware,
+        FastAPI,
+        JSONResponse,
+        Request,
+        RequestValidationError,
+        Response,
+        status,
+    )
+
+from jsonschema import ValidationError as JSONValidationError
+from jsonschema import validators as jsonschema_validators
+from pydantic import BaseModel, EmailStr, Field, ValidationError
+
 from improved_loader import detect_language, select_tool_by_goal
+from prometheus_client import (
+    CONTENT_TYPE_LATEST,
+    Counter,
+    Gauge,
+    Histogram,
+    generate_latest,
+)
 from tools.mcp_converter import mcp_to_atdf
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -144,7 +164,10 @@ def _build_tool_catalog() -> Dict[str, Dict[str, Any]]:
                 }
             ],
             "feedback": {
-                "progress_indicators": ["reservation_pending_review", "inventory_checked"],
+                "progress_indicators": [
+                    "reservation_pending_review",
+                    "inventory_checked",
+                ],
                 "completion_signals": ["reservation_confirmed"],
             },
         },
@@ -261,6 +284,8 @@ def _build_tool_catalog() -> Dict[str, Dict[str, Any]]:
             },
         },
     }
+
+
 TOOL_CATALOG = _build_tool_catalog()
 TOOL_LIST = list(TOOL_CATALOG.values())
 SEARCH_KEYWORDS = {
@@ -385,7 +410,10 @@ def create_error_response(
     meta: Optional[Dict[str, Any]] = None,
 ) -> JSONResponse:
     body = ATDFErrorResponse(errors=errors, meta=meta)
-    return JSONResponse(status_code=status_code, content=body.model_dump(exclude_none=True))
+    return JSONResponse(
+        status_code=status_code, content=body.model_dump(exclude_none=True)
+    )
+
 
 def create_atdf_error_response(
     error_type: str,
@@ -410,12 +438,20 @@ def create_atdf_error_response(
         code=code,
     )
     body = ATDFErrorResponse(errors=[detail_payload])
-    return JSONResponse(status_code=status_code, content=body.model_dump(exclude_none=True))
+    return JSONResponse(
+        status_code=status_code, content=body.model_dump(exclude_none=True)
+    )
 
 
 def resolve_schema(descriptor: Dict[str, Any]) -> Tuple[Dict[str, Any], str, bool]:
     schema_version = str(descriptor.get("schema_version", "")).strip()
-    enhanced_keys = {"metadata", "localization", "examples", "prerequisites", "feedback"}
+    enhanced_keys = {
+        "metadata",
+        "localization",
+        "examples",
+        "prerequisites",
+        "feedback",
+    }
     if schema_version.startswith("2."):
         return ENHANCED_SCHEMA, schema_version, False
     if enhanced_keys.intersection(descriptor.keys()):
@@ -458,6 +494,8 @@ def score_tool_for_query(tool: Dict[str, Any], query: str, language: str) -> flo
     if description and any(word in description for word in query_lower.split()):
         score += 0.1
     return min(score, 1.0)
+
+
 class HotelReservationRequest(BaseModel):
     guest_name: str = Field(..., min_length=1)
     email: EmailStr
@@ -465,13 +503,6 @@ class HotelReservationRequest(BaseModel):
     check_out: datetime
     room_type: Literal["single", "double", "suite"]
     guests: int = Field(..., ge=1, le=4)
-
-    @validator("check_out")
-    def validate_stay(cls, value: datetime, values: Dict[str, Any]) -> datetime:
-        check_in = values.get("check_in")
-        if check_in and value <= check_in:
-            raise ValueError("Check-out must occur after check-in")
-        return value
 
 
 class FlightBookingRequest(BaseModel):
@@ -482,22 +513,6 @@ class FlightBookingRequest(BaseModel):
     departure_date: datetime
     return_date: Optional[datetime] = None
     seat_class: Literal["economy", "business", "first"]
-
-    @validator("arrival_city")
-    def cities_must_differ(cls, value: str, values: Dict[str, Any]) -> str:
-        departure = values.get("departure_city")
-        if departure and value.lower() == departure.lower():
-            raise ValueError("Arrival city must differ from departure city")
-        return value
-
-    @validator("return_date")
-    def return_after_departure(cls, value: Optional[datetime], values: Dict[str, Any]) -> Optional[datetime]:
-        if value is None:
-            return value
-        departure = values.get("departure_date")
-        if departure and value <= departure:
-            raise ValueError("Return date must be after departure date")
-        return value
 
 
 class MCPConvertRequest(BaseModel):
@@ -563,15 +578,23 @@ async def handle_validation_error(request: Request, exc: ValidationError):
                 detail=error.get("msg", "Invalid value."),
                 tool_name=tool_name,
                 parameter_name=parameter_name,
-                context={"loc": error.get("loc"), "type": error.get("type"), "ctx": error.get("ctx")},
+                context={
+                    "loc": error.get("loc"),
+                    "type": error.get("type"),
+                    "ctx": error.get("ctx"),
+                },
                 code="validation_error",
             )
         )
-    return create_error_response(request, status_code=status.HTTP_400_BAD_REQUEST, errors=errors)
+    return create_error_response(
+        request, status_code=status.HTTP_400_BAD_REQUEST, errors=errors
+    )
 
 
 @app.exception_handler(RequestValidationError)
-async def handle_request_validation_error(request: Request, exc: RequestValidationError):
+async def handle_request_validation_error(
+    request: Request, exc: RequestValidationError
+):
     tool_name = infer_tool_name(request)
     errors = []
     for error in exc.errors():
@@ -584,11 +607,19 @@ async def handle_request_validation_error(request: Request, exc: RequestValidati
                 detail=error.get("msg", "Invalid request payload."),
                 tool_name=tool_name,
                 parameter_name=parameter_name,
-                context={"loc": error.get("loc"), "type": error.get("type"), "ctx": error.get("ctx")},
+                context={
+                    "loc": error.get("loc"),
+                    "type": error.get("type"),
+                    "ctx": error.get("ctx"),
+                },
                 code="validation_error",
             )
         )
-    return create_error_response(request, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, errors=errors)
+    return create_error_response(
+        request, status_code=status.HTTP_400_BAD_REQUEST, errors=errors
+    )
+
+
 @app.get("/metrics")
 async def metrics() -> Response:
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
@@ -646,7 +677,9 @@ async def get_tool(tool_id: str, request: Request) -> Any:
         tool_name="server",
         code="tool_not_found",
     )
-    return create_error_response(request, status_code=status.HTTP_404_NOT_FOUND, errors=[error])
+    return create_error_response(
+        request, status_code=status.HTTP_404_NOT_FOUND, errors=[error]
+    )
 
 
 @app.post("/tools/validate")
@@ -669,7 +702,9 @@ async def validate_tools(request: Request, payload: Any = Body(...)) -> Any:
             )
             continue
         schema, schema_version, ignore_additional = resolve_schema(descriptor)
-        schema_errors = validate_against_schema(descriptor, schema, ignore_additional=ignore_additional)
+        schema_errors = validate_against_schema(
+            descriptor, schema, ignore_additional=ignore_additional
+        )
         if schema_errors:
             for schema_error in schema_errors:
                 pointer = ".".join(str(part) for part in schema_error.path) or None
@@ -679,7 +714,9 @@ async def validate_tools(request: Request, payload: Any = Body(...)) -> Any:
                         error_type=f"{ERROR_NAMESPACE}/validation-error",
                         title="ATDF descriptor failed validation",
                         detail=schema_error.message,
-                        tool_name=descriptor.get("tool_id") or descriptor.get("id") or "server",
+                        tool_name=descriptor.get("tool_id")
+                        or descriptor.get("id")
+                        or "server",
                         parameter_name=pointer,
                         context={
                             "json_path": list(schema_error.path),
@@ -689,7 +726,9 @@ async def validate_tools(request: Request, payload: Any = Body(...)) -> Any:
                     )
                 )
         else:
-            resolved_version = schema_version or ("2.x" if schema is ENHANCED_SCHEMA else "1.x")
+            resolved_version = schema_version or (
+                "2.x" if schema is ENHANCED_SCHEMA else "1.x"
+            )
             results.append(
                 {
                     "tool_id": descriptor.get("tool_id") or descriptor.get("id"),
@@ -697,7 +736,9 @@ async def validate_tools(request: Request, payload: Any = Body(...)) -> Any:
                 }
             )
     if errors:
-        return create_error_response(request, status_code=status.HTTP_400_BAD_REQUEST, errors=errors)
+        return create_error_response(
+            request, status_code=status.HTTP_400_BAD_REQUEST, errors=errors
+        )
     return {"valid": True, "results": results}
 
 
@@ -706,9 +747,14 @@ async def convert_mcp(request: Request, payload: MCPConvertRequest) -> Any:
     try:
         author = payload.author or "MCP Converter"
         if isinstance(payload.mcp, list):
-            converted = [mcp_to_atdf(tool, enhanced=payload.enhanced, author=author) for tool in payload.mcp]
+            converted = [
+                mcp_to_atdf(tool, enhanced=payload.enhanced, author=author)
+                for tool in payload.mcp
+            ]
         else:
-            converted = mcp_to_atdf(payload.mcp, enhanced=payload.enhanced, author=author)
+            converted = mcp_to_atdf(
+                payload.mcp, enhanced=payload.enhanced, author=author
+            )
         tools = converted if isinstance(converted, list) else [converted]
         return {
             "enhanced": payload.enhanced,
@@ -723,7 +769,9 @@ async def convert_mcp(request: Request, payload: MCPConvertRequest) -> Any:
             tool_name="server",
             code="conversion_error",
         )
-        return create_error_response(request, status_code=status.HTTP_400_BAD_REQUEST, errors=[error])
+        return create_error_response(
+            request, status_code=status.HTTP_400_BAD_REQUEST, errors=[error]
+        )
     except Exception as exc:  # pragma: no cover - unexpected branch
         error = build_error_detail(
             request,
@@ -733,7 +781,9 @@ async def convert_mcp(request: Request, payload: MCPConvertRequest) -> Any:
             tool_name="server",
             code="internal_error",
         )
-        return create_error_response(request, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, errors=[error])
+        return create_error_response(
+            request, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, errors=[error]
+        )
 
 
 @app.post("/search")
@@ -741,10 +791,14 @@ async def search_tools(request: Request, payload: SearchRequest) -> Dict[str, An
     language = (payload.language or detect_language(payload.query)).lower()
     filters = payload.filters or {}
     requested_tags = {
-        str(tag).lower() for tag in filters.get("tags", []) if isinstance(filters.get("tags"), list)
+        str(tag).lower()
+        for tag in filters.get("tags", [])
+        if isinstance(filters.get("tags"), list)
     }
     requires = {
-        str(req).lower() for req in filters.get("requires", []) if isinstance(filters.get("requires"), list)
+        str(req).lower()
+        for req in filters.get("requires", [])
+        if isinstance(filters.get("requires"), list)
     }
 
     scored_tools: List[Tuple[Dict[str, Any], float]] = []
@@ -765,7 +819,12 @@ async def search_tools(request: Request, payload: SearchRequest) -> Dict[str, An
     if not scored_tools:
         primary_tool = select_tool_by_goal(TOOL_LIST, payload.query, language)
         if primary_tool:
-            scored_tools.append((primary_tool, score_tool_for_query(primary_tool, payload.query, language)))
+            scored_tools.append(
+                (
+                    primary_tool,
+                    score_tool_for_query(primary_tool, payload.query, language),
+                )
+            )
 
     scored_tools.sort(key=lambda item: item[1], reverse=True)
     limited = scored_tools[: payload.limit]
@@ -783,6 +842,8 @@ async def search_tools(request: Request, payload: SearchRequest) -> Dict[str, An
         "language": language,
         "results": results,
     }
+
+
 @app.post("/api/hotel/reserve")
 async def reserve_hotel(request: Request, payload: HotelReservationRequest) -> Any:
     tool_name = "hotel_reservation"
@@ -805,7 +866,29 @@ async def reserve_hotel(request: Request, payload: HotelReservationRequest) -> A
                 context={"provided": isoformat_utc(check_in)},
                 code="invalid_dates",
             )
-            return create_error_response(request, status_code=status.HTTP_400_BAD_REQUEST, errors=[error])
+            return create_error_response(
+                request, status_code=status.HTTP_400_BAD_REQUEST, errors=[error]
+            )
+        if check_out <= check_in:
+            ERROR_COUNT.labels(error_type="invalid_dates", tool_name=tool_name).inc()
+            TOOL_EXECUTIONS.labels(tool_name=tool_name, status="error").inc()
+            error = build_error_detail(
+                request,
+                error_type=f"{ERROR_NAMESPACE}/invalid-date",
+                title="Invalid stay duration",
+                detail="Check-out must occur after check-in.",
+                tool_name=tool_name,
+                parameter_name="check_out",
+                suggested_value=isoformat_utc(check_in + timedelta(days=1)),
+                context={
+                    "check_in": isoformat_utc(check_in),
+                    "check_out": isoformat_utc(check_out),
+                },
+                code="invalid_dates",
+            )
+            return create_error_response(
+                request, status_code=status.HTTP_400_BAD_REQUEST, errors=[error]
+            )
         reservation_id = str(uuid4())
         reservation = {
             "reservation_id": reservation_id,
@@ -836,9 +919,13 @@ async def reserve_hotel(request: Request, payload: HotelReservationRequest) -> A
             tool_name=tool_name,
             code="internal_error",
         )
-        return create_error_response(request, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, errors=[error])
+        return create_error_response(
+            request, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, errors=[error]
+        )
     finally:
-        TOOL_EXECUTION_DURATION.labels(tool_name=tool_name).observe(time.perf_counter() - start)
+        TOOL_EXECUTION_DURATION.labels(tool_name=tool_name).observe(
+            time.perf_counter() - start
+        )
 
 
 @app.post("/api/flight/book")
@@ -862,7 +949,56 @@ async def book_flight(request: Request, payload: FlightBookingRequest) -> Any:
                 context={"provided": isoformat_utc(departure)},
                 code="invalid_dates",
             )
-            return create_error_response(request, status_code=status.HTTP_400_BAD_REQUEST, errors=[error])
+            return create_error_response(
+                request, status_code=status.HTTP_400_BAD_REQUEST, errors=[error]
+            )
+        if (
+            payload.arrival_city.strip().lower()
+            == payload.departure_city.strip().lower()
+        ):
+            ERROR_COUNT.labels(error_type="invalid_route", tool_name=tool_name).inc()
+            TOOL_EXECUTIONS.labels(tool_name=tool_name, status="error").inc()
+            error = build_error_detail(
+                request,
+                error_type=f"{ERROR_NAMESPACE}/invalid-route",
+                title="Arrival city must differ from departure city",
+                detail="Please choose a different arrival city.",
+                tool_name=tool_name,
+                parameter_name="arrival_city",
+                suggested_value=None,
+                context={
+                    "departure_city": payload.departure_city,
+                    "arrival_city": payload.arrival_city,
+                },
+                code="invalid_route",
+            )
+            return create_error_response(
+                request, status_code=status.HTTP_400_BAD_REQUEST, errors=[error]
+            )
+        if payload.return_date is not None:
+            return_dt = to_utc(payload.return_date)
+            if return_dt <= departure:
+                ERROR_COUNT.labels(
+                    error_type="invalid_dates", tool_name=tool_name
+                ).inc()
+                TOOL_EXECUTIONS.labels(tool_name=tool_name, status="error").inc()
+                error = build_error_detail(
+                    request,
+                    error_type=f"{ERROR_NAMESPACE}/invalid-date",
+                    title="Invalid return date",
+                    detail="Return must be scheduled after departure.",
+                    tool_name=tool_name,
+                    parameter_name="return_date",
+                    suggested_value=isoformat_utc(departure + timedelta(days=1)),
+                    context={
+                        "departure_date": isoformat_utc(departure),
+                        "return_date": isoformat_utc(return_dt),
+                    },
+                    code="invalid_dates",
+                )
+                return create_error_response(
+                    request, status_code=status.HTTP_400_BAD_REQUEST, errors=[error]
+                )
         booking_id = str(uuid4())
         booking = {
             "booking_id": booking_id,
@@ -871,7 +1007,11 @@ async def book_flight(request: Request, payload: FlightBookingRequest) -> Any:
             "departure_city": payload.departure_city,
             "arrival_city": payload.arrival_city,
             "departure_date": isoformat_utc(departure),
-            "return_date": isoformat_utc(to_utc(payload.return_date)) if payload.return_date else None,
+            "return_date": (
+                isoformat_utc(to_utc(payload.return_date))
+                if payload.return_date
+                else None
+            ),
             "seat_class": payload.seat_class,
             "status": "confirmed",
             "created_at": isoformat_utc(datetime.utcnow()),
@@ -894,9 +1034,13 @@ async def book_flight(request: Request, payload: FlightBookingRequest) -> Any:
             tool_name=tool_name,
             code="internal_error",
         )
-        return create_error_response(request, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, errors=[error])
+        return create_error_response(
+            request, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, errors=[error]
+        )
     finally:
-        TOOL_EXECUTION_DURATION.labels(tool_name=tool_name).observe(time.perf_counter() - start)
+        TOOL_EXECUTION_DURATION.labels(tool_name=tool_name).observe(
+            time.perf_counter() - start
+        )
 
 
 @app.get("/api/hotel/reservations")
@@ -912,4 +1056,6 @@ async def list_flight_bookings() -> Dict[str, Any]:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    host = os.getenv("ATDF_HOST", "127.0.0.1")
+    port = int(os.getenv("ATDF_PORT", "8000"))
+    uvicorn.run(app, host=host, port=port)

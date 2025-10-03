@@ -30,6 +30,7 @@ def run_n8n_workflow():
         text=True,
         check=False,
         env=env,
+        timeout=120,
     )
     return result
 
@@ -62,16 +63,17 @@ def test_selector_recommendation_payload(tmp_path):
                     "language": "es",
                     "top_n": 1,
                     "servers": ["http://127.0.0.1:8001/tools"],
-                    "allowed_tools": ["hotel_reservation"]
+                    "allowed_tools": ["hotel_reservation"],
                 }
             ),
         ],
         capture_output=True,
         text=True,
         check=False,
+        timeout=60,
     )
     capture.write_text(proc.stdout, encoding="utf-8")
-    payload = json.loads(proc.stdout or '{}')
+    payload = json.loads(proc.stdout or "{}")
     assert payload.get("count", 0) >= 1
     assert payload.get("results", [{}])[0].get("tool_id") == "hotel_reservation"
 
@@ -100,16 +102,19 @@ def test_mcp_bridge_response(tmp_path):
                             "check_in": "2025-12-05T15:00:00",
                             "check_out": "2025-12-08T11:00:00",
                             "room_type": "deluxe",
-                            "guests": 2
-                        }
-                    }
+                            "guests": 2,
+                        },
+                    },
                 }
             ),
         ],
         capture_output=True,
         text=True,
         check=False,
+        timeout=60,
     )
-    payload = json.loads(proc.stdout or '{}')
+    payload = json.loads(proc.stdout or "{}")
     assert payload.get("jsonrpc") == "2.0"
-    assert "reservation_id" in payload.get("result", {}).get("content", [{}])[0].get("text", "")
+    assert "reservation_id" in payload.get("result", {}).get("content", [{}])[0].get(
+        "text", ""
+    )

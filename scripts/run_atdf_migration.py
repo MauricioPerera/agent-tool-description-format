@@ -10,9 +10,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from tools.converter import convert_to_enhanced, save_tool
 from tools.mcp_converter import mcp_to_atdf
 from tools.validator import validate_tool_smart
-from tools.converter import convert_to_enhanced, save_tool
 
 
 def _load_mcp_catalog(path: Path) -> List[Dict[str, Any]]:
@@ -28,7 +28,13 @@ def _ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
 
 
-def run_migration(mcp_file: Path, basic_dir: Path, enhanced_dir: Optional[Path], author: str, validate: bool) -> None:
+def run_migration(
+    mcp_file: Path,
+    basic_dir: Path,
+    enhanced_dir: Optional[Path],
+    author: str,
+    validate: bool,
+) -> None:
     tools = _load_mcp_catalog(mcp_file)
     _ensure_dir(basic_dir)
     if enhanced_dir:
@@ -50,7 +56,9 @@ def run_migration(mcp_file: Path, basic_dir: Path, enhanced_dir: Optional[Path],
             raise ValueError(f"Validation failed for {basic_path}")
 
         if enhanced_dir:
-            atdf_enh = convert_to_enhanced(atdf_basic, author=author, extract_language=True)
+            atdf_enh = convert_to_enhanced(
+                atdf_basic, author=author, extract_language=True
+            )
             if validate and not validate_tool_smart(atdf_enh):
                 raise ValueError(f"Validation failed for enhanced tool {tool_id}")
             save_tool(atdf_enh, enhanced_dir / f"{tool_id}.json", format="json")
@@ -64,10 +72,25 @@ def run_migration(mcp_file: Path, basic_dir: Path, enhanced_dir: Optional[Path],
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run MCP → ATDF migration pipeline")
     parser.add_argument("mcp_file", type=Path, help="Path to MCP catalog JSON")
-    parser.add_argument("--basic-dir", type=Path, default=Path("atdf"), help="Directory to store basic ATDF files")
-    parser.add_argument("--enhanced-dir", type=Path, help="Directory to store enhanced ATDF files")
-    parser.add_argument("--author", default="ATDF Migration", help="Author metadata for enhanced conversion")
-    parser.add_argument("--skip-validation", action="store_true", help="Skip validation after conversion")
+    parser.add_argument(
+        "--basic-dir",
+        type=Path,
+        default=Path("atdf"),
+        help="Directory to store basic ATDF files",
+    )
+    parser.add_argument(
+        "--enhanced-dir", type=Path, help="Directory to store enhanced ATDF files"
+    )
+    parser.add_argument(
+        "--author",
+        default="ATDF Migration",
+        help="Author metadata for enhanced conversion",
+    )
+    parser.add_argument(
+        "--skip-validation",
+        action="store_true",
+        help="Skip validation after conversion",
+    )
 
     args = parser.parse_args()
 

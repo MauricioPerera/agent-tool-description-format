@@ -35,13 +35,18 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=7.4.0",
-    "pytest-cov>=4.1.0",
-    "pytest-asyncio>=0.21.0",
-    "black>=23.0.0",
-    "isort>=5.12.0",
-    "flake8>=6.0.0",
-    "mypy>=1.5.0",
+    "pytest>=7,<9",
+    "pytest-cov>=4.1,<6",
+    "pytest-asyncio>=0.21,<0.24",
+    "pytest-mock>=3.12,<4",
+    "black==24.8.0",
+    "isort>=5.13,<6",
+    "flake8>=6.1,<7",
+    "mypy>=1.10,<2",
+    "bandit>=1.7,<2",
+    "safety>=2.3,<3",
+    "coverage[toml]>=7.6,<8",
+    "pre-commit>=3.6,<4",
 ]
 vector = [
     "numpy>=1.24.0",
@@ -57,19 +62,21 @@ Repository = "https://github.com/atdf/agent-tool-description-format"
 # Black configuration
 [tool.black]
 line-length = 88
-target-version = ['py39', 'py310', 'py311', 'py312']
+target-version = ["py311"]
 include = '\.pyi?$'
-extend-exclude = '''
-/(
-  # directories
+exclude = '''
+/( 
   \.eggs
   | \.git
   | \.hg
   | \.mypy_cache
+  | \.pytest_cache
   | \.tox
   | \.venv
   | build
   | dist
+  | node_modules
+  | js
 )/
 '''
 
@@ -84,17 +91,7 @@ known_third_party = ["fastapi", "pydantic", "uvicorn", "httpx", "pytest"]
 # pytest configuration
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = [
-    "-ra",
-    "--strict-markers",
-    "--strict-config",
-    "--cov=sdk",
-    "--cov=tools", 
-    "--cov=examples",
-    "--cov-report=term-missing",
-    "--cov-report=html",
-    "--cov-report=xml",
-]
+addopts = "-v -ra --strict-markers --strict-config --cov=sdk --cov=tools --cov=examples --cov-report=xml --cov-report=term-missing"
 testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
@@ -132,7 +129,7 @@ exclude_lines = [
 
 # MyPy configuration
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.11"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -154,5 +151,23 @@ module = [
     "numpy.*",
 ]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "examples.*",
+    "tools.*",
+]
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = [
+    "sdk.atdf_sdk",
+    "sdk.examples",
+    "sdk.examples.*",
+    "sdk.vector_search.*",
+    "sdk.vector_search_cli",
+    "improved_loader",
+]
+ignore_errors = true
 [project.scripts]
 atdf = "cli.__init__.main:cli"

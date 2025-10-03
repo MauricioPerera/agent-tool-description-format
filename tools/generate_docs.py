@@ -10,33 +10,35 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+
 def load_config():
     """Load BMAD configuration"""
     config_path = Path("bmad.config.yml")
     if not config_path.exists():
         print("❌ bmad.config.yml not found")
         return None
-    
+
     # For simplicity, we'll create a basic config structure
     return {
         "project": {
             "name": "ATDF-BMAD Integration",
             "version": "1.0.0",
-            "description": "Agent Tool Description Format with BMAD-METHOD integration"
+            "description": "Agent Tool Description Format with BMAD-METHOD integration",
         },
         "bmad": {
             "version": "1.0.0",
             "agents": ["atdf-specialist", "bmad-orchestrator"],
-            "workflows": ["atdf-enhancement", "tool-integration"]
-        }
+            "workflows": ["atdf-enhancement", "tool-integration"],
+        },
     }
+
 
 def generate_readme():
     """Generate comprehensive README documentation"""
     config = load_config()
     if not config:
         return False
-    
+
     readme_content = f"""# {config['project']['name']}
 
 ## Overview
@@ -111,11 +113,12 @@ POST /tools/{{tool_name}}
 ## Support
 For issues and questions, please refer to the project documentation or create an issue.
 """
-    
+
     with open("README_BMAD.md", "w", encoding="utf-8") as f:
         f.write(readme_content)
-    
+
     return True
+
 
 def generate_api_docs():
     """Generate API documentation"""
@@ -124,7 +127,7 @@ def generate_api_docs():
         "info": {
             "title": "ATDF Internal Ops API",
             "version": "1.0.0",
-            "description": "Internal API used by the BMAD coordination tooling"
+            "description": "Internal API used by the BMAD coordination tooling",
         },
         "servers": [
             {"url": "http://localhost:8000", "description": "Development server"}
@@ -143,13 +146,13 @@ def generate_api_docs():
                                         "properties": {
                                             "status": {"type": "string"},
                                             "timestamp": {"type": "string"},
-                                            "version": {"type": "string"}
-                                        }
+                                            "version": {"type": "string"},
+                                        },
                                     }
                                 }
-                            }
+                            },
                         }
-                    }
+                    },
                 }
             },
             "/tools": {
@@ -165,16 +168,18 @@ def generate_api_docs():
                                         "properties": {
                                             "tools": {
                                                 "type": "array",
-                                                "items": {"$ref": "#/components/schemas/ATDFTool"}
+                                                "items": {
+                                                    "$ref": "#/components/schemas/ATDFTool"
+                                                },
                                             }
-                                        }
+                                        },
                                     }
                                 }
-                            }
+                            },
                         }
-                    }
+                    },
                 }
-            }
+            },
         },
         "components": {
             "schemas": {
@@ -185,45 +190,47 @@ def generate_api_docs():
                         "description": {"type": "string"},
                         "when_to_use": {"type": "string"},
                         "inputSchema": {"type": "object"},
-                        "metadata": {"type": "object"}
-                    }
+                        "metadata": {"type": "object"},
+                    },
                 }
             }
-        }
+        },
     }
-    
+
     with open("docs/api.json", "w", encoding="utf-8") as f:
         json.dump(api_docs, f, indent=2)
-    
+
     return True
+
 
 def main():
     """Main documentation generation function"""
     print("🔧 Generating BMAD internal documentation...")
-    
+
     # Create docs directory
     os.makedirs("docs", exist_ok=True)
-    
+
     # Generate README
     if generate_readme():
         print("✅ README_BMAD.md generated")
     else:
         print("❌ Failed to generate README")
         return 1
-    
+
     # Generate API docs
     if generate_api_docs():
         print("✅ API documentation generated")
     else:
         print("❌ Failed to generate API documentation")
         return 1
-    
+
     print("📚 Documentation generation completed!")
     print("\nGenerated files:")
     print("- README_BMAD.md")
     print("- docs/api.json")
-    
+
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())
