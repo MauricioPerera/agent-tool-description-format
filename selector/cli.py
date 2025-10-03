@@ -62,7 +62,9 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def _render_table(records: Iterable[ATDFToolRecord], limit: int) -> None:
-    header = f"{'source':<30} {'tool_id':<28} {'version':<8} {'languages':<12} description"
+    header = (
+        f"{'source':<30} {'tool_id':<28} {'version':<8} {'languages':<12} description"
+    )
     print(header)
     print("-" * len(header))
     count = 0
@@ -70,8 +72,12 @@ def _render_table(records: Iterable[ATDFToolRecord], limit: int) -> None:
         if limit and count >= limit:
             break
         languages = ",".join(record.languages)
-        description = shorten(record.description or record.when_to_use or "", width=50, placeholder="…")
-        print(f"{record.source:<30} {record.tool_id:<28} {record.schema_version:<8} {languages:<12} {description}")
+        description = shorten(
+            record.description or record.when_to_use or "", width=50, placeholder="…"
+        )
+        print(
+            f"{record.source:<30} {record.tool_id:<28} {record.schema_version:<8} {languages:<12} {description}"
+        )
         count += 1
 
 

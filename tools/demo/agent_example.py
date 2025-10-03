@@ -1,10 +1,11 @@
 import os
 from loader import load_tools_from_directory, select_tool_by_goal
 
+
 def main():
     # Define the directory containing tool descriptions
     examples_dir = os.path.join(os.path.dirname(__file__), "../../schema/examples")
-    
+
     # Load all tools from the examples directory
     tools = load_tools_from_directory(examples_dir)
     if not tools:
@@ -24,15 +25,18 @@ def main():
         print(f"➤ ¿Cuándo usarla?: {selected_tool['when_to_use']}")
         print(f"➤ ¿Cómo usarla?:")
         print(f"  - Entradas:")
-        for input_param in selected_tool['how_to_use']['inputs']:
-            print(f"    * {input_param['name']} ({input_param['type']}): {input_param.get('description', 'Sin descripción')}")
+        for input_param in selected_tool["how_to_use"]["inputs"]:
+            print(
+                f"    * {input_param['name']} ({input_param['type']}): {input_param.get('description', 'Sin descripción')}"
+            )
         print(f"  - Salidas:")
         print(f"    * Éxito: {selected_tool['how_to_use']['outputs']['success']}")
         print(f"    * Posibles errores:")
-        for error in selected_tool['how_to_use']['outputs']['failure']:
+        for error in selected_tool["how_to_use"]["outputs"]["failure"]:
             print(f"      - {error['code']}: {error['description']}")
     else:
         print(f"⚠️ No se encontró una herramienta adecuada para el objetivo: '{goal}'.")
+
 
 if __name__ == "__main__":
     main()

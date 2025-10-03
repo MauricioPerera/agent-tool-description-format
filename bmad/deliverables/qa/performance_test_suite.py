@@ -13,7 +13,7 @@ PAYLOAD = {
     "language": "es",
     "top_n": 1,
     "servers": ["http://127.0.0.1:8001/tools"],
-    "allowed_tools": ["hotel_reservation"]
+    "allowed_tools": ["hotel_reservation"],
 }
 
 
@@ -34,7 +34,7 @@ def main():
         "min_ms": round(min(durations) * 1000, 2),
         "max_ms": round(max(durations) * 1000, 2),
         "avg_ms": round(statistics.mean(durations) * 1000, 2),
-        "p95_ms": round(statistics.quantiles(durations, n=20)[18] * 1000, 2)
+        "p95_ms": round(statistics.quantiles(durations, n=20)[18] * 1000, 2),
     }
     print(stats)
 

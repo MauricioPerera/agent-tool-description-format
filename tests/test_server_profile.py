@@ -21,7 +21,9 @@ TRANSPORT = ASGITransport(app=app)
 
 
 async def _request(method: str, url: str, **kwargs) -> httpx.Response:
-    async with httpx.AsyncClient(transport=TRANSPORT, base_url="http://testserver") as client:
+    async with httpx.AsyncClient(
+        transport=TRANSPORT, base_url="http://testserver"
+    ) as client:
         return await client.request(method, url, **kwargs)
 
 
@@ -98,14 +100,18 @@ def test_convert_mcp_returns_atdf_payload():
             "required": ["foo"],
         },
     }
-    response = request("POST", "/convert/mcp", json={"mcp": mcp_payload, "enhanced": False})
+    response = request(
+        "POST", "/convert/mcp", json={"mcp": mcp_payload, "enhanced": False}
+    )
     assert response.status_code == 200
     body = response.json()
     assert body["tools"] and body["tools"][0]["tool_id"] == "demo_tool"
 
 
 def test_search_returns_ranked_results():
-    response = request("POST", "/search", json={"query": "Need a hotel booking", "limit": 2})
+    response = request(
+        "POST", "/search", json={"query": "Need a hotel booking", "limit": 2}
+    )
     assert response.status_code == 200
     body = response.json()
     assert body["results"], "Search must return at least one result"

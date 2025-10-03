@@ -8,15 +8,18 @@ from pathlib import Path
 from typing import Union, Tuple, Any
 
 # Configurar logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger('atdf_validator')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger("atdf_validator")
 
 ToolSource = Union[str, os.PathLike, dict]
+
 
 def load_json(file_path):
     """Load a JSON file and return its contents."""
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         logger.error(f"Error: File '{file_path}' not found.")
@@ -24,6 +27,7 @@ def load_json(file_path):
     except json.JSONDecodeError as e:
         logger.error(f"Error: Invalid JSON in '{file_path}': {e}")
         return None
+
 
 def _resolve_tool_source(tool: ToolSource) -> Tuple[Any, str]:
     """Return the tool payload and a label describing its origin."""
@@ -35,6 +39,7 @@ def _resolve_tool_source(tool: ToolSource) -> Tuple[Any, str]:
         return data, str(path)
     raise TypeError(f"Unsupported tool type: {type(tool)!r}")
 
+
 def _load_schema(schema_path: str) -> Any:
     schema = load_json(schema_path)
     if not schema:
@@ -42,7 +47,10 @@ def _load_schema(schema_path: str) -> Any:
         return None
     return schema
 
-def _validate_tool_data(tool_data: Any, schema: Any, ignore_additional_properties: bool, label: str) -> bool:
+
+def _validate_tool_data(
+    tool_data: Any, schema: Any, ignore_additional_properties: bool, label: str
+) -> bool:
     if tool_data is None:
         logger.error(f"Could not load tool from '{label}'.")
         return False
@@ -51,7 +59,7 @@ def _validate_tool_data(tool_data: Any, schema: Any, ignore_additional_propertie
         if ignore_additional_properties:
             validator_class = jsonschema.validators.extend(
                 jsonschema.validators.validator_for(schema),
-                {'additionalProperties': lambda validator, aP, instance, schema: None}
+                {"additionalProperties": lambda validator, aP, instance, schema: None},
             )
             validator = validator_class(schema)
             error = next(validator.iter_errors(tool_data), None)
@@ -71,10 +79,17 @@ def _validate_tool_data(tool_data: Any, schema: Any, ignore_additional_propertie
         logger.error(f"  - Path: {e.json_path}")
         return False
 
-def validate_tool(tool: ToolSource, schema_file: str = None, ignore_additional_properties: bool = False) -> bool:
+
+def validate_tool(
+    tool: ToolSource,
+    schema_file: str = None,
+    ignore_additional_properties: bool = False,
+) -> bool:
     """Validate a tool description against the ATDF schema."""
     if schema_file is None:
-        schema_file = os.path.join(os.path.dirname(__file__), "../schema/atdf_schema.json")
+        schema_file = os.path.join(
+            os.path.dirname(__file__), "../schema/atdf_schema.json"
+        )
 
     schema = _load_schema(schema_file)
     if not schema:
@@ -83,13 +98,20 @@ def validate_tool(tool: ToolSource, schema_file: str = None, ignore_additional_p
     tool_data, label = _resolve_tool_source(tool)
     return _validate_tool_data(tool_data, schema, ignore_additional_properties, label)
 
-def validate_tool_smart(tool: ToolSource, schema_basic: str = None, schema_enhanced: str = None) -> bool:
+
+def validate_tool_smart(
+    tool: ToolSource, schema_basic: str = None, schema_enhanced: str = None
+) -> bool:
     """Validate a tool description automatically selecting the appropriate schema."""
     if schema_basic is None:
-        schema_basic = os.path.join(os.path.dirname(__file__), "../schema/atdf_schema.json")
+        schema_basic = os.path.join(
+            os.path.dirname(__file__), "../schema/atdf_schema.json"
+        )
 
     if schema_enhanced is None:
-        schema_enhanced = os.path.join(os.path.dirname(__file__), "../schema/enhanced_atdf_schema.json")
+        schema_enhanced = os.path.join(
+            os.path.dirname(__file__), "../schema/enhanced_atdf_schema.json"
+        )
 
     tool_data, label = _resolve_tool_source(tool)
     if tool_data is None:
@@ -98,25 +120,69 @@ def validate_tool_smart(tool: ToolSource, schema_basic: str = None, schema_enhan
 
     schema_version = tool_data.get("schema_version", "1.0.0")
     if schema_version == "1.0.0" and "schema_version" not in tool_data:
-        is_enhanced = any(key in tool_data for key in ["metadata", "examples", "localization", "prerequisites", "feedback"])
+        is_enhanced = any(
+            key in tool_data
+            for key in [
+                "metadata",
+                "examples",
+                "localization",
+                "prerequisites",
+                "feedback",
+            ]
+        )
         if is_enhanced:
             schema_version = "2.0.0"
 
     if schema_version.startswith("2."):
-        logger.info(f"Detected enhanced schema version {schema_version}, using enhanced validation")
+        logger.info(
+            f"Detected enhanced schema version {schema_version}, using enhanced validation"
+        )
         schema = _load_schema(schema_enhanced)
-        return _validate_tool_data(tool_data, schema, ignore_additional_properties=False, label=label) if schema else False
+        return (
+            _validate_tool_data(
+                tool_data, schema, ignore_additional_properties=False, label=label
+            )
+            if schema
+            else False
+        )
 
-    logger.info(f"Detected basic schema version {schema_version}, using basic validation")
+    logger.info(
+        f"Detected basic schema version {schema_version}, using basic validation"
+    )
     schema = _load_schema(schema_basic)
-    return _validate_tool_data(tool_data, schema, ignore_additional_properties=True, label=label) if schema else False
+    return (
+        _validate_tool_data(
+            tool_data, schema, ignore_additional_properties=True, label=label
+        )
+        if schema
+        else False
+    )
+
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Validate ATDF tool descriptions against a schema.")
-    parser.add_argument("tool_file", help="Path to the ATDF tool description JSON file to validate")
-    parser.add_argument("--schema", "-s", help="Path to the schema file to validate against (default: auto-detect)")
-    parser.add_argument("--smart", "-m", action="store_true", help="Use smart validation to auto-detect schema version")
-    parser.add_argument("--ignore-additional", "-i", action="store_true", help="Ignore additional properties")
+    parser = argparse.ArgumentParser(
+        description="Validate ATDF tool descriptions against a schema."
+    )
+    parser.add_argument(
+        "tool_file", help="Path to the ATDF tool description JSON file to validate"
+    )
+    parser.add_argument(
+        "--schema",
+        "-s",
+        help="Path to the schema file to validate against (default: auto-detect)",
+    )
+    parser.add_argument(
+        "--smart",
+        "-m",
+        action="store_true",
+        help="Use smart validation to auto-detect schema version",
+    )
+    parser.add_argument(
+        "--ignore-additional",
+        "-i",
+        action="store_true",
+        help="Ignore additional properties",
+    )
 
     args = parser.parse_args()
 

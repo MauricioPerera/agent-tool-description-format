@@ -23,43 +23,46 @@ import asyncio
 import aiohttp
 from pathlib import Path
 
+
 class N8NATDFSetup:
     """Setup class for n8n-ATDF integration"""
-    
+
     def __init__(self):
         self.project_root = Path(__file__).parent.parent
         self.examples_dir = Path(__file__).parent
-        
+
     def print_step(self, step: str):
         """Print setup step"""
         print(f"\n🔧 {step}")
         print("=" * (len(step) + 3))
-    
+
     def print_success(self, message: str):
         """Print success message"""
         print(f"✅ {message}")
-    
+
     def print_error(self, message: str):
         """Print error message"""
         print(f"❌ {message}")
-    
+
     def print_info(self, message: str):
         """Print info message"""
         print(f"ℹ️  {message}")
-    
+
     def check_requirements(self):
         """Check system requirements"""
         self.print_step("Checking System Requirements")
-        
+
         # Check Python version
         if sys.version_info < (3.8, 0):
             self.print_error("Python 3.8+ is required")
             return False
         self.print_success(f"Python {sys.version.split()[0]} ✓")
-        
+
         # Check n8n installation
         try:
-            result = subprocess.run(['n8n', 'version'], capture_output=True, text=True, timeout=10)
+            result = subprocess.run(
+                ["n8n", "version"], capture_output=True, text=True, timeout=10
+            )
             if result.returncode == 0:
                 self.print_success("n8n is installed ✓")
             else:
@@ -69,10 +72,12 @@ class N8NATDFSetup:
             self.print_error("n8n is not installed or not in PATH")
             self.print_info("Install n8n with: npm install -g n8n")
             return False
-        
+
         # Check Node.js
         try:
-            result = subprocess.run(['node', '--version'], capture_output=True, text=True)
+            result = subprocess.run(
+                ["node", "--version"], capture_output=True, text=True
+            )
             if result.returncode == 0:
                 self.print_success(f"Node.js {result.stdout.strip()} ✓")
             else:
@@ -81,56 +86,61 @@ class N8NATDFSetup:
         except FileNotFoundError:
             self.print_error("Node.js is not installed")
             return False
-        
+
         return True
-    
+
     def install_dependencies(self):
         """Install Python dependencies"""
         self.print_step("Installing Python Dependencies")
-        
-        dependencies = [
-            'aiohttp',
-            'aiohttp-sse',
-            'requests'
-        ]
-        
+
+        dependencies = ["aiohttp", "aiohttp-sse", "requests"]
+
         for dep in dependencies:
             try:
-                subprocess.run([sys.executable, '-m', 'pip', 'install', dep], 
-                             check=True, capture_output=True)
+                subprocess.run(
+                    [sys.executable, "-m", "pip", "install", dep],
+                    check=True,
+                    capture_output=True,
+                )
                 self.print_success(f"Installed {dep}")
             except subprocess.CalledProcessError as e:
                 self.print_error(f"Failed to install {dep}: {e}")
                 return False
-        
+
         return True
-    
+
     async def test_atdf_server(self):
         """Test ATDF server connectivity"""
         self.print_step("Testing ATDF Server")
-        
+
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get('http://localhost:8000/health') as response:
+                async with session.get("http://localhost:8000/health") as response:
                     if response.status == 200:
                         data = await response.json()
-                        self.print_success(f"ATDF Server is running (version {data.get('version', 'unknown')})")
+                        self.print_success(
+                            f"ATDF Server is running (version {data.get('version', 'unknown')})"
+                        )
                         return True
                     else:
-                        self.print_error(f"ATDF Server returned status {response.status}")
+                        self.print_error(
+                            f"ATDF Server returned status {response.status}"
+                        )
                         return False
         except Exception as e:
             self.print_error(f"Cannot connect to ATDF Server: {e}")
-            self.print_info("Make sure the ATDF server is running on http://localhost:8000")
+            self.print_info(
+                "Make sure the ATDF server is running on http://localhost:8000"
+            )
             self.print_info("Start it with: python examples/fastapi_mcp_integration.py")
             return False
-    
+
     def create_bridge_service(self):
         """Create bridge service script"""
         self.print_step("Creating MCP-ATDF Bridge Service")
-        
+
         service_script = self.examples_dir / "start_mcp_bridge.py"
-        
+
         script_content = '''#!/usr/bin/env python3
 """
 MCP-ATDF Bridge Service Starter
@@ -157,23 +167,23 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print("\\n👋 Bridge server stopped")
 '''
-        
-        with open(service_script, 'w') as f:
+
+        with open(service_script, "w") as f:
             f.write(script_content)
-        
+
         # Make executable on Unix systems
-        if os.name != 'nt':
+        if os.name != "nt":
             os.chmod(service_script, 0o755)
-        
+
         self.print_success("Created bridge service script")
         return True
-    
+
     def create_n8n_workflow_template(self):
         """Create n8n workflow template"""
         self.print_step("Creating n8n Workflow Template")
-        
+
         template_file = self.examples_dir / "n8n_atdf_workflow_template.json"
-        
+
         workflow_template = {
             "name": "ATDF Tools Workflow",
             "nodes": [
@@ -182,29 +192,27 @@ if __name__ == '__main__':
                         "httpMethod": "POST",
                         "path": "atdf-tools",
                         "responseMode": "responseNode",
-                        "options": {}
+                        "options": {},
                     },
                     "id": "webhook-start",
                     "name": "Webhook",
                     "type": "n8n-nodes-base.webhook",
                     "typeVersion": 1,
                     "position": [240, 300],
-                    "webhookId": "atdf-tools-webhook"
+                    "webhookId": "atdf-tools-webhook",
                 },
                 {
                     "parameters": {
                         "sseEndpoint": "http://localhost:8001/sse",
                         "authentication": "none",
                         "toolsToInclude": "all",
-                        "options": {
-                            "timeout": 30000
-                        }
+                        "options": {"timeout": 30000},
                     },
                     "id": "mcp-atdf-client",
                     "name": "ATDF MCP Client",
                     "type": "n8n-nodes-langchain.toolMcp",
                     "typeVersion": 1,
-                    "position": [460, 300]
+                    "position": [460, 300],
                 },
                 {
                     "parameters": {
@@ -212,15 +220,15 @@ if __name__ == '__main__':
                         "options": {
                             "systemMessage": "You are an AI assistant with access to ATDF tools. Use the available tools to help users accomplish their tasks. Always explain what tools you're using and why.",
                             "temperature": 0.7,
-                            "maxTokens": 2000
+                            "maxTokens": 2000,
                         },
-                        "prompt": "={{ $json.body.message || 'Hello! How can I help you today?' }}"
+                        "prompt": "={{ $json.body.message || 'Hello! How can I help you today?' }}",
                     },
                     "id": "ai-agent-atdf",
                     "name": "AI Agent with ATDF",
                     "type": "n8n-nodes-langchain.agent",
                     "typeVersion": 1,
-                    "position": [680, 300]
+                    "position": [680, 300],
                 },
                 {
                     "parameters": {
@@ -229,63 +237,47 @@ if __name__ == '__main__':
                             "success": True,
                             "response": "={{ $json.output }}",
                             "tools_used": "={{ $json.toolsUsed || [] }}",
-                            "timestamp": "={{ new Date().toISOString() }}"
-                        }
+                            "timestamp": "={{ new Date().toISOString() }}",
+                        },
                     },
                     "id": "webhook-response",
                     "name": "Response",
                     "type": "n8n-nodes-base.respondToWebhook",
                     "typeVersion": 1,
-                    "position": [900, 300]
-                }
+                    "position": [900, 300],
+                },
             ],
             "connections": {
                 "Webhook": {
                     "main": [
-                        [
-                            {
-                                "node": "AI Agent with ATDF",
-                                "type": "main",
-                                "index": 0
-                            }
-                        ]
+                        [{"node": "AI Agent with ATDF", "type": "main", "index": 0}]
                     ]
                 },
                 "AI Agent with ATDF": {
-                    "main": [
-                        [
-                            {
-                                "node": "Response",
-                                "type": "main",
-                                "index": 0
-                            }
-                        ]
-                    ]
-                }
+                    "main": [[{"node": "Response", "type": "main", "index": 0}]]
+                },
             },
-            "settings": {
-                "executionOrder": "v1"
-            },
+            "settings": {"executionOrder": "v1"},
             "staticData": {},
             "tags": ["ATDF", "MCP", "AI", "Tools"],
             "triggerCount": 1,
             "updatedAt": "2024-01-15T10:00:00.000Z",
-            "versionId": "1"
+            "versionId": "1",
         }
-        
-        with open(template_file, 'w') as f:
+
+        with open(template_file, "w") as f:
             json.dump(workflow_template, f, indent=2)
-        
+
         self.print_success("Created n8n workflow template")
         return True
-    
+
     def create_documentation(self):
         """Create integration documentation"""
         self.print_step("Creating Documentation")
-        
+
         doc_file = self.examples_dir / "N8N_ATDF_INTEGRATION.md"
-        
-        documentation = '''# n8n-ATDF Integration Guide
+
+        documentation = """# n8n-ATDF Integration Guide
 
 ## Overview
 
@@ -433,49 +425,49 @@ See the `examples/` directory for:
 - Complete workflow templates
 - Tool usage examples
 - Integration tests
-'''
-        
-        with open(doc_file, 'w') as f:
+"""
+
+        with open(doc_file, "w") as f:
             f.write(documentation)
-        
+
         self.print_success("Created integration documentation")
         return True
-    
+
     async def run_setup(self):
         """Run the complete setup process"""
         print("🚀 n8n-ATDF Integration Setup")
         print("=" * 35)
-        
+
         # Check requirements
         if not self.check_requirements():
             self.print_error("Requirements check failed")
             return False
-        
+
         # Install dependencies
         if not self.install_dependencies():
             self.print_error("Dependency installation failed")
             return False
-        
+
         # Test ATDF server
         if not await self.test_atdf_server():
             self.print_error("ATDF server test failed")
             return False
-        
+
         # Create bridge service
         if not self.create_bridge_service():
             self.print_error("Bridge service creation failed")
             return False
-        
+
         # Create workflow template
         if not self.create_n8n_workflow_template():
             self.print_error("Workflow template creation failed")
             return False
-        
+
         # Create documentation
         if not self.create_documentation():
             self.print_error("Documentation creation failed")
             return False
-        
+
         # Success message
         self.print_step("Setup Complete! 🎉")
         print("\nNext steps:")
@@ -486,18 +478,20 @@ See the `examples/` directory for:
         print("\n3. Test the integration:")
         print("   curl -X POST http://localhost:5678/webhook/atdf-tools \\")
         print("     -H 'Content-Type: application/json' \\")
-        print("     -d '{\"message\": \"What tools are available?\"}'")
+        print('     -d \'{"message": "What tools are available?"}\'')
         print("\n📖 Read the full guide: examples/N8N_ATDF_INTEGRATION.md")
-        
+
         return True
+
 
 async def main():
     """Main setup function"""
     setup = N8NATDFSetup()
     success = await setup.run_setup()
-    
+
     if not success:
         sys.exit(1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     asyncio.run(main())

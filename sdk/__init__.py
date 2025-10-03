@@ -8,4 +8,4 @@ incluyendo carga, validación, búsqueda y manipulación de herramientas.
 from .atdf_sdk import ATDFSDK
 
 __version__ = "0.3.0"
-__all__ = ["ATDFSDK"] 
+__all__ = ["ATDFSDK"]

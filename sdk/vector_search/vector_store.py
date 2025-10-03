@@ -16,6 +16,7 @@ try:  # pragma: no cover - import guard exercised via unit tests
     import lancedb
     from lancedb.table import Table
     import sentence_transformers
+
     VECTOR_SEARCH_AVAILABLE = True
 except ImportError:  # pragma: no cover - ejecutado cuando faltan dependencias
     VECTOR_SEARCH_AVAILABLE = False
@@ -99,14 +100,16 @@ class ATDFVectorStore:
             raise RuntimeError("La dimensión del embedding es desconocida")
 
         init_vector = np.zeros(self.embedding_dim, dtype=np.float32)
-        init_data = [{
-            "id": "_init_",
-            "name": "_init_",
-            "description": "_init_",
-            "parameters": [],
-            "vector": init_vector,
-            "raw_data": "{}",
-        }]
+        init_data = [
+            {
+                "id": "_init_",
+                "name": "_init_",
+                "description": "_init_",
+                "parameters": [],
+                "vector": init_vector,
+                "raw_data": "{}",
+            }
+        ]
 
         self.table = self.db.create_table(self.table_name, data=init_data)
         # Limpiar el registro temporal utilizado para infiriar el esquema
@@ -120,7 +123,9 @@ class ATDFVectorStore:
         elif isinstance(tool, dict):
             data = dict(tool)
         else:
-            raise TypeError("Las herramientas deben ser diccionarios o exponer to_dict().")
+            raise TypeError(
+                "Las herramientas deben ser diccionarios o exponer to_dict()."
+            )
 
         if "name" not in data:
             fallback = data.get("tool_id") or data.get("id")
@@ -213,7 +218,9 @@ class ATDFVectorStore:
         try:
             return asyncio.run(coroutine)
         except RuntimeError as exc:
-            if "asyncio.run() cannot be called from a running event loop" not in str(exc):
+            if "asyncio.run() cannot be called from a running event loop" not in str(
+                exc
+            ):
                 raise
 
         loop = asyncio.new_event_loop()
@@ -246,7 +253,9 @@ class ATDFVectorStore:
         if self.db is None:
             raise RuntimeError("La base de datos LanceDB no está inicializada")
 
-        self.table = self.db.create_table(self.table_name, data=records, mode="overwrite")
+        self.table = self.db.create_table(
+            self.table_name, data=records, mode="overwrite"
+        )
         return True
 
     async def add_tool(self, tool: Any) -> bool:
@@ -327,12 +336,18 @@ class ATDFVectorStore:
                 try:
                     score_value = float(score)
                 except (TypeError, ValueError):
-                    logger.debug("No se pudo convertir la puntuación a float; se usará 0.0")
+                    logger.debug(
+                        "No se pudo convertir la puntuación a float; se usará 0.0"
+                    )
                     score_value = 0.0
             else:
                 score_value = 0.0
 
-            if score_threshold is not None and score is not None and score_value < score_threshold:
+            if (
+                score_threshold is not None
+                and score is not None
+                and score_value < score_threshold
+            ):
                 continue
 
             payload = row.get("raw_data") or row.get("data")
@@ -370,13 +385,23 @@ class ATDFVectorStore:
         if self.table is None:
             raise RuntimeError("La tabla LanceDB no está lista")
 
-        raw_results = self.table.to_pandas() if hasattr(self.table, "to_pandas") else self.table.to_df()
+        raw_results = (
+            self.table.to_pandas()
+            if hasattr(self.table, "to_pandas")
+            else self.table.to_df()
+        )
 
-        iterable = raw_results.iterrows() if hasattr(raw_results, "iterrows") else enumerate(raw_results)
+        iterable = (
+            raw_results.iterrows()
+            if hasattr(raw_results, "iterrows")
+            else enumerate(raw_results)
+        )
 
         tools: List[Dict[str, Any]] = []
         for _, row in iterable:
-            payload = row.get("raw_data") or row.get("data") if hasattr(row, "get") else row
+            payload = (
+                row.get("raw_data") or row.get("data") if hasattr(row, "get") else row
+            )
             if isinstance(payload, str):
                 try:
                     tool_data = json.loads(payload)

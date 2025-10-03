@@ -16,16 +16,12 @@ def make_basic_tool(tool_id="sample", description="Sample tool", when="Use for t
         "description": description,
         "when_to_use": when,
         "how_to_use": {
-            "inputs": [
-                {"name": "text", "type": "string", "description": "Text"}
-            ],
+            "inputs": [{"name": "text", "type": "string", "description": "Text"}],
             "outputs": {
                 "success": "ok",
-                "failure": [
-                    {"code": "error", "description": "Error"}
-                ]
-            }
-        }
+                "failure": [{"code": "error", "description": "Error"}],
+            },
+        },
     }
 
 
@@ -71,14 +67,9 @@ def test_cli_convert_enhanced(tmp_path):
     target = tmp_path / "enhanced.json"
 
     runner = CliRunner()
-    result = runner.invoke(cli, [
-        "convert",
-        str(source),
-        str(target),
-        "--enhanced",
-        "--author",
-        "QA"
-    ])
+    result = runner.invoke(
+        cli, ["convert", str(source), str(target), "--enhanced", "--author", "QA"]
+    )
 
     assert result.exit_code == 0
     enhanced = json.loads(target.read_text())
@@ -88,17 +79,21 @@ def test_cli_convert_enhanced(tmp_path):
 
 def test_cli_search(tmp_path):
     # create matching tool
-    sample = make_basic_tool(tool_id="translator_enhanced", description="Text translator", when="Use this tool to translate text")
+    sample = make_basic_tool(
+        tool_id="translator_enhanced",
+        description="Text translator",
+        when="Use this tool to translate text",
+    )
     (tmp_path / "sample.json").write_text(json.dumps(sample))
-    other = make_basic_tool(tool_id="other", description="Otra herramienta", when="Para tareas distintas")
+    other = make_basic_tool(
+        tool_id="other", description="Otra herramienta", when="Para tareas distintas"
+    )
     (tmp_path / "other.json").write_text(json.dumps(other))
 
     runner = CliRunner()
-    result = runner.invoke(cli, [
-        "search",
-        str(tmp_path),
-        "translate some text to french"
-    ])
+    result = runner.invoke(
+        cli, ["search", str(tmp_path), "translate some text to french"]
+    )
 
     assert result.exit_code == 0
     data = json.loads(result.output)
