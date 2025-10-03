@@ -21,7 +21,7 @@ Agent Tool Description Format (ATDF) is an implementation-agnostic specification
 4. **FastAPI MCP bridge** – Treat the sample app in `examples/` as both a reference implementation and an integration testbed when wiring ATDF into new runtimes.
 
 ## Working effectively in the repo
-- Validate descriptors early with `tools/validator.py` or `tools/validate_enhanced.py` before distributing them.
+- **Schemas (`schema/`)** – Authoritative JSON Schema documents for the classic (1.x) and enhanced (2.x) ATDF descriptors as well as the enriched error envelope.
 - Run both Python and JavaScript test suites (`python tests/run_all_tests.py`, `npm test` inside `js/`) to catch regressions across SDKs.
 - Use the FastAPI + n8n workflows as system tests when adjusting server logic or MCP integrations.
 - Keep documentation localized: whenever you change guides in `docs/en`, mirror the updates in `docs/es` and `docs/pt`.
