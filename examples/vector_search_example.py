@@ -6,7 +6,6 @@ Este script demuestra cómo utilizar el módulo ATDFVectorStore para
 indexar y buscar herramientas ATDF utilizando vectores semánticos.
 """
 
-import asyncio
 import json
 import os
 import sys
@@ -24,13 +23,9 @@ TOOLS_DIR = os.path.join(os.path.dirname(__file__), "..", "examples", "tools")
 DB_PATH = os.path.join(os.path.dirname(__file__), "..", "examples", "vector_db")
 
 
-async def create_index() -> ATDFVectorStore:
-    """
-    Crear un índice vectorial a partir de herramientas de ejemplo.
+def create_index() -> ATDFVectorStore:
+    """Crear un índice vectorial a partir de herramientas de ejemplo."""
 
-    Returns:
-        Instancia de ATDFVectorStore inicializada
-    """
     print(f"Cargando herramientas desde {TOOLS_DIR}...")
     tools = load_tools_from_directory(Path(TOOLS_DIR))
 
@@ -41,32 +36,24 @@ async def create_index() -> ATDFVectorStore:
 
     print(f"Se cargaron {len(tools)} herramientas")
 
-    # Crear almacén vectorial
     vector_store = ATDFVectorStore(db_path=DB_PATH)
+    vector_store.initialize()
 
-    # Inicializar y crear índice
-    await vector_store.initialize()
     print("Creando índice vectorial...")
-
-    success = await vector_store.create_from_tools(tools)
-    if not success:
-        print("Error al crear índice vectorial")
+    added = vector_store.add_tools(tools)
+    if added == 0:
+        print("No se pudieron indexar herramientas")
         sys.exit(1)
 
-    tool_count = await vector_store.count_tools()
-    print(f"Índice creado correctamente con {tool_count} herramientas")
+    total_tools = len(vector_store.get_all_tools())
+    print(f"Índice creado correctamente con {total_tools} herramientas")
 
     return vector_store
 
 
-async def search_examples(vector_store: ATDFVectorStore) -> None:
-    """
-    Realizar búsquedas de ejemplo.
+def search_examples(vector_store: ATDFVectorStore) -> None:
+    """Realizar búsquedas de ejemplo."""
 
-    Args:
-        vector_store: Instancia de ATDFVectorStore inicializada
-    """
-    # Ejemplos de consultas
     examples = [
         "herramienta para buscar en archivos",
         "como puedo ejecutar un comando en la terminal",
@@ -83,14 +70,12 @@ async def search_examples(vector_store: ATDFVectorStore) -> None:
         print(f"\nConsulta: '{query}'")
         print("-" * 40)
 
-        # Realizar búsqueda
-        results = await vector_store.search_tools(query=query, options={"limit": 3})
+        results = vector_store.search(query=query, options={"limit": 3})
 
         if not results:
             print("No se encontraron resultados")
             continue
 
-        # Mostrar resultados
         print(f"Se encontraron {len(results)} resultados:")
 
         for i, result in enumerate(results):
@@ -103,14 +88,11 @@ async def search_examples(vector_store: ATDFVectorStore) -> None:
     print("EJEMPLO CON FILTROS")
     print("=" * 80)
 
-    # Ejemplo con filtros
     query = "buscar información"
     print(f"\nConsulta: '{query}' (filtrado por categoría 'data')")
     print("-" * 40)
 
-    results = await vector_store.search_tools(
-        query=query, options={"limit": 5, "category": "data"}
-    )
+    results = vector_store.search(query=query, options={"limit": 5, "category": "data"})
 
     if not results:
         print("No se encontraron resultados")
@@ -123,7 +105,6 @@ async def search_examples(vector_store: ATDFVectorStore) -> None:
 
             print(f"  [{i+1}] {result.get('name')} ({score_percent}% relevancia)")
 
-            # Mostrar metadatos si existen
             if "metadata" in result and result["metadata"]:
                 try:
                     metadata = json.loads(result["metadata"])
@@ -131,21 +112,18 @@ async def search_examples(vector_store: ATDFVectorStore) -> None:
                         print(f"      Categoría: {metadata['category']}")
                     if "tags" in metadata and metadata["tags"]:
                         print(f"      Etiquetas: {', '.join(metadata['tags'])}")
-                except:
+                except Exception:
                     pass
 
 
-async def main():
+def main() -> None:
     """Función principal del script de ejemplo."""
-    # Crear directorio para la base de datos si no existe
+
     os.makedirs(DB_PATH, exist_ok=True)
 
-    # Crear índice
-    vector_store = await create_index()
-
-    # Realizar búsquedas de ejemplo
-    await search_examples(vector_store)
+    vector_store = create_index()
+    search_examples(vector_store)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

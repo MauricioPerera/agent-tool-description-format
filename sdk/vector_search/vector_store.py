@@ -1,4 +1,4 @@
-"""Almacenamiento vectorial asíncrono para herramientas ATDF."""
+"""Almacenamiento vectorial síncrono para herramientas ATDF."""
 
 from __future__ import annotations
 
@@ -63,32 +63,32 @@ class ATDFVectorStore:
 
     # ------------------------------------------------------------------
     # Ciclo de vida
-    async def initialize(self) -> bool:
+    def initialize(self) -> bool:
         """Inicializar el modelo de embeddings y la conexión LanceDB."""
 
         if self.initialized:
             return True
 
-        await self._ensure_model()
-        await self._ensure_database()
+        self._ensure_model()
+        self._ensure_database()
 
         self.initialized = True
         return True
 
-    async def _ensure_model(self) -> None:
+    def _ensure_model(self) -> None:
         if self.model is not None:
             return
 
         self.model = sentence_transformers.SentenceTransformer(self.model_name)
         self.embedding_dim = self.model.get_sentence_embedding_dimension()
 
-    async def _ensure_database(self) -> None:
+    def _ensure_database(self) -> None:
         if self.db is not None:
             return
 
         self.db = lancedb.connect(self.db_path)
 
-    async def _ensure_table(self) -> None:
+    def _ensure_table(self) -> None:
         if self.db is None:
             raise RuntimeError("La base de datos LanceDB no está inicializada")
 
@@ -170,13 +170,13 @@ class ATDFVectorStore:
 
         return text
 
-    async def _embed_text(self, text: str) -> np.ndarray:
+    def _embed_text(self, text: str) -> np.ndarray:
         if self.model is None:
-            await self._ensure_model()
+            self._ensure_model()
 
         embedding = self._generate_embedding(text)
         if inspect.isawaitable(embedding):
-            embedding = await embedding  # type: ignore[assignment]
+            embedding = asyncio.run(embedding)  # type: ignore[assignment]
 
         return np.asarray(embedding, dtype=np.float32)
 
@@ -186,7 +186,7 @@ class ATDFVectorStore:
 
         return self.model.encode(text, show_progress_bar=False)
 
-    async def _prepare_record(self, tool: Any) -> Dict[str, Any]:
+    def _prepare_record(self, tool: Any) -> Dict[str, Any]:
         normalized = self._normalize_tool(tool)
         tool_id = normalized.get("id") or normalized.get("tool_id")
         if not tool_id:
@@ -195,7 +195,7 @@ class ATDFVectorStore:
             normalized.setdefault("tool_id", tool_id)
 
         text_repr = self._create_text_representation(normalized)
-        vector = await self._embed_text(text_repr)
+        vector = self._embed_text(text_repr)
 
         return {
             "id": tool_id,
@@ -206,45 +206,23 @@ class ATDFVectorStore:
             "raw_data": json.dumps(normalized),
         }
 
-    async def _ensure_ready(self, require_table: bool = True) -> None:
+    def _ensure_ready(self, require_table: bool = True) -> None:
         if not self.initialized:
-            await self.initialize()
+            self.initialize()
         if require_table and self.table is None:
-            await self._ensure_table()
-
-    # ------------------------------------------------------------------
-    # Compatibilidad síncrona
-    def _run_blocking(self, coroutine):
-        try:
-            return asyncio.run(coroutine)
-        except RuntimeError as exc:
-            if "asyncio.run() cannot be called from a running event loop" not in str(
-                exc
-            ):
-                raise
-
-        loop = asyncio.new_event_loop()
-        try:
-            return loop.run_until_complete(coroutine)
-        finally:
-            loop.close()
-
-    def initialize_sync(self) -> bool:
-        """Inicializar el almacén vectorial desde un contexto síncrono."""
-
-        return self._run_blocking(self.initialize())
+            self._ensure_table()
 
     # ------------------------------------------------------------------
     # Operaciones públicas
-    async def create_from_tools(self, tools: Sequence[Any]) -> bool:
-        await self._ensure_ready(require_table=False)
+    def create_from_tools(self, tools: Sequence[Any]) -> bool:
+        self._ensure_ready(require_table=False)
 
         if not tools:
             return False
 
         records: List[Dict[str, Any]] = []
         for tool in tools:
-            record = await self._prepare_record(tool)
+            record = self._prepare_record(tool)
             records.append(record)
 
         if not records:
@@ -258,13 +236,13 @@ class ATDFVectorStore:
         )
         return True
 
-    async def add_tool(self, tool: Any) -> bool:
-        await self._ensure_ready()
+    def add_tool(self, tool: Any) -> bool:
+        self._ensure_ready()
 
         if self.table is None:
             raise RuntimeError("La tabla LanceDB no está lista")
 
-        record = await self._prepare_record(tool)
+        record = self._prepare_record(tool)
 
         existing = self.table.search().where(f"id = '{record['id']}'").limit(1)
 
@@ -290,20 +268,20 @@ class ATDFVectorStore:
         self.table.add([record])
         return True
 
-    async def add_tools(self, tools: Iterable[Any]) -> int:
+    def add_tools(self, tools: Iterable[Any]) -> int:
         count = 0
         for tool in tools:
-            added = await self.add_tool(tool)
+            added = self.add_tool(tool)
             if added:
                 count += 1
         return count
 
-    async def search_tools(
+    def search(
         self,
         query: str,
         options: Optional[Dict[str, Any]] = None,
     ) -> List[Dict[str, Any]]:
-        await self._ensure_ready()
+        self._ensure_ready()
 
         if self.table is None:
             raise RuntimeError("La tabla LanceDB no está lista")
@@ -312,7 +290,7 @@ class ATDFVectorStore:
         limit = int(options.get("limit", 5))
         score_threshold = options.get("score_threshold")
 
-        query_vector = await self._embed_text(query)
+        query_vector = self._embed_text(query)
 
         search = self.table.search(query_vector).limit(limit)
 
@@ -368,7 +346,7 @@ class ATDFVectorStore:
 
         return matches
 
-    async def find_best_tool(
+    def find_best_tool(
         self,
         query: str,
         options: Optional[Dict[str, Any]] = None,
@@ -376,11 +354,11 @@ class ATDFVectorStore:
         options = dict(options or {})
         options.setdefault("limit", 1)
 
-        results = await self.search_tools(query, options)
+        results = self.search(query, options)
         return results[0] if results else None
 
-    async def get_all_tools(self) -> List[Dict[str, Any]]:
-        await self._ensure_ready()
+    def get_all_tools(self) -> List[Dict[str, Any]]:
+        self._ensure_ready()
 
         if self.table is None:
             raise RuntimeError("La tabla LanceDB no está lista")
@@ -416,8 +394,8 @@ class ATDFVectorStore:
 
         return tools
 
-    async def get_tool_by_id(self, tool_id: str) -> Optional[Dict[str, Any]]:
-        await self._ensure_ready()
+    def get_tool_by_id(self, tool_id: str) -> Optional[Dict[str, Any]]:
+        self._ensure_ready()
 
         if self.table is None:
             raise RuntimeError("La tabla LanceDB no está lista")
@@ -453,8 +431,8 @@ class ATDFVectorStore:
 
         return self._normalize_tool(data)
 
-    async def delete_tool(self, tool_id: str) -> bool:
-        await self._ensure_ready()
+    def delete_tool(self, tool_id: str) -> bool:
+        self._ensure_ready()
 
         if self.table is None:
             raise RuntimeError("La tabla LanceDB no está lista")
@@ -466,38 +444,42 @@ class ATDFVectorStore:
         except TypeError:
             return False
 
-    # Métodos síncronos delegando a las versiones asíncronas -----------------
-    def create_from_tools_sync(self, tools: Sequence[Any]) -> bool:
-        return self._run_blocking(self.create_from_tools(tools))
+    # ------------------------------------------------------------------
+    # Métodos asíncronos para compatibilidad
+    async def initialize_async(self) -> bool:
+        return await asyncio.to_thread(self.initialize)
 
-    def add_tool_sync(self, tool: Any) -> bool:
-        return self._run_blocking(self.add_tool(tool))
+    async def create_from_tools_async(self, tools: Sequence[Any]) -> bool:
+        return await asyncio.to_thread(self.create_from_tools, tools)
 
-    def add_tools_sync(self, tools: Iterable[Any]) -> int:
-        return self._run_blocking(self.add_tools(tools))
+    async def add_tool_async(self, tool: Any) -> bool:
+        return await asyncio.to_thread(self.add_tool, tool)
 
-    def search_tools_sync(
+    async def add_tools_async(self, tools: Iterable[Any]) -> int:
+        return await asyncio.to_thread(self.add_tools, tools)
+
+    async def search_async(
         self,
         query: str,
         options: Optional[Dict[str, Any]] = None,
     ) -> List[Dict[str, Any]]:
-        return self._run_blocking(self.search_tools(query, options))
+        return await asyncio.to_thread(self.search, query, options)
 
-    def find_best_tool_sync(
+    async def find_best_tool_async(
         self,
         query: str,
         options: Optional[Dict[str, Any]] = None,
     ) -> Optional[Dict[str, Any]]:
-        return self._run_blocking(self.find_best_tool(query, options))
+        return await asyncio.to_thread(self.find_best_tool, query, options)
 
-    def get_all_tools_sync(self) -> List[Dict[str, Any]]:
-        return self._run_blocking(self.get_all_tools())
+    async def get_all_tools_async(self) -> List[Dict[str, Any]]:
+        return await asyncio.to_thread(self.get_all_tools)
 
-    def get_tool_by_id_sync(self, tool_id: str) -> Optional[Dict[str, Any]]:
-        return self._run_blocking(self.get_tool_by_id(tool_id))
+    async def get_tool_by_id_async(self, tool_id: str) -> Optional[Dict[str, Any]]:
+        return await asyncio.to_thread(self.get_tool_by_id, tool_id)
 
-    def delete_tool_sync(self, tool_id: str) -> bool:
-        return self._run_blocking(self.delete_tool(tool_id))
+    async def delete_tool_async(self, tool_id: str) -> bool:
+        return await asyncio.to_thread(self.delete_tool, tool_id)
 
     # ------------------------------------------------------------------
     # Limpieza

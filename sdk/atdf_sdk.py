@@ -143,7 +143,7 @@ class ATDFToolbox:
                 options["limit"] = limit
 
             try:
-                results = self.vector_store.search_tools_sync(query, options)
+                results = self.vector_store.search(query, options)
 
                 tools_with_scores: List[Tuple[ATDFTool, float]] = []
                 for tool_data in results or []:
@@ -393,7 +393,7 @@ class ATDFSDK:
 
                 # Añadir al vector store si está disponible
                 if self.vector_store:
-                    self.vector_store.add_tool_sync(tool.to_dict())
+                    self.vector_store.add_tool(tool.to_dict())
             except Exception as e:
                 logger.error(
                     f"Error al procesar herramienta desde {file_path}: {str(e)}"
@@ -428,7 +428,7 @@ class ATDFSDK:
 
                 # Añadir al vector store si está disponible
                 if self.vector_store:
-                    self.vector_store.add_tool_sync(tool.to_dict())
+                    self.vector_store.add_tool(tool.to_dict())
             except Exception as e:
                 logger.error(
                     f"Error al procesar herramienta desde directorio {directory_path}: {str(e)}"
@@ -463,7 +463,7 @@ class ATDFSDK:
             )
 
         # Realizar búsqueda vectorial
-        results = self.vector_store.search_tools_sync(
+        results = self.vector_store.search(
             query, {"limit": limit, "score_threshold": score_threshold}
         )
 
@@ -508,7 +508,7 @@ class ATDFSDK:
 
         # Si no se encuentra y está disponible la búsqueda vectorial
         if self.vector_store:
-            tool_dict = self.vector_store.get_tool_by_id_sync(tool_id)
+            tool_dict = self.vector_store.get_tool_by_id(tool_id)
             if tool_dict:
                 try:
                     return create_tool_instance(tool_dict)
@@ -539,7 +539,7 @@ class ATDFSDK:
 
             # Añadir al vector store si está disponible
             if self.vector_store:
-                self.vector_store.add_tool_sync(tool.to_dict())
+                self.vector_store.add_tool(tool.to_dict())
 
             return tool
         except Exception as e:

@@ -20,7 +20,7 @@ from sdk.vector_search import ATDFVectorStore
 async def main():
     # 1. Crear e inicializar el almacén vectorial
     vector_store = ATDFVectorStore()
-    await vector_store.initialize()
+    await vector_store.initialize_async()
     
     # 2. Crear un toolbox con el almacén vectorial
     toolbox = ATDFToolbox({'vector_store': vector_store})
@@ -70,16 +70,16 @@ vector_store = ATDFVectorStore(
 )
 
 # Inicializar (conectar a BD y cargar modelo)
-await vector_store.initialize()
+await vector_store.initialize_async()
 
 # Crear BD a partir de herramientas
-await vector_store.create_from_tools(toolbox.tools)
+await vector_store.create_from_tools_async(toolbox.tools)
 
 # Añadir una herramienta individual
-await vector_store.add_tool(tool)
+await vector_store.add_tool_async(tool)
 
 # Búsqueda avanzada
-results = await vector_store.search_tools(
+results = await vector_store.search_async(
     query="consulta de búsqueda",
     options={
         "language": "es",            # Filtrar por idioma
@@ -89,7 +89,7 @@ results = await vector_store.search_tools(
 )
 
 # Encontrar la mejor herramienta
-best_tool = await vector_store.find_best_tool(
+best_tool = await vector_store.find_best_tool_async(
     goal="enviar correo electrónico",
     options={"language": "es"}
 )
