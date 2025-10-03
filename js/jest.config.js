@@ -24,6 +24,8 @@ module.exports = {
     'lcov',
     'json',
   ],
+  // TODO: [TECH-DEBT] Continue improving coverage so these thresholds remain
+  // a meaningful quality gate for the JavaScript SDK.
   coverageThreshold: {
     global: {
       branches: 80,
@@ -62,7 +64,7 @@ module.exports = {
   ],
   
   // Module name mapping for absolute imports
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
 };
