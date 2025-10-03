@@ -63,8 +63,8 @@ ROOT_ENV=(
   "ATDF_SELECTOR_DB=$ROOT_DIR/selector_workflow.db"
 )
 
-start_service "ATDF server" 5 python -m examples.fastapi_mcp_integration
-start_service "MCP bridge" 3 python examples/mcp_atdf_bridge.py --port 8001 --atdf-server http://localhost:8000
+start_service "ATDF server" 5 env "${ROOT_ENV[@]}" python -m examples.fastapi_mcp_integration
+start_service "MCP bridge" 3 env "${ROOT_ENV[@]}" python examples/mcp_atdf_bridge.py --port 8001 --atdf-server http://localhost:8000
 start_service "ATDF selector" 3 env "${ROOT_ENV[@]}" python -m uvicorn selector.api:app --host 127.0.0.1 --port 8050 --log-level info
 
 echo "Checking n8n on port 5678..."
@@ -119,5 +119,4 @@ echo
 
 echo "To stop services use: scripts/stop_all_services.sh"
 
-echo "Services are running in the background. Press Ctrl+C to stop following logs."
-wait
+echo "Services are running in the background. Use scripts/stop_all_services.sh when finished."

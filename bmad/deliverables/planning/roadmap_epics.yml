@@ -29,7 +29,7 @@
 - id: ATDF-EPIC-003
   name: ATDF CLI Toolkit
   objective: Entregar CLI oficial con comandos validate/convert/enrich/search.
-  status: in_progress
+  status: completed
   tasks:
   - id: ATDF-TASK-005
     description: Implementar CLI mínima (validate/convert/enrich).
