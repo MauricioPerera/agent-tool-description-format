@@ -13,29 +13,44 @@ from __future__ import annotations
 from pathlib import Path
 from typing import List
 
+import argparse
 import pytest
+
+_STUB_ENABLED = False
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:
-    parser.addoption(
-        "--cov",
-        action="append",
-        default=[],
-        help="No-op coverage selector accepted for CI compatibility.",
-    )
-    parser.addoption(
-        "--cov-report",
-        action="append",
-        default=[],
-        help="No-op coverage report selector accepted for CI compatibility.",
-    )
+    """Register lightweight coverage options when pytest-cov is unavailable."""
+
+    global _STUB_ENABLED
+    try:
+        parser.addoption(
+            "--cov",
+            action="append",
+            default=[],
+            help="No-op coverage selector accepted for CI compatibility.",
+        )
+        parser.addoption(
+            "--cov-report",
+            action="append",
+            default=[],
+            help="No-op coverage report selector accepted for CI compatibility.",
+        )
+    except argparse.ArgumentError:
+        _STUB_ENABLED = False
+    else:
+        _STUB_ENABLED = True
 
 
 def pytest_configure(config: pytest.Config) -> None:
+    if not _STUB_ENABLED or config.pluginmanager.hasplugin("pytest_cov"):
+        return
     config._stub_cov_reports = list(config.getoption("--cov-report") or [])  # type: ignore[attr-defined]
 
 
 def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
+    if not _STUB_ENABLED or session.config.pluginmanager.hasplugin("pytest_cov"):
+        return
     reports: List[str] = getattr(session.config, "_stub_cov_reports", [])  # type: ignore[attr-defined]
     if not reports:
         return
