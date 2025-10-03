@@ -1,4 +1,4 @@
-name: Deploy GitHub Pages
+name: Deploy GitHub Pages (docs)
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Build with Jekyll
+      - name: Build with Jekyll (docs)
         uses: actions/jekyll-build-pages@v1
         with:
           source: "./docs"
