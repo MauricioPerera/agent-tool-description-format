@@ -149,8 +149,11 @@ class MonitoringSetup:
                 response = requests.get("http://localhost:3000/api/health", timeout=5)
                 if response.status_code == 200:
                     break
-            except requests.RequestException:
-                pass
+            except requests.RequestException as exc:
+                print(
+                    "Grafana health check attempt "
+                    f"{i + 1}/{max_retries} failed: {exc}"
+                )
             
             if i < max_retries - 1:
                 print(f"Waiting for Grafana... ({i+1}/{max_retries})")
@@ -188,8 +191,11 @@ class MonitoringSetup:
                     if response.status_code == 200:
                         print("✅ ATDF application is ready")
                         return True
-                except requests.RequestException:
-                    pass
+                except requests.RequestException as exc:
+                    print(
+                        "Application health check attempt "
+                        f"{i + 1}/{max_retries} failed: {exc}"
+                    )
                 
                 if i < max_retries - 1:
                     print(f"Waiting for application... ({i+1}/{max_retries})")

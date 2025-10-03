@@ -18,6 +18,7 @@ import shutil
 from unittest import mock
 
 import sys
+import warnings
 sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
 from sdk.atdf_sdk import ATDFTool, ATDFToolbox
@@ -29,8 +30,13 @@ try:
     import lancedb
     import sentence_transformers
     VECTOR_DEPENDENCIES_AVAILABLE = True
-except ImportError:
-    pass
+except ImportError as exc:
+    warnings.warn(
+        "Vector search dependencies are not available; related tests will be skipped. "
+        f"Missing dependency detail: {exc}",
+        RuntimeWarning,
+    )
+    VECTOR_DEPENDENCIES_AVAILABLE = False
 
 # Herramientas de ejemplo para las pruebas
 SAMPLE_TOOLS = [
