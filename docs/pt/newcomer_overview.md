@@ -3,6 +3,9 @@
 ## Resumo rápido
 Agent Tool Description Format (ATDF) é uma especificação independente de implementação que padroniza como agentes de IA descobrem e operam ferramentas externas. Ela define esquemas JSON para catálogos de ferramentas e respostas de erro enriquecidas, permitindo que os agentes decidam quando e como acionar cada capacidade disponível.
 
+## Status atual
+⚠️ Este trilho de onboarding ainda está pendente de implementação. Considere o roteiro abaixo como uma lista preliminar até que a equipe designe responsáveis e produza os materiais de suporte.
+
 ## Estrutura do repositório
 - **Esquemas (`schema/`)** – Documentos JSON Schema oficiais para os descritores ATDF clássicos (1.x) e aprimorados (2.x), além do envelope de erros enriquecidos.
 - **Ferramentas em Python (`tools/`, `sdk/`)** – Validadores de linha de comando, utilitários de conversão e um SDK em Python (`ATDFTool`, carregadores de catálogos, busca multilíngue, auto-seleção) que interpretam descritores e executam consultas de catálogo programaticamente.
