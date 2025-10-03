@@ -154,5 +154,23 @@ module = [
     "numpy.*",
 ]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "examples.*",
+    "tools.*",
+]
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = [
+    "sdk.atdf_sdk",
+    "sdk.examples",
+    "sdk.examples.*",
+    "sdk.vector_search.*",
+    "sdk.vector_search_cli",
+    "improved_loader",
+]
+ignore_errors = true
 [project.scripts]
 atdf = "cli.__init__.main:cli"

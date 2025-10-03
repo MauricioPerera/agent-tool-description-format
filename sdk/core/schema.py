@@ -6,8 +6,17 @@ con herramientas en formato ATDF (Agent Tool Description Format).
 """
 
 import json
-import uuid
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import (
+    AbstractSet,
+    Any,
+    Dict,
+    List,
+    Literal,
+    Mapping,
+    Optional,
+    Union,
+    cast,
+)
 
 from pydantic import BaseModel, Field
 
@@ -39,7 +48,7 @@ class ATDFTool(BaseModel):
     id: Optional[str] = None
     tool_id: Optional[str] = None
     version: Optional[str] = "1.0.0"
-    parameters: List[ATDFToolParameter] = []
+    parameters: List[ATDFToolParameter] = Field(default_factory=list)
     category: Optional[str] = None
     tags: Optional[List[str]] = None
     examples: Optional[List[Dict[str, Any]]] = None
@@ -47,10 +56,10 @@ class ATDFTool(BaseModel):
 
     # Campos adicionales para compatibilidad con tests
     when_to_use: Optional[str] = None
-    prerequisites: Optional[Dict[str, Any]] = {}
-    feedback: Optional[Dict[str, Any]] = {}
+    prerequisites: Dict[str, Any] = Field(default_factory=dict)
+    feedback: Dict[str, Any] = Field(default_factory=dict)
 
-    def __init__(self, data: Optional[Dict[str, Any]] = None, **kwargs):
+    def __init__(self, data: Optional[Dict[str, Any]] = None, **kwargs: Any):
         """Permitir inicialización con diccionarios o argumentos nombrados."""
 
         # Soportar el patrón legado ATDFTool(tool_dict)
@@ -77,7 +86,7 @@ class ATDFTool(BaseModel):
         super().__init__(**merged)
 
     @property
-    def inputs(self):
+    def inputs(self) -> List[ATDFToolParameter]:
         """Propiedad para mantener compatibilidad con tests antiguos."""
         return self.parameters
 
@@ -104,41 +113,59 @@ class ATDFTool(BaseModel):
     def to_json_schema(self) -> Dict[str, Any]:
         """Convertir a formato JSON Schema."""
         # Implementación básica como ejemplo
-        schema = {
+        parameters_block: Dict[str, Any] = {
+            "type": "object",
+            "properties": {},
+            "required": [],
+        }
+        schema: Dict[str, Any] = {
             "name": self.name,
             "description": self.description,
             "type": "function",
-            "parameters": {"type": "object", "properties": {}, "required": []},
+            "parameters": parameters_block,
         }
+
+        properties = cast(Dict[str, Any], parameters_block["properties"])
+        required = cast(List[str], parameters_block["required"])
 
         # Añadir parámetros
         for param in self.parameters:
-            schema["parameters"]["properties"][param.name] = {
+            properties[param.name] = {
                 "type": param.type,
                 "description": param.description or "",
             }
             if param.required:
-                schema["parameters"]["required"].append(param.name)
+                required.append(param.name)
 
         return schema
 
-    def copy(self) -> "ATDFTool":
+    def copy(
+        self,
+        *,
+        include: Optional[
+            Union[
+                AbstractSet[int], AbstractSet[str], Mapping[int, Any], Mapping[str, Any]
+            ]
+        ] = None,
+        exclude: Optional[
+            Union[
+                AbstractSet[int], AbstractSet[str], Mapping[int, Any], Mapping[str, Any]
+            ]
+        ] = None,
+        update: Optional[Dict[str, Any]] = None,
+        deep: bool = False,
+    ) -> "ATDFTool":
         """
         Crear una copia de la herramienta.
 
         Returns:
             Copia de la herramienta
         """
-        return ATDFTool(
-            name=self.name,
-            description=self.description,
-            id=self.id,
-            version=self.version,
-            parameters=self.parameters.copy() if self.parameters else None,
-            category=self.category,
-            tags=self.tags.copy() if self.tags else None,
-            examples=self.examples.copy() if self.examples else None,
-            metadata=self.metadata.copy() if self.metadata else None,
+        return super().copy(
+            include=include,
+            exclude=exclude,
+            update=update,
+            deep=deep,
         )
 
     def get_input_schema(self) -> Dict[str, Any]:
@@ -149,14 +176,16 @@ class ATDFTool(BaseModel):
         Returns:
             Esquema de validación para los parámetros de entrada
         """
-        schema = {"type": "object", "properties": {}, "required": []}
+        schema: Dict[str, Any] = {"type": "object", "properties": {}, "required": []}
+        properties = cast(Dict[str, Any], schema["properties"])
+        required = cast(List[str], schema["required"])
 
         for param in self.parameters:
-            schema["properties"][param.name] = {
+            properties[param.name] = {
                 "type": param.type,
                 "description": param.description or "",
             }
             if param.required:
-                schema["required"].append(param.name)
+                required.append(param.name)
 
         return schema

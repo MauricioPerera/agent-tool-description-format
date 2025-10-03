@@ -16,7 +16,7 @@ import re
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 
 # Configuración de logging
 logging.basicConfig(
