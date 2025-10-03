@@ -1,4 +1,4 @@
-> **Selector Client links diretos:** [Guia de uso](../tool_selector.md#client-usage) | [Status de QA](../estado_final_integracion.md#selector-client-qa-status) | [README de workflows](../n8n-workflows/README.md#selector-client-quick-reference)
+> **Selector Client links diretos:** [Guia de uso](../tool_selector.md#client-usage) | [README de workflows](../n8n-workflows/README.md#selector-client-quick-reference)
 
 ## Arquitetura de Integração
 

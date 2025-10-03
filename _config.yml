@@ -8,3 +8,11 @@ github:
 google_analytics: # replace with your analytics ID if applicable
 plugins: 
   - jekyll-seo-tag 
+exclude:
+  - bmad/
+  - install_bmad.sh
+  - install_bmad.bat
+  - estado_final_integracion.md
+  - bmad.config.yml
+  - tools/generate_docs.py
+  - tools/bmad_atdf_integration.py

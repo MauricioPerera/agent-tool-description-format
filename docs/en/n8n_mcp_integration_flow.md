@@ -1,4 +1,4 @@
-> **Selector Client quick links:** [Usage guide](../tool_selector.md#client-usage) | [QA status](../estado_final_integracion.md#selector-client-qa-status) | [Workflow README](../n8n-workflows/README.md#selector-client-quick-reference)
+> **Selector Client quick links:** [Usage guide](../tool_selector.md#client-usage) | [Workflow README](../n8n-workflows/README.md#selector-client-quick-reference)
 
 ## Integration Architecture
 
@@ -103,8 +103,8 @@ graph TB
 
 | Approach | Benefits |
 |----------|----------|
-| Native MCP nodes | ? Zero extra installation · ? Pure MCP interoperability · ? Great for demos |
-| Custom ATDF-MCP nodes | ? Full ATDF metadata · ? Automatic localization · ? Built-in validation · ? UI tailored for ATDF |
+| Native MCP nodes | ? Zero extra installation ï¿½ ? Pure MCP interoperability ï¿½ ? Great for demos |
+| Custom ATDF-MCP nodes | ? Full ATDF metadata ï¿½ ? Automatic localization ï¿½ ? Built-in validation ï¿½ ? UI tailored for ATDF |
 
 ## Data Flow
 

@@ -1,0 +1,15 @@
+title: Agent Tool Description Format (ATDF)
+description: ATDF documentation site
+theme: jekyll-theme-cayman
+show_downloads: false
+plugins:
+  - jekyll-seo-tag
+# Exclude internal or non-public artifacts
+exclude:
+  - bmad/
+  - install_bmad.sh
+  - install_bmad.bat
+  - estado_final_integracion.md
+  - bmad.config.yml
+  - tools/generate_docs.py
+  - tools/bmad_atdf_integration.py
