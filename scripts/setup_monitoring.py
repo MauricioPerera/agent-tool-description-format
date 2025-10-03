@@ -179,8 +179,11 @@ class MonitoringSetup:
                 if response.status_code == 200:
                     break
             except requests.RequestException as exc:
-                print(f"Grafana not ready yet: {exc}")
-
+                print(
+                    "Grafana health check attempt "
+                    f"{i + 1}/{max_retries} failed: {exc}"
+                )
+            
             if i < max_retries - 1:
                 print(f"Waiting for Grafana... ({i+1}/{max_retries})")
                 time.sleep(2)
@@ -224,8 +227,11 @@ class MonitoringSetup:
                         print("✅ ATDF application is ready")
                         return True
                 except requests.RequestException as exc:
-                    print(f"Application health check failed: {exc}")
-
+                    print(
+                        "Application health check attempt "
+                        f"{i + 1}/{max_retries} failed: {exc}"
+                    )
+                
                 if i < max_retries - 1:
                     print(f"Waiting for application... ({i+1}/{max_retries})")
                     time.sleep(2)
