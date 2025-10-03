@@ -20,8 +20,9 @@ from sdk.atdf_sdk import load_tools_from_directory
 from sdk.vector_search import ATDFVectorStore
 
 # Ruta de ejemplo para herramientas y base de datos
-TOOLS_DIR = os.path.join(os.path.dirname(__file__), "..", "examples", "tools")
-DB_PATH = os.path.join(os.path.dirname(__file__), "..", "examples", "vector_db")
+BASE_EXAMPLES_DIR = Path(__file__).resolve().parent
+TOOLS_DIR = BASE_EXAMPLES_DIR / "output"
+DB_PATH = BASE_EXAMPLES_DIR / "output" / "vector_db"
 
 
 async def create_index() -> ATDFVectorStore:
@@ -31,18 +32,31 @@ async def create_index() -> ATDFVectorStore:
     Returns:
         Instancia de ATDFVectorStore inicializada
     """
-    print(f"Cargando herramientas desde {TOOLS_DIR}...")
-    tools = load_tools_from_directory(Path(TOOLS_DIR))
+    if not TOOLS_DIR.exists():
+        print(f"No se encontró el directorio de herramientas de ejemplo: {TOOLS_DIR}")
+        print(
+            "Crea la carpeta o actualiza TOOLS_DIR para apuntar a tus archivos JSON/YAML de herramientas."
+        )
+        sys.exit(1)
+
+    print(
+        f"Cargando herramientas de ejemplo desde {TOOLS_DIR}...\n"
+        "Coloca tus propios archivos JSON o YAML en este directorio o ajusta TOOLS_DIR para usar otra ruta."
+    )
+    tools = load_tools_from_directory(TOOLS_DIR)
 
     if not tools:
         print(f"No se encontraron herramientas en {TOOLS_DIR}")
-        print("Asegúrate de tener archivos JSON de herramientas en el directorio")
+        print(
+            "Asegúrate de que el directorio contenga archivos JSON o YAML válidos;"
+            " puedes copiar los ejemplos provistos o reemplazarlos por tus propias herramientas."
+        )
         sys.exit(1)
 
     print(f"Se cargaron {len(tools)} herramientas")
 
     # Crear almacén vectorial
-    vector_store = ATDFVectorStore(db_path=DB_PATH)
+    vector_store = ATDFVectorStore(db_path=str(DB_PATH))
 
     # Inicializar y crear índice
     await vector_store.initialize()
@@ -138,7 +152,7 @@ async def search_examples(vector_store: ATDFVectorStore) -> None:
 async def main():
     """Función principal del script de ejemplo."""
     # Crear directorio para la base de datos si no existe
-    os.makedirs(DB_PATH, exist_ok=True)
+    DB_PATH.mkdir(parents=True, exist_ok=True)
 
     # Crear índice
     vector_store = await create_index()

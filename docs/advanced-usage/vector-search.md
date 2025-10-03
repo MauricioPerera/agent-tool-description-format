@@ -55,6 +55,8 @@ Opcional: crea una cuenta gratuita en [Hugging Face](https://huggingface.co/) pa
 
 ## 🔍 Implementación básica
 
+> ℹ️ El repositorio incluye un catálogo de herramientas de ejemplo en `examples/output`. El script `examples/vector_search_example.py` usa esa ruta por defecto; puedes añadir tus propios archivos JSON o YAML en ese directorio o actualizar la constante `TOOLS_DIR` del script para apuntar a otra ubicación.
+
 ```js
 const lancedb = require("lancedb");
 const { HfInference } = require("@huggingface/inference");
