@@ -21,7 +21,7 @@ Agent Tool Description Format (ATDF) é uma especificação independente de impl
 4. **Ponte FastAPI MCP** – Utilize o aplicativo de exemplo em `examples/` como implementação de referência e ambiente de testes ao integrar ATDF em novos runtimes.
 
 ## Boas práticas ao colaborar no repositório
-- Valide descritores desde cedo com `tools/validator.py` ou `tools/validate_enhanced.py` antes de distribuí-los.
+- **Esquemas (`schema/`)** – Documentos JSON Schema oficiais para os descritores ATDF clássicos (1.x) e aprimorados (2.x), além do envelope de erros enriquecidos.
 - Execute as suítes de testes em Python e JavaScript (`python tests/run_all_tests.py`, `npm test` dentro de `js/`) para detectar regressões nos SDKs.
 - Use os workflows FastAPI + n8n como testes de sistema ao ajustar a lógica do servidor ou integrações MCP.
 - Mantenha a documentação localizada: quaisquer mudanças em `docs/en` devem ser refletidas em `docs/es` e `docs/pt`.
