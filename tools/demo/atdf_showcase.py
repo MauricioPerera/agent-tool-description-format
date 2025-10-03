@@ -11,26 +11,27 @@ probar el agente trilingüe con diferentes consultas.
 Ejecute este script desde la línea de comandos para iniciar la demostración.
 """
 
+import json
 import os
 import sys
-import json
 import textwrap
 from pathlib import Path
 
 # Añadir el directorio raíz al path para importar los módulos
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
+from improved_loader import (
+    detect_language,
+    load_tools_from_directory,
+    select_tool_by_goal,
+)
+
 # Importar los módulos necesarios
 from sdk.atdf_sdk import (
     ATDFTool,
     ATDFToolbox,
-    load_toolbox_from_directory,
     find_best_tool,
-)
-from improved_loader import (
-    load_tools_from_directory,
-    select_tool_by_goal,
-    detect_language,
+    load_toolbox_from_directory,
 )
 from tools.converter import convert_to_enhanced, load_tool, save_tool
 

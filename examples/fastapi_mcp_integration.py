@@ -4,7 +4,8 @@ import json
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Literal
+from typing import Any, Dict, List, Literal, Optional, Tuple
+from uuid import uuid4
 
 from fastapi import Body, FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
@@ -20,7 +21,6 @@ from prometheus_client import (
     generate_latest,
 )
 from pydantic import BaseModel, EmailStr, Field, ValidationError
-from uuid import uuid4
 
 from improved_loader import detect_language, select_tool_by_goal
 from tools.mcp_converter import mcp_to_atdf

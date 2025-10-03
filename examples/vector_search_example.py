@@ -6,10 +6,10 @@ Este script demuestra cómo utilizar el módulo ATDFVectorStore para
 indexar y buscar herramientas ATDF utilizando vectores semánticos.
 """
 
+import asyncio
+import json
 import os
 import sys
-import json
-import asyncio
 from pathlib import Path
 
 # Añadir directorio padre al path para importaciones
@@ -18,7 +18,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Importar desde el SDK
 from sdk.atdf_sdk import load_tools_from_directory
 from sdk.vector_search import ATDFVectorStore
-
 
 # Ruta de ejemplo para herramientas y base de datos
 TOOLS_DIR = os.path.join(os.path.dirname(__file__), "..", "examples", "tools")

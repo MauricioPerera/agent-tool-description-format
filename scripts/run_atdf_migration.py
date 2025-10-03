@@ -10,9 +10,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from tools.converter import convert_to_enhanced, save_tool
 from tools.mcp_converter import mcp_to_atdf
 from tools.validator import validate_tool_smart
-from tools.converter import convert_to_enhanced, save_tool
 
 
 def _load_mcp_catalog(path: Path) -> List[Dict[str, Any]]:

@@ -15,13 +15,14 @@ Usage:
     python setup_n8n_atdf_integration.py
 """
 
-import os
-import sys
-import json
-import subprocess
 import asyncio
-import aiohttp
+import json
+import os
+import subprocess
+import sys
 from pathlib import Path
+
+import aiohttp
 
 
 class N8NATDFSetup:

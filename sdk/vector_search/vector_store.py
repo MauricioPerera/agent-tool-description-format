@@ -14,8 +14,8 @@ import numpy as np
 # Importación opcional de dependencias
 try:  # pragma: no cover - import guard exercised via unit tests
     import lancedb
-    from lancedb.table import Table
     import sentence_transformers
+    from lancedb.table import Table
 
     VECTOR_SEARCH_AVAILABLE = True
 except ImportError:  # pragma: no cover - ejecutado cuando faltan dependencias

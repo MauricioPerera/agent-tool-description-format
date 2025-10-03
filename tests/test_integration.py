@@ -7,17 +7,18 @@ Tests for the complete BMAD-ATDF integration
 import json
 import os
 import sys
-import pytest
-import jsonschema
-import requests
 from pathlib import Path
+
+import jsonschema
+import pytest
+import requests
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from tools.validator import validate_tool_smart
 from examples.fastapi_mcp_integration import create_atdf_error_response
+from tools.validator import validate_tool_smart
 
 
 class TestBMADIntegration:

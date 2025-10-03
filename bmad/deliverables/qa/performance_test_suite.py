@@ -2,8 +2,9 @@
 Generated for BMAD workflow task T3 (Performance Testing).
 """
 
-import time
 import statistics
+import time
+
 import requests
 
 SELECTOR_URL = "http://127.0.0.1:8050/recommend"

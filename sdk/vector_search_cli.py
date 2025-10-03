@@ -13,14 +13,14 @@ Uso:
     python sdk/vector_search_cli.py search "find weather information" --limit 3 --lang en
 """
 
+import argparse
+import asyncio
+import json
+import logging
 import os
 import sys
-import json
-import asyncio
-import argparse
-import logging
 from pathlib import Path
-from typing import List, Dict, Any, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 # Configurar logging
 logging.basicConfig(
@@ -30,8 +30,8 @@ logger = logging.getLogger("atdf-vector-cli")
 
 # Verificar si las dependencias de búsqueda vectorial están instaladas
 try:
-    from sdk.vector_search import ATDFVectorStore
     from sdk.atdf_sdk import ATDFTool, ATDFToolbox
+    from sdk.vector_search import ATDFVectorStore
 
     HAS_VECTOR_DEPENDENCIES = True
 except ImportError as e:

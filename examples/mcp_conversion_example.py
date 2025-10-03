@@ -6,17 +6,18 @@ Este script demuestra cómo utilizar el convertidor para transformar
 herramientas desde el formato MCP al formato ATDF, tanto básico como mejorado.
 """
 
-import os
 import json
+import os
 import sys
 from pathlib import Path
 
 # Añadir el directorio raíz al path para importar los módulos
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Importar el convertidor
-from tools.mcp_converter import mcp_to_atdf, convert_mcp_file
 from tools.converter import save_tool
+
+# Importar el convertidor
+from tools.mcp_converter import convert_mcp_file, mcp_to_atdf
 
 # Crear directorio para los resultados
 output_dir = Path(__file__).parent / "output"

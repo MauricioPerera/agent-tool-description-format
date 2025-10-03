@@ -4,7 +4,8 @@ Configuración de instalación para el SDK de Agent Tool Description Format (ATD
 """
 
 import os
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 # Leer README.md para descripción larga
 with open("README.md", "r", encoding="utf-8") as fh:

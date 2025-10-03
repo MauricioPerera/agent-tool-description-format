@@ -7,11 +7,11 @@ Este módulo simula un agente que puede entender consultas en español, inglés 
 y seleccionar la herramienta ATDF adecuada basándose en la consulta.
 """
 
-import os
 import json
+import os
+import re
 import sys
 from pathlib import Path
-import re
 
 
 class ATDFTrilingualAgent:

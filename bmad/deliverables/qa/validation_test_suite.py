@@ -4,10 +4,10 @@ Generated for BMAD workflow task T1 (Schema Validation Testing).
 The suite documents how to execute critical validation checks using pytest.
 """
 
-from pathlib import Path
+import json
 import shutil
 import subprocess
-import json
+from pathlib import Path
 
 
 def _powershell_exe() -> list[str]:

@@ -7,10 +7,10 @@ Este script verifica el correcto funcionamiento de las características
 avanzadas añadidas en la versión mejorada del formato ATDF (v0.2.0).
 """
 
-import os
-import sys
 import json
 import logging
+import os
+import sys
 from pathlib import Path
 
 # Configurar logging

@@ -8,9 +8,9 @@ consultas en español, inglés y portugués, verificando la correcta selección
 de herramientas y detección de idiomas.
 """
 
+import logging
 import os
 import sys
-import logging
 from pathlib import Path
 
 # Configurar logging
@@ -24,9 +24,9 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 # Importar módulos del agente trilingüe
 from improved_loader import (
+    detect_language,
     load_tools_from_directory,
     select_tool_by_goal,
-    detect_language,
 )
 
 

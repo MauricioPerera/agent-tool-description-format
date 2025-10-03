@@ -1,11 +1,12 @@
-import json
-import jsonschema
-import sys
-import os
 import argparse
+import json
 import logging
+import os
+import sys
 from pathlib import Path
-from typing import Union, Tuple, Any
+from typing import Any, Tuple, Union
+
+import jsonschema
 
 # Configurar logging
 logging.basicConfig(

@@ -1,6 +1,7 @@
-﻿import unittest
-import json
+﻿import json
 import os
+import unittest
+
 from tools.validator import validate_tool_smart
 
 

@@ -5,12 +5,13 @@ This script sends various requests to test the monitoring and metrics collection
 """
 
 import asyncio
-import aiohttp
 import json
 import random
-from datetime import datetime, timedelta
-from typing import List, Dict, Any
 import time
+from datetime import datetime, timedelta
+from typing import Any, Dict, List
+
+import aiohttp
 
 # Configuration
 BASE_URL = "http://localhost:8000"

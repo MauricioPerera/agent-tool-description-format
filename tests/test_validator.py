@@ -1,7 +1,7 @@
-﻿import unittest
-import json
+﻿import json
 import os
 import tempfile
+import unittest
 
 from tools.validator import load_json, validate_tool, validate_tool_smart
 

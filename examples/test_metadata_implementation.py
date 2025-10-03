@@ -8,10 +8,11 @@ estén correctamente implementados en la integración FastAPI.
 Ejecutar con: python examples/test_metadata_implementation.py
 """
 
-import requests
 import json
 from datetime import datetime
-from typing import Dict, Any
+from typing import Any, Dict
+
+import requests
 
 # Configuración
 BASE_URL = "http://127.0.0.1:8000"

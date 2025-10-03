@@ -12,12 +12,12 @@ Para ejecutar este ejemplo:
     python -m sdk.vector_search.example
 """
 
-import os
 import asyncio
 import logging
+import os
 import time
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
 
 # Configurar logging
 logging.basicConfig(

@@ -1,5 +1,5 @@
-﻿from pathlib import Path
-import json
+﻿import json
+from pathlib import Path
 from typing import Optional
 
 import click
@@ -59,8 +59,8 @@ def validate(
 )
 def convert(input: str, output: str, enhanced: bool, author: str):
     """Convert MCP catalog or ATDF file."""
-    from tools.mcp_converter import convert_mcp_file
     from tools.converter import convert_to_enhanced, save_tool
+    from tools.mcp_converter import convert_mcp_file
 
     input_path = Path(input)
     output_path = Path(output)

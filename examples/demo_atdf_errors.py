@@ -8,10 +8,11 @@ implementadas en la integración FastAPI MCP.
 Ejecutar con: python examples/demo_atdf_errors.py
 """
 
-import requests
 import json
 from datetime import datetime, timedelta
-from typing import Dict, Any
+from typing import Any, Dict
+
+import requests
 
 # Configuración
 BASE_URL = "http://127.0.0.1:8000"

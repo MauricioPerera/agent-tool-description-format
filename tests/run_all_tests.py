@@ -7,10 +7,10 @@ Este script ejecuta todas las pruebas disponibles para verificar el funcionamien
 completo del formato ATDF y todas sus características.
 """
 
+import logging
 import os
 import sys
 import time
-import logging
 from pathlib import Path
 
 # Configurar logging
@@ -25,8 +25,8 @@ sys.path.append(str(Path(__file__).parent.parent))
 # Importar todas las pruebas
 try:
     from tests.test_atdf_complete import ATDFTester
-    from tests.test_trilingual_agent import TrilingualTester
     from tests.test_enhanced_features import EnhancedFeaturesTester
+    from tests.test_trilingual_agent import TrilingualTester
 except ImportError as e:
     logger.error(f"Error al importar módulos de prueba: {e}")
     sys.exit(1)

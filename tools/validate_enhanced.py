@@ -6,12 +6,13 @@ Este script verifica que una descripción de herramienta cumpla con el esquema
 ATDF 0.2.0 (formato extendido).
 """
 
-import sys
-import os
-import json
 import argparse
-import jsonschema
+import json
 import logging
+import os
+import sys
+
+import jsonschema
 
 # Configuración de logging
 logging.basicConfig(

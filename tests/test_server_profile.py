@@ -1,16 +1,15 @@
 """Tests targeting the ATDF Server Profile reference implementation."""
 
 import asyncio
+import json
 from datetime import datetime, timedelta
 from pathlib import Path
-import json
 
 import httpx
 import jsonschema
-
 from httpx import ASGITransport
 
-from examples.fastapi_mcp_integration import app, TOOL_CATALOG
+from examples.fastapi_mcp_integration import TOOL_CATALOG, app
 
 PROJECT_ROOT = Path(__file__).parent.parent
 ERROR_SCHEMA_PATH = PROJECT_ROOT / "schema" / "error_atdf.json"

@@ -4,14 +4,15 @@ Setup script for ATDF monitoring infrastructure.
 This script helps configure and verify the monitoring setup.
 """
 
-import os
-import sys
 import json
-import time
-import requests
+import os
 import subprocess
+import sys
+import time
 from pathlib import Path
 from typing import Dict, List, Optional
+
+import requests
 
 
 class MonitoringSetup:

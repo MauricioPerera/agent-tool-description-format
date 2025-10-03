@@ -1,6 +1,7 @@
 import json
 import sys
 from pathlib import Path
+
 from click.testing import CliRunner
 
 project_root = Path(__file__).parent.parent

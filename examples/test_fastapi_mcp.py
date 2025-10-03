@@ -3,10 +3,11 @@
 Comprehensive test script for FastAPI MCP Integration with ATDF error handling
 """
 
-import requests
 import json
-from datetime import datetime, timedelta
 import time
+from datetime import datetime, timedelta
+
+import requests
 
 BASE_URL = "http://127.0.0.1:8000"
 
