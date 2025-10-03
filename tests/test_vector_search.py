@@ -34,8 +34,13 @@ try:
     import sentence_transformers
 
     VECTOR_DEPENDENCIES_AVAILABLE = True
-except ImportError:
-    pass
+except ImportError as exc:
+    warnings.warn(
+        "Vector search dependencies are not available; related tests will be skipped. "
+        f"Missing dependency detail: {exc}",
+        RuntimeWarning,
+    )
+    VECTOR_DEPENDENCIES_AVAILABLE = False
 
 if not VECTOR_DEPENDENCIES_AVAILABLE:
     if getattr(vector_store_module, "lancedb", None) is None:
