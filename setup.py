@@ -4,31 +4,19 @@ Configuración de instalación para el SDK de Agent Tool Description Format (ATD
 """
 
 import os
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 # Leer README.md para descripción larga
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 # Definir dependencias
-install_requires = [
-    "pydantic>=2.0.0",
-    "jsonschema>=4.0.0",
-    "PyYAML>=6.0"
-]
+install_requires = ["pydantic>=2.0.0", "jsonschema>=4.0.0", "PyYAML>=6.0"]
 
 extras_require = {
-    "vector": [
-        "chromadb>=0.4.0",
-        "sentence-transformers>=2.0.0"
-    ],
-    "dev": [
-        "black",
-        "isort",
-        "mypy",
-        "pytest",
-        "pytest-cov"
-    ]
+    "vector": ["chromadb>=0.4.0", "sentence-transformers>=2.0.0"],
+    "dev": ["black", "isort", "mypy", "pytest", "pytest-cov"],
 }
 
 setup(
@@ -60,4 +48,4 @@ setup(
         "Programming Language :: Python :: 3.11",
     ],
     python_requires=">=3.8",
-) 
+)

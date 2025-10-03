@@ -7,6 +7,9 @@ PyYAML>=6.0        # Para cargar descripciones YAML
 numpy>=1.18.0      # Operaciones numéricas, a menudo una dependencia
 pandas>=1.0.0      # Manipulación de datos, a menudo una dependencia
 
+# Dependencias para los ejemplos y la API de referencia
+fastapi>=0.115.0
+
 # Requisitos opcionales para búsqueda vectorial
 lancedb>=0.1.17
 sentence-transformers>=2.2.2 

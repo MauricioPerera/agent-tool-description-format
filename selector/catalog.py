@@ -52,7 +52,9 @@ class ToolCatalog:
         schema_dir: Optional[Path] = None,
         storage: Optional[CatalogStorage] = None,
     ) -> None:
-        self.schema_dir = schema_dir or (Path(__file__).resolve().parent.parent / "schema")
+        self.schema_dir = schema_dir or (
+            Path(__file__).resolve().parent.parent / "schema"
+        )
         self._basic_schema = self._load_schema("atdf_schema.json")
         self._enhanced_schema = self._load_schema("enhanced_atdf_schema.json")
         self._tools: Dict[str, ATDFToolRecord] = {}
@@ -157,7 +159,9 @@ class ToolCatalog:
         """Fetch tool metadata from an MCP bridge `/tools` endpoint."""
         request = Request(url, headers={"Accept": "application/json"})
         try:
-            with urlopen(request, timeout=timeout) as response:  # nosec B310 - controlled URL
+            with urlopen(
+                request, timeout=timeout
+            ) as response:  # nosec B310 - controlled URL
                 payload = json.loads(response.read().decode("utf-8"))
         except (HTTPError, URLError, json.JSONDecodeError) as exc:
             message = f"Failed to load tools from MCP endpoint {url}: {exc}"
@@ -185,7 +189,9 @@ class ToolCatalog:
                 count += 1
                 active_ids.append(record.tool_id)
 
-        cache_timestamp = payload.get("cache_timestamp") if isinstance(payload, dict) else None
+        cache_timestamp = (
+            payload.get("cache_timestamp") if isinstance(payload, dict) else None
+        )
         if self.storage and server_id is not None:
             self.storage.mark_inactive(server_id, active_ids)
             self.storage.update_server_metadata(
@@ -204,7 +210,9 @@ class ToolCatalog:
         """Return a list of registered tools, optionally filtered."""
         if self.storage:
             records: List[ATDFToolRecord] = []
-            for data in self.storage.fetch_records(server_urls=sources, tool_ids=tool_ids):
+            for data in self.storage.fetch_records(
+                server_urls=sources, tool_ids=tool_ids
+            ):
                 record = ATDFToolRecord(
                     tool_id=data["tool_id"],
                     description=data.get("description", ""),
@@ -224,7 +232,9 @@ class ToolCatalog:
         records = list(self._tools.values())
         if sources:
             sources_lower = {value.lower() for value in sources}
-            records = [record for record in records if record.source.lower() in sources_lower]
+            records = [
+                record for record in records if record.source.lower() in sources_lower
+            ]
         if tool_ids:
             tool_id_set = set(tool_ids)
             records = [record for record in records if record.tool_id in tool_id_set]
@@ -279,7 +289,9 @@ class ToolCatalog:
             self._errors.append(message)
             return None
 
-    def _normalize_descriptor(self, descriptor: Dict[str, object], source: str) -> ATDFToolRecord:
+    def _normalize_descriptor(
+        self, descriptor: Dict[str, object], source: str
+    ) -> ATDFToolRecord:
         schema_version = str(descriptor.get("schema_version") or "1.0.0")
         self._validate_descriptor(descriptor, schema_version)
 
@@ -303,9 +315,19 @@ class ToolCatalog:
             raw_descriptor=descriptor,
         )
 
-    def _validate_descriptor(self, descriptor: Dict[str, object], schema_version: str) -> None:
-        enhanced_keys = {"metadata", "localization", "examples", "prerequisites", "feedback"}
-        is_enhanced = schema_version.startswith("2") or bool(enhanced_keys.intersection(descriptor.keys()))
+    def _validate_descriptor(
+        self, descriptor: Dict[str, object], schema_version: str
+    ) -> None:
+        enhanced_keys = {
+            "metadata",
+            "localization",
+            "examples",
+            "prerequisites",
+            "feedback",
+        }
+        is_enhanced = schema_version.startswith("2") or bool(
+            enhanced_keys.intersection(descriptor.keys())
+        )
         schema = None
         if is_enhanced and self._enhanced_schema:
             schema = self._enhanced_schema
@@ -317,7 +339,9 @@ class ToolCatalog:
         try:
             jsonschema.validate(descriptor, schema)
         except jsonschema.ValidationError as exc:
-            raise ValueError(f"ATDF descriptor validation error: {exc.message}") from exc
+            raise ValueError(
+                f"ATDF descriptor validation error: {exc.message}"
+            ) from exc
 
     @staticmethod
     def _extract_tool_id(descriptor: Dict[str, object]) -> Optional[str]:
@@ -414,7 +438,10 @@ class ToolCatalog:
                     )
             if inputs:
                 descriptor["how_to_use"]["inputs"] = inputs
-        descriptor["how_to_use"]["outputs"]["success"] = descriptor["how_to_use"]["outputs"].get("success") or "The tool executed successfully."
+        descriptor["how_to_use"]["outputs"]["success"] = (
+            descriptor["how_to_use"]["outputs"].get("success")
+            or "The tool executed successfully."
+        )
         if not descriptor.get("when_to_use"):
             usage_hint = tool.get("when_to_use")
             if isinstance(usage_hint, str) and usage_hint:

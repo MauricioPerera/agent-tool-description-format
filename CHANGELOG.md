@@ -5,6 +5,46 @@ All notable changes to the Agent Tool Description Format (ATDF) project will be 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+_No hay cambios aún._
+
+## [2.1.0] - 2025-02-14
+
+### ⚠️ Breaking (With Migration Path)
+- **Python SDK – Toolbox Search Results**: `ATDFToolbox.find_tools_by_text` now returns `(tool, score)` tuples by default to
+  expose similarity metadata from vector search. Legacy code that expected bare `ATDFTool` instances should pass
+  `return_scores=False` or switch to iterating as `for tool, score in ...`.
+
+### 🛠️ Migration Notes
+1. **Plain Iteration (Legacy Behaviour)**
+   ```python
+   tools = toolbox.find_tools_by_text("reservar hotel", return_scores=False)
+   for tool in tools:
+       usar(tool)
+   ```
+2. **Scored Iteration (Recommended)**
+   ```python
+   for tool, score in toolbox.find_tools_by_text("reservar hotel"):
+       print(tool.name, score)
+   ```
+3. **SDK Helpers**: `ATDFSDK.search_tools(...)` already calls the scored variant; use `return_scores=False` if integrating
+   with APIs that only accept tool objects.
+
+### ✅ Added
+- Highlighted the new compatibility flag across SDK docs, quick starts, and regression tests so consumers can adopt the scored
+  API without unexpected breakages.
+
+### 🧪 Tests
+- `python -m unittest tests.test_vector_search`
+
+### 📚 Documentación
+- README y guías del SDK con ejemplos paralelos para consumidores con y sin puntuaciones.
+- Notas de lanzamiento en español con pasos de migración detallados.
+
+### 🧩 Otros
+- Checklist de lanzamiento en español para coordinar el cierre de la versión 2.1.0.
+
 ## [2.0.1] - 2025-01-XX
 
 ### 🔄 Updated
