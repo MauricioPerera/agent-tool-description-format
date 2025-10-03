@@ -1,7 +1,7 @@
 {
   "name": "atdf-bmad-integration",
   "version": "1.0.0",
-  "description": "ATDF (Agent Tool Description Format) project; repository also includes optional internal BMAD-METHOD tooling for the ATDF team.",
+  "description": "ATDF (Agent Tool Description Format) project; repository also includes optional internal internal automation tooling for the ATDF team.",
   "main": "index.js",
   "scripts": {
     "install:bmad": "npx bmad-method install",

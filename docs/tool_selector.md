@@ -117,13 +117,13 @@ _Last updated: 2025-10-02_
            "allowed_tools": ["hotel_reservation"]
          }'
    ```
-3. Consulta `/health` para métricas rápidas (`tool_count`) y detén servicios con `scripts/stop_all_services.*` al finalizar.
+3. Consulta `/health` para mtricas rpidas (`tool_count`) y detn servicios con `scripts/stop_all_services.*` al finalizar.
 
 ### With n8n workflow
 1. Importa `workflow_selector_builtin.json` (`n8n import:workflow --input workflow_selector_builtin.json`).
 2. Ejecuta `n8n execute --id PNvGdiK9rbvmEnKl` o usa la UI.
 3. El flujo ejecuta: selector `/recommend` -> MCP `tools/call` -> Code node con `reservation_id` y detalles.
-4. Logs y evidencias internas permanecen en `bmad/deliverables/qa/` (por ejemplo `integration_test_results.json`).
+4. Los registros y evidencias internas permanecen en directorios de QA reservados para el equipo (por ejemplo deliverables/qa/integration_test_results.json).
 
 
 

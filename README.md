@@ -361,14 +361,6 @@ Las plantillas funcionan en cualquier herramienta:
 - Manejo de errores uniforme
 - Documentación automática
 
-## 🔒 Tooling interno (BMAD)
-
-BMAD-METHOD es un framework que usamos únicamente para coordinar tareas del equipo ATDF. No forma parte del protocolo ATDF ni de los entregables públicos, así que puedes ignorarlo si solo te interesa adoptar ATDF.
-
-- El equipo interno puede consultar `README_BMAD.md` y `docs/BMAD_INTEGRATION.md` para procedimientos y scripts.
-- Los recursos `bmad/`, `install_bmad.*` y comandos `npm run bmad:*` se conservan como apoyo interno.
-- Usuarios externos no necesitan instalar ni ejecutar BMAD para trabajar con ATDF.
-
 
 ## 📊 Beneficios
 

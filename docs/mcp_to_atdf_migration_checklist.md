@@ -18,7 +18,7 @@
 ## 4. Calidad y pruebas
 - [ ] Validación estricta (`python tools/validator.py --smart` sin `--ignore-additional`).
 - [ ] `tests/run_all_tests.py` (Python) y `npm test` si se usa SDK JS.
-- [ ] Ejecutar suites BMAD (`validation_test_suite.py`, `integration_test_suite.py`, `performance_test_suite.py`).
+- [ ] Ejecutar las suites internas necesarias (`validation_test_suite.py`, `integration_test_suite.py`, `performance_test_suite.py`).
 
 ## 5. Publicación y servidor
 - [ ] Deploy del catálogo en servidor FastAPI (`examples/fastapi_mcp_integration.py`).

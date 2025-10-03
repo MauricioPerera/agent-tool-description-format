@@ -3,7 +3,7 @@
   "info": {
     "title": "ATDF Internal Ops API",
     "version": "1.0.0",
-    "description": "Internal API used by the BMAD coordination tooling; not part of the public ATDF protocol."
+    "description": "Internal API used by the internal coordination workflows; not part of the public ATDF protocol."
   },
   "servers": [
     {
