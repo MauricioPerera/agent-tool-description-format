@@ -136,8 +136,11 @@ async def search_examples(vector_store: ATDFVectorStore) -> None:
                         print(f"      Categoría: {metadata['category']}")
                     if "tags" in metadata and metadata["tags"]:
                         print(f"      Etiquetas: {', '.join(metadata['tags'])}")
-                except:
-                    pass
+                except (json.JSONDecodeError, TypeError) as exc:
+                    print(
+                        "      No se pudieron interpretar los metadatos del resultado: "
+                        f"{exc}"
+                    )
 
 
 async def main():
