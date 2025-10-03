@@ -7,10 +7,22 @@ from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Tuple
 from uuid import uuid4
 
-from fastapi import Body, FastAPI, Request, status
-from fastapi.exceptions import RequestValidationError
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, Response
+try:  # pragma: no cover - exercised indirectly via fallback tests
+    from fastapi import Body, FastAPI, Request, status
+    from fastapi.exceptions import RequestValidationError
+    from fastapi.middleware.cors import CORSMiddleware
+    from fastapi.responses import JSONResponse, Response
+except ModuleNotFoundError:  # pragma: no cover - fallback when FastAPI is unavailable
+    from examples._fastapi_stub import (  # type: ignore
+        Body,
+        CORSMiddleware,
+        FastAPI,
+        JSONResponse,
+        Request,
+        RequestValidationError,
+        Response,
+        status,
+    )
 from jsonschema import ValidationError as JSONValidationError
 from jsonschema import validators as jsonschema_validators
 from prometheus_client import (
