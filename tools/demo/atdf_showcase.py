@@ -561,9 +561,11 @@ def main():
 if __name__ == "__main__":
     # Verificar que se ejecute en una terminal que soporte colores
     if sys.platform == "win32":
-        # En Windows, habilitar colores ANSI
-        import os
-
-        os.system("color")
+        try:
+            import colorama
+        except ImportError:  # pragma: no cover - fallback when dependency missing
+            pass
+        else:
+            colorama.just_fix_windows_console()
 
     main()

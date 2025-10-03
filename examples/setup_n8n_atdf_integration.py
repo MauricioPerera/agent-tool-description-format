@@ -18,6 +18,7 @@ Usage:
 import asyncio
 import json
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -61,8 +62,15 @@ class N8NATDFSetup:
 
         # Check n8n installation
         try:
+            n8n_binary = shutil.which("n8n")
+            if not n8n_binary:
+                raise FileNotFoundError("n8n not found")
             result = subprocess.run(
-                ["n8n", "version"], capture_output=True, text=True, timeout=10
+                [n8n_binary, "version"],
+                capture_output=True,
+                text=True,
+                timeout=10,
+                check=False,
             )
             if result.returncode == 0:
                 self.print_success("n8n is installed ✓")
@@ -76,15 +84,22 @@ class N8NATDFSetup:
 
         # Check Node.js
         try:
+            node_binary = shutil.which("node")
+            if not node_binary:
+                raise FileNotFoundError("node not found")
             result = subprocess.run(
-                ["node", "--version"], capture_output=True, text=True
+                [node_binary, "--version"],
+                capture_output=True,
+                text=True,
+                timeout=10,
+                check=False,
             )
             if result.returncode == 0:
                 self.print_success(f"Node.js {result.stdout.strip()} ✓")
             else:
                 self.print_error("Node.js is not installed")
                 return False
-        except FileNotFoundError:
+        except (subprocess.TimeoutExpired, FileNotFoundError):
             self.print_error("Node.js is not installed")
             return False
 
@@ -102,10 +117,14 @@ class N8NATDFSetup:
                     [sys.executable, "-m", "pip", "install", dep],
                     check=True,
                     capture_output=True,
+                    timeout=120,
                 )
                 self.print_success(f"Installed {dep}")
-            except subprocess.CalledProcessError as e:
-                self.print_error(f"Failed to install {dep}: {e}")
+            except subprocess.TimeoutExpired:
+                self.print_error(f"Timed out while installing {dep}")
+                return False
+            except subprocess.CalledProcessError as exc:
+                self.print_error(f"Failed to install {dep}: {exc}")
                 return False
 
         return True
@@ -174,7 +193,7 @@ if __name__ == '__main__':
 
         # Make executable on Unix systems
         if os.name != "nt":
-            os.chmod(service_script, 0o755)
+            os.chmod(service_script, 0o750)
 
         self.print_success("Created bridge service script")
         return True

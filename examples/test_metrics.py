@@ -6,7 +6,7 @@ This script sends various requests to test the monitoring and metrics collection
 
 import asyncio
 import json
-import random
+import random  # nosec B311 - pseudo-randomness suficiente para datos de prueba
 import time
 from datetime import datetime, timedelta
 from typing import Any, Dict, List

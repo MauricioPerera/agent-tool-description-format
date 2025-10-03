@@ -7,7 +7,8 @@ import json
 import time
 from datetime import datetime, timedelta
 
-import requests
+from http_client import get as http_get
+from http_client import post as http_post
 
 BASE_URL = "http://127.0.0.1:8000"
 
@@ -16,7 +17,7 @@ def test_root_endpoint():
     """Test the root endpoint"""
     print("Testing root endpoint...")
     try:
-        response = requests.get(f"{BASE_URL}/")
+        response = http_get(f"{BASE_URL}/")
         print(f"Status: {response.status_code}")
         print(f"Response: {response.json()}")
         return response.status_code == 200
@@ -29,7 +30,7 @@ def test_tools_endpoint():
     """Test the MCP tools endpoint"""
     print("\nTesting tools endpoint...")
     try:
-        response = requests.get(f"{BASE_URL}/tools")
+        response = http_get(f"{BASE_URL}/tools")
         print(f"Status: {response.status_code}")
         data = response.json()
         print(f"Tools found: {len(data.get('tools', []))}")
@@ -53,7 +54,7 @@ def test_hotel_reservation_success():
             "room_type": "double",
             "guests": 2,
         }
-        response = requests.post(f"{BASE_URL}/api/hotel/reserve", json=data)
+        response = http_post(f"{BASE_URL}/api/hotel/reserve", json=data)
         print(f"Status: {response.status_code}")
         result = response.json()
         print(f"Response: {json.dumps(result, indent=2)}")
@@ -78,13 +79,19 @@ def test_hotel_reservation_validation_errors():
             "room_type": "single",
             "guests": 1,
         }
-        response = requests.post(f"{BASE_URL}/api/hotel/reserve", json=data)
+        response = http_post(f"{BASE_URL}/api/hotel/reserve", json=data)
         print(f"    Status: {response.status_code}")
         result = response.json()
         print(f"    ATDF Error: {json.dumps(result, indent=2)}")
-        assert response.status_code == 400
-        assert "errors" in result
-        assert result["errors"][0]["tool_name"] == "hotel_reservation"
+        if response.status_code != 400:
+            print("    La API no devolvió el código esperado (400)")
+            return False
+        if "errors" not in result:
+            print("    La respuesta no incluyó errores ATDF")
+            return False
+        if result["errors"][0].get("tool_name") != "hotel_reservation":
+            print("    El error no corresponde a hotel_reservation")
+            return False
     except Exception as e:
         print(f"    Error: {e}")
         return False
@@ -100,12 +107,13 @@ def test_hotel_reservation_validation_errors():
             "room_type": "suite",
             "guests": 3,
         }
-        response = requests.post(f"{BASE_URL}/api/hotel/reserve", json=data)
+        response = http_post(f"{BASE_URL}/api/hotel/reserve", json=data)
         print(f"    Status: {response.status_code}")
         result = response.json()
         print(f"    ATDF Error: {json.dumps(result, indent=2)}")
-        assert response.status_code == 400
-        assert "errors" in result
+        if response.status_code != 400 or "errors" not in result:
+            print("    La API no retornó el envelope ATDF esperado")
+            return False
     except Exception as e:
         print(f"    Error: {e}")
         return False
@@ -125,7 +133,7 @@ def test_flight_booking_success():
             "departure_date": (datetime.now() + timedelta(days=2)).isoformat(),
             "seat_class": "economy",
         }
-        response = requests.post(f"{BASE_URL}/api/flight/book", json=data)
+        response = http_post(f"{BASE_URL}/api/flight/book", json=data)
         print(f"Status: {response.status_code}")
         result = response.json()
         print(f"Response: {json.dumps(result, indent=2)}")
@@ -150,13 +158,19 @@ def test_flight_booking_validation_errors():
             "departure_date": (datetime.now() - timedelta(days=1)).isoformat(),
             "seat_class": "business",
         }
-        response = requests.post(f"{BASE_URL}/api/flight/book", json=data)
+        response = http_post(f"{BASE_URL}/api/flight/book", json=data)
         print(f"    Status: {response.status_code}")
         result = response.json()
         print(f"    ATDF Error: {json.dumps(result, indent=2)}")
-        assert response.status_code == 400
-        assert "errors" in result
-        assert result["errors"][0]["tool_name"] == "flight_booking"
+        if response.status_code != 400:
+            print("    La API no devolvió el código esperado (400)")
+            return False
+        if "errors" not in result:
+            print("    La respuesta no incluyó errores ATDF")
+            return False
+        if result["errors"][0].get("tool_name") != "flight_booking":
+            print("    El error no corresponde a flight_booking")
+            return False
     except Exception as e:
         print(f"    Error: {e}")
         return False
@@ -172,12 +186,13 @@ def test_flight_booking_validation_errors():
             "departure_date": (datetime.now() + timedelta(days=1)).isoformat(),
             "seat_class": "first",
         }
-        response = requests.post(f"{BASE_URL}/api/flight/book", json=data)
+        response = http_post(f"{BASE_URL}/api/flight/book", json=data)
         print(f"    Status: {response.status_code}")
         result = response.json()
         print(f"    ATDF Error: {json.dumps(result, indent=2)}")
-        assert response.status_code == 400
-        assert "errors" in result
+        if response.status_code != 400 or "errors" not in result:
+            print("    La API no retornó el envelope ATDF esperado")
+            return False
     except Exception as e:
         print(f"    Error: {e}")
         return False
@@ -192,7 +207,7 @@ def test_list_endpoints():
     # Test hotel reservations list
     print("  Testing hotel reservations list...")
     try:
-        response = requests.get(f"{BASE_URL}/api/hotel/reservations")
+        response = http_get(f"{BASE_URL}/api/hotel/reservations")
         print(f"    Status: {response.status_code}")
         result = response.json()
         print(f"    Reservations: {len(result.get('reservations', []))}")
@@ -203,7 +218,7 @@ def test_list_endpoints():
     # Test flight bookings list
     print("  Testing flight bookings list...")
     try:
-        response = requests.get(f"{BASE_URL}/api/flight/bookings")
+        response = http_get(f"{BASE_URL}/api/flight/bookings")
         print(f"    Status: {response.status_code}")
         result = response.json()
         print(f"    Bookings: {len(result.get('bookings', []))}")

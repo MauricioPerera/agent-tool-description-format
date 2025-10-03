@@ -30,6 +30,7 @@ def run_n8n_workflow():
         text=True,
         check=False,
         env=env,
+        timeout=120,
     )
     return result
 
@@ -69,6 +70,7 @@ def test_selector_recommendation_payload(tmp_path):
         capture_output=True,
         text=True,
         check=False,
+        timeout=60,
     )
     capture.write_text(proc.stdout, encoding="utf-8")
     payload = json.loads(proc.stdout or "{}")
@@ -109,6 +111,7 @@ def test_mcp_bridge_response(tmp_path):
         capture_output=True,
         text=True,
         check=False,
+        timeout=60,
     )
     payload = json.loads(proc.stdout or "{}")
     assert payload.get("jsonrpc") == "2.0"

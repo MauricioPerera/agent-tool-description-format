@@ -13,6 +13,8 @@ from datetime import datetime, timedelta
 from typing import Any, Dict
 
 import requests
+from http_client import get as http_get
+from http_client import post as http_post
 
 # Configuración
 BASE_URL = "http://127.0.0.1:8000"
@@ -41,9 +43,9 @@ def make_request(
 
     try:
         if method.upper() == "GET":
-            response = requests.get(url)
+            response = http_get(url)
         elif method.upper() == "POST":
-            response = requests.post(url, headers=HEADERS, json=data)
+            response = http_post(url, headers=HEADERS, json=data)
         else:
             raise ValueError(f"Método HTTP no soportado: {method}")
 
@@ -52,12 +54,12 @@ def make_request(
             "headers": dict(response.headers),
             "body": response.json() if response.content else None,
         }
-    except requests.exceptions.ConnectionError:
-        return {
-            "error": "No se pudo conectar al servidor. Asegúrate de que esté ejecutándose en http://127.0.0.1:8000"
-        }
-    except Exception as e:
-        return {"error": f"Error en la petición: {str(e)}"}
+    except requests.RequestException as exc:
+        if isinstance(exc, requests.ConnectionError):
+            return {
+                "error": "No se pudo conectar al servidor. Asegúrate de que esté ejecutándose en http://127.0.0.1:8000"
+            }
+        return {"error": f"Error en la petición: {exc}"}
 
 
 def demo_api_info():

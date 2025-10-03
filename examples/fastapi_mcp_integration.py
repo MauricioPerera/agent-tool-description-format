@@ -1,6 +1,7 @@
 """FastAPI reference server fulfilling the ATDF Server Profile v1."""
 
 import json
+import os
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -23,8 +24,12 @@ except ModuleNotFoundError:  # pragma: no cover - fallback when FastAPI is unava
         Response,
         status,
     )
+
 from jsonschema import ValidationError as JSONValidationError
 from jsonschema import validators as jsonschema_validators
+from pydantic import BaseModel, EmailStr, Field, ValidationError
+
+from improved_loader import detect_language, select_tool_by_goal
 from prometheus_client import (
     CONTENT_TYPE_LATEST,
     Counter,
@@ -32,9 +37,6 @@ from prometheus_client import (
     Histogram,
     generate_latest,
 )
-from pydantic import BaseModel, EmailStr, Field, ValidationError
-
-from improved_loader import detect_language, select_tool_by_goal
 from tools.mcp_converter import mcp_to_atdf
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -1054,4 +1056,6 @@ async def list_flight_bookings() -> Dict[str, Any]:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    host = os.getenv("ATDF_HOST", "127.0.0.1")
+    port = int(os.getenv("ATDF_PORT", "8000"))
+    uvicorn.run(app, host=host, port=port)

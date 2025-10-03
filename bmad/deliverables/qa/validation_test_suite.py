@@ -7,6 +7,7 @@ The suite documents how to execute critical validation checks using pytest.
 import json
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 
@@ -20,7 +21,13 @@ def test_start_script_runs_healthcheck(tmp_path):
     """`scripts/start_all_services.ps1` should exit with 0 and emit health status."""
     script = Path("scripts/start_all_services.ps1").resolve()
     cmd = _powershell_exe() + ["-File", str(script), "-StartupDelay", "5"]
-    result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+    result = subprocess.run(
+        cmd,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=180,
+    )
     assert result.returncode == 0, result.stderr
     assert "Service status" in result.stdout
 
@@ -44,7 +51,7 @@ def test_validation_cli(tmp_path):
     )
     result = subprocess.run(
         [
-            "python",
+            sys.executable,
             "tools/validator.py",
             str(descriptor),
             "--schema",
@@ -53,5 +60,6 @@ def test_validation_cli(tmp_path):
         capture_output=True,
         text=True,
         check=False,
+        timeout=60,
     )
     assert result.returncode == 0, result.stderr

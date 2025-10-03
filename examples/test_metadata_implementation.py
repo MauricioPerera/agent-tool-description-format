@@ -13,6 +13,7 @@ from datetime import datetime
 from typing import Any, Dict
 
 import requests
+from http_client import get as http_get
 
 # Configuración
 BASE_URL = "http://127.0.0.1:8000"
@@ -24,7 +25,7 @@ def test_metadata_fields():
     print("🔍 Probando campos de metadata...")
 
     try:
-        response = requests.get(f"{BASE_URL}/tools", headers=HEADERS)
+        response = http_get(f"{BASE_URL}/tools", headers=HEADERS)
         response.raise_for_status()
 
         data = response.json()
@@ -127,7 +128,7 @@ def test_schema_compliance():
     print("\n🔍 Probando cumplimiento del esquema enhanced ATDF...")
 
     try:
-        response = requests.get(f"{BASE_URL}/tools", headers=HEADERS)
+        response = http_get(f"{BASE_URL}/tools", headers=HEADERS)
         response.raise_for_status()
 
         data = response.json()
@@ -182,7 +183,7 @@ def test_localization_content():
     print("\n🔍 Probando contenido de localización...")
 
     try:
-        response = requests.get(f"{BASE_URL}/tools", headers=HEADERS)
+        response = http_get(f"{BASE_URL}/tools", headers=HEADERS)
         response.raise_for_status()
 
         data = response.json()

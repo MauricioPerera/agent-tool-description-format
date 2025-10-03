@@ -6,6 +6,7 @@ This script helps configure and verify the monitoring setup.
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -30,11 +31,22 @@ class MonitoringSetup:
 
         for tool in required_tools:
             try:
+                binary = shutil.which(tool)
+                if not binary:
+                    raise FileNotFoundError(tool)
                 result = subprocess.run(
-                    [tool, "--version"], capture_output=True, text=True, check=True
+                    [binary, "--version"],
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                    timeout=15,
                 )
                 print(f"✅ {tool}: {result.stdout.strip().split()[0]}")
-            except (subprocess.CalledProcessError, FileNotFoundError):
+            except (
+                subprocess.CalledProcessError,
+                FileNotFoundError,
+                subprocess.TimeoutExpired,
+            ):
                 missing_tools.append(tool)
                 print(f"❌ {tool}: Not found")
 
@@ -110,7 +122,12 @@ class MonitoringSetup:
                 "redis",
             ]
             result = subprocess.run(
-                cmd, cwd=self.project_root, capture_output=True, text=True, check=True
+                cmd,
+                cwd=self.project_root,
+                capture_output=True,
+                text=True,
+                check=True,
+                timeout=60,
             )
 
             print("✅ Services started successfully")
@@ -119,9 +136,9 @@ class MonitoringSetup:
 
             return True
 
-        except subprocess.CalledProcessError as e:
-            print(f"❌ Failed to start services: {e}")
-            print(f"Error output: {e.stderr}")
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
+            print(f"❌ Failed to start services: {exc}")
+            print(f"Error output: {getattr(exc, 'stderr', '')}")
             return False
 
     def verify_services(self) -> Dict[str, bool]:
@@ -161,8 +178,8 @@ class MonitoringSetup:
                 response = requests.get("http://localhost:3000/api/health", timeout=5)
                 if response.status_code == 200:
                     break
-            except requests.RequestException:
-                pass
+            except requests.RequestException as exc:
+                print(f"Grafana not ready yet: {exc}")
 
             if i < max_retries - 1:
                 print(f"Waiting for Grafana... ({i+1}/{max_retries})")
@@ -186,7 +203,12 @@ class MonitoringSetup:
         try:
             cmd = ["docker-compose", "up", "-d", "atdf-api"]
             result = subprocess.run(
-                cmd, cwd=self.project_root, capture_output=True, text=True, check=True
+                cmd,
+                cwd=self.project_root,
+                capture_output=True,
+                text=True,
+                check=True,
+                timeout=60,
             )
 
             print("✅ ATDF application started")
@@ -201,8 +223,8 @@ class MonitoringSetup:
                     if response.status_code == 200:
                         print("✅ ATDF application is ready")
                         return True
-                except requests.RequestException:
-                    pass
+                except requests.RequestException as exc:
+                    print(f"Application health check failed: {exc}")
 
                 if i < max_retries - 1:
                     print(f"Waiting for application... ({i+1}/{max_retries})")
@@ -211,8 +233,8 @@ class MonitoringSetup:
             print("❌ Application did not become ready in time")
             return False
 
-        except subprocess.CalledProcessError as e:
-            print(f"❌ Failed to start application: {e}")
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
+            print(f"❌ Failed to start application: {exc}")
             return False
 
     def verify_metrics(self) -> bool:

@@ -352,7 +352,7 @@ class EnrichedResponseValidator:
         validation_results = {v.condition: v.passed for v in validations}
 
         return self.create_error_response(
-            code="WEAK_PASSWORD",
+            code="WEAK_PASSWORD",  # nosec B105 - identificador de error, no credencial
             message=f"Password strength is {strength}",
             field="password",
             received={
