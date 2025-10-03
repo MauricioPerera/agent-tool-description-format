@@ -7,12 +7,10 @@ y buscar herramientas ATDF utilizando búsqueda semántica.
 """
 
 import argparse
-import asyncio
 import json
 import logging
 import os
 import sys
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from ..core.utils import load_tools_from_directory
@@ -31,9 +29,9 @@ class ATDFSearchCLI:
         self.vector_store = None
         self.db_path = "./atdf_vector_db"
         self.model_name = "all-MiniLM-L6-v2"
-        self.collection_name = "atdf_tools"
+        self.table_name = "atdf_tools"
 
-    async def initialize(self, db_path: Optional[str] = None) -> bool:
+    def initialize(self, db_path: Optional[str] = None) -> bool:
         """
         Inicializar el almacenamiento vectorial.
 
@@ -49,12 +47,12 @@ class ATDFSearchCLI:
         self.vector_store = ATDFVectorStore(
             db_path=self.db_path,
             model_name=self.model_name,
-            collection_name=self.collection_name,
+            table_name=self.table_name,
         )
 
-        return await self.vector_store.initialize()
+        return self.vector_store.initialize_sync()
 
-    async def index_directory(self, directory_path: str) -> bool:
+    def index_directory(self, directory_path: str) -> bool:
         """
         Indexar herramientas ATDF desde un directorio.
 
@@ -65,7 +63,7 @@ class ATDFSearchCLI:
             True si la indexación fue exitosa
         """
         if not self.vector_store:
-            if not await self.initialize():
+            if not self.initialize():
                 return False
 
         logger.info(f"Cargando herramientas desde: {directory_path}")
@@ -76,9 +74,9 @@ class ATDFSearchCLI:
             logger.error("No se encontraron herramientas para indexar")
             return False
 
-        return await self.vector_store.create_from_tools(tools)
+        return self.vector_store.create_from_tools_sync(tools)
 
-    async def search(self, query: str, limit: int = 5) -> List[Dict[str, Any]]:
+    def search(self, query: str, limit: int = 5) -> List[Dict[str, Any]]:
         """
         Buscar herramientas ATDF.
 
@@ -90,11 +88,11 @@ class ATDFSearchCLI:
             Lista de herramientas ATDF ordenadas por relevancia
         """
         if not self.vector_store:
-            if not await self.initialize():
+            if not self.initialize():
                 return []
 
         options = {"limit": limit}
-        results = await self.vector_store.search_tools(query, options)
+        results = self.vector_store.search_tools_sync(query, options)
         return results
 
 
@@ -132,7 +130,7 @@ def print_tool(tool: Dict[str, Any], verbose: bool = False) -> None:
     print(f"{'-' * 50}")
 
 
-async def main(args) -> int:
+def main(args) -> int:
     """
     Función principal del CLI.
 
@@ -151,7 +149,7 @@ async def main(args) -> int:
         cli.model_name = args.model
 
     # Inicializar
-    if not await cli.initialize():
+    if not cli.initialize():
         logger.error("Error al inicializar el almacenamiento vectorial")
         return 1
 
@@ -162,10 +160,10 @@ async def main(args) -> int:
             return 1
 
         logger.info(f"Indexando directorio: {args.index}")
-        result = await cli.index_directory(args.index)
+        result = cli.index_directory(args.index)
 
         if result:
-            count = await cli.vector_store.count_tools()
+            count = cli.vector_store.count_tools_sync()
             logger.info(f"Indexación completada. {count} herramientas indexadas")
         else:
             logger.error("Error al indexar herramientas")
@@ -174,7 +172,7 @@ async def main(args) -> int:
     # Buscar
     if args.query:
         logger.info(f"Buscando: {args.query}")
-        results = await cli.search(args.query, limit=args.limit)
+        results = cli.search(args.query, limit=args.limit)
 
         if not results:
             logger.info("No se encontraron resultados")
@@ -237,7 +235,7 @@ def main_entry():
 
     # Ejecutar función principal
     try:
-        exit_code = asyncio.run(main(args))
+        exit_code = main(args)
         sys.exit(exit_code)
     except KeyboardInterrupt:
         logger.info("Operación cancelada por el usuario")

@@ -9,7 +9,6 @@ Para ejecutar estas pruebas específicas:
     python -m unittest tests.test_vector_search
 """
 
-import asyncio
 import json
 import os
 import shutil
@@ -18,10 +17,15 @@ import tempfile
 import unittest
 from unittest import mock
 
+import numpy as np
+import pandas as pd
+import types
+
 sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
 from sdk.atdf_sdk import ATDFTool, ATDFToolbox
 from sdk.vector_search import ATDFVectorStore
+from sdk.vector_search import vector_store as vector_store_module
 
 # Variable global para detectar si las dependencias están instaladas
 VECTOR_DEPENDENCIES_AVAILABLE = False
@@ -32,6 +36,23 @@ try:
     VECTOR_DEPENDENCIES_AVAILABLE = True
 except ImportError:
     pass
+
+if not VECTOR_DEPENDENCIES_AVAILABLE:
+    if getattr(vector_store_module, "lancedb", None) is None:
+        vector_store_module.lancedb = types.SimpleNamespace(connect=lambda *a, **k: None)
+    elif not hasattr(vector_store_module.lancedb, "connect"):
+        vector_store_module.lancedb.connect = lambda *a, **k: None  # type: ignore[attr-defined]
+    if getattr(vector_store_module, "sentence_transformers", None) is None:
+        vector_store_module.sentence_transformers = types.SimpleNamespace(
+            SentenceTransformer=lambda *a, **k: None
+        )
+    elif not hasattr(vector_store_module.sentence_transformers, "SentenceTransformer"):
+        vector_store_module.sentence_transformers.SentenceTransformer = (
+            lambda *a, **k: None
+        )
+    vector_store_module.Table = object
+    vector_store_module.VECTOR_SEARCH_AVAILABLE = True
+    VECTOR_DEPENDENCIES_AVAILABLE = True
 
 # Herramientas de ejemplo para las pruebas
 SAMPLE_TOOLS = [
@@ -103,10 +124,6 @@ SAMPLE_TOOLS = [
 ]
 
 
-@unittest.skipIf(
-    not VECTOR_DEPENDENCIES_AVAILABLE,
-    "Dependencias de búsqueda vectorial no instaladas",
-)
 class TestATDFVectorStore(unittest.TestCase):
     """Pruebas para la clase ATDFVectorStore"""
 
@@ -120,8 +137,13 @@ class TestATDFVectorStore(unittest.TestCase):
         self.tools = [ATDFTool(tool_data) for tool_data in SAMPLE_TOOLS]
 
         # Evitar la descarga del modelo en las pruebas que no lo necesitan
-        self.model_patcher = mock.patch("sentence_transformers.SentenceTransformer")
+        self.model_patcher = mock.patch(
+            "sdk.vector_search.vector_store.sentence_transformers.SentenceTransformer"
+        )
         self.mock_model = self.model_patcher.start()
+        self.mock_model_instance = self.mock_model.return_value
+        self.mock_model_instance.get_sentence_embedding_dimension.return_value = 4
+        self.embedding = np.array([0.1, 0.2, 0.3, 0.4], dtype=np.float32)
 
     def tearDown(self):
         """Limpieza después de las pruebas"""
@@ -143,7 +165,7 @@ class TestATDFVectorStore(unittest.TestCase):
         vector_store = ATDFVectorStore(db_path=self.db_path)
         self.assertTrue(vector_store.has_dependencies)
 
-    @mock.patch("lancedb.connect")
+    @mock.patch("sdk.vector_search.vector_store.lancedb.connect")
     def test_initialize(self, mock_connect):
         """Probar la inicialización del almacén vectorial"""
         # Configurar mocks
@@ -153,7 +175,7 @@ class TestATDFVectorStore(unittest.TestCase):
 
         # Crear y inicializar almacén vectorial
         vector_store = ATDFVectorStore(db_path=self.db_path)
-        result = asyncio.run(vector_store.initialize())
+        result = vector_store.initialize_sync()
 
         # Verificar
         self.assertTrue(result)
@@ -161,7 +183,7 @@ class TestATDFVectorStore(unittest.TestCase):
         mock_connect.assert_called_once_with(self.db_path)
         self.mock_model.assert_called_once()
 
-    @mock.patch("lancedb.connect")
+    @mock.patch("sdk.vector_search.vector_store.lancedb.connect")
     def test_create_from_tools(self, mock_connect):
         """Probar la creación de la base de datos a partir de herramientas"""
         # Configurar mocks
@@ -170,19 +192,16 @@ class TestATDFVectorStore(unittest.TestCase):
         mock_db.table_names.return_value = []
         mock_db.create_table.return_value = mock.MagicMock()
 
-        # Mock para generate_embedding
-        async def mock_generate_embedding(text):
-            return [0.1, 0.2, 0.3, 0.4]
-
         # Crear y configurar almacén vectorial
         vector_store = ATDFVectorStore(db_path=self.db_path)
         # Inicializar manualmente algunos componentes
         vector_store.initialized = True
         vector_store.db = mock_db
-        vector_store._generate_embedding = mock_generate_embedding
+        vector_store.embedding_dim = 4
+        vector_store._embed_text = mock.AsyncMock(return_value=self.embedding)
 
         # Ejecutar
-        result = asyncio.run(vector_store.create_from_tools(self.tools))
+        result = vector_store.create_from_tools_sync(self.tools)
 
         # Verificar
         self.assertTrue(result)
@@ -190,7 +209,7 @@ class TestATDFVectorStore(unittest.TestCase):
         # Verificar que el primer argumento es el nombre de la tabla
         self.assertEqual(mock_db.create_table.call_args[0][0], "tools")
 
-    @mock.patch("lancedb.connect")
+    @mock.patch("sdk.vector_search.vector_store.lancedb.connect")
     def test_add_tool(self, mock_connect):
         """Probar añadir una herramienta individual"""
         # Configurar mocks
@@ -200,9 +219,11 @@ class TestATDFVectorStore(unittest.TestCase):
         mock_db.table_names.return_value = ["tools"]
         mock_db.open_table.return_value = mock_table
 
-        # Mock para generate_embedding
-        async def mock_generate_embedding(text):
-            return [0.1, 0.2, 0.3, 0.4]
+        mock_existing = mock.MagicMock()
+        mock_existing.limit.return_value = mock_existing
+        mock_existing.where.return_value = mock_existing
+        mock_existing.to_pandas.return_value = pd.DataFrame()
+        mock_table.search.return_value = mock_existing
 
         # Crear y configurar almacén vectorial
         vector_store = ATDFVectorStore(db_path=self.db_path)
@@ -210,20 +231,18 @@ class TestATDFVectorStore(unittest.TestCase):
         vector_store.initialized = True
         vector_store.db = mock_db
         vector_store.table = mock_table
-        vector_store._generate_embedding = mock_generate_embedding
+        vector_store._embed_text = mock.AsyncMock(return_value=self.embedding)
 
         # Ejecutar
-        result = asyncio.run(vector_store.add_tool(self.tools[0]))
+        result = vector_store.add_tool_sync(self.tools[0])
 
         # Verificar
         self.assertTrue(result)
         mock_table.add.assert_called_once()
 
-    @mock.patch("lancedb.connect")
+    @mock.patch("sdk.vector_search.vector_store.lancedb.connect")
     def test_search_tools(self, mock_connect):
         """Probar la búsqueda de herramientas"""
-        import pandas as pd
-
         # Configurar mocks
         mock_db = mock.MagicMock()
         mock_connect.return_value = mock_db
@@ -245,23 +264,17 @@ class TestATDFVectorStore(unittest.TestCase):
         mock_results = pd.DataFrame(results_data)
         mock_search.to_df.return_value = mock_results
 
-        # Mock para generate_embedding
-        async def mock_generate_embedding(text):
-            return [0.1, 0.2, 0.3, 0.4]
-
         # Crear y configurar almacén vectorial
         vector_store = ATDFVectorStore(db_path=self.db_path)
         # Inicializar manualmente
         vector_store.initialized = True
         vector_store.db = mock_db
         vector_store.table = mock_table
-        vector_store._generate_embedding = mock_generate_embedding
+        vector_store._embed_text = mock.AsyncMock(return_value=self.embedding)
 
         # Ejecutar
-        results = asyncio.run(
-            vector_store.search_tools(
-                "buscar correo electrónico", {"language": "es", "limit": 2}
-            )
+        results = vector_store.search_tools_sync(
+            "buscar correo electrónico", {"language": "es", "limit": 2}
         )
 
         # Verificar
@@ -272,7 +285,7 @@ class TestATDFVectorStore(unittest.TestCase):
         mock_search.limit.assert_called_once_with(2)
         mock_search.where.assert_called_once()
 
-    @mock.patch("lancedb.connect")
+    @mock.patch("sdk.vector_search.vector_store.lancedb.connect")
     def test_find_best_tool(self, mock_connect):
         """Probar encontrar la mejor herramienta para un objetivo"""
         # Configurar mocks para simular una búsqueda exitosa
@@ -287,19 +300,32 @@ class TestATDFVectorStore(unittest.TestCase):
         vector_store.search_tools = mock_search_tools
 
         # Ejecutar y verificar un caso exitoso
-        result = asyncio.run(vector_store.find_best_tool("enviar email"))
+        result = vector_store.find_best_tool_sync("enviar email")
         self.assertIsNotNone(result)
         self.assertEqual(result["tool_id"], "test_tool_1")
 
         # Ejecutar y verificar un caso sin resultados
-        result = asyncio.run(vector_store.find_best_tool("algo inexistente"))
+        result = vector_store.find_best_tool_sync("algo inexistente")
         self.assertIsNone(result)
 
+    @mock.patch("sdk.vector_search.vector_store.lancedb.connect")
+    def test_count_tools(self, mock_connect):
+        """Probar el conteo de herramientas en la tabla."""
+        mock_db = mock.MagicMock()
+        mock_connect.return_value = mock_db
+        mock_table = mock.MagicMock()
+        mock_db.open_table.return_value = mock_table
+        mock_table.count_rows.return_value = 3
 
-@unittest.skipIf(
-    not VECTOR_DEPENDENCIES_AVAILABLE,
-    "Dependencias de búsqueda vectorial no instaladas",
-)
+        vector_store = ATDFVectorStore(db_path=self.db_path)
+        vector_store.initialized = True
+        vector_store.db = mock_db
+        vector_store.table = mock_table
+
+        count = vector_store.count_tools_sync()
+        self.assertEqual(count, 3)
+
+
 class TestVectorSearchIntegration(unittest.TestCase):
     """Pruebas de integración para la búsqueda vectorial con ATDFToolbox"""
 
@@ -318,17 +344,11 @@ class TestVectorSearchIntegration(unittest.TestCase):
         """Limpieza después de las pruebas"""
         shutil.rmtree(self.test_dir)
 
-    @mock.patch.object(ATDFVectorStore, "search_tools")
+    @mock.patch.object(ATDFVectorStore, "search_tools_sync")
     def test_find_tools_with_vector_search(self, mock_search_tools):
         """Probar la integración de búsqueda vectorial en ATDFToolbox"""
 
-        # Configurar mock
-        async def mock_search(query, options=None):
-            if query == "enviar mensaje":
-                return [SAMPLE_TOOLS[0]]
-            return []
-
-        mock_search_tools.side_effect = mock_search
+        mock_search_tools.return_value = [dict(SAMPLE_TOOLS[0], score=0.85)]
 
         # Crear vector store
         vector_store = ATDFVectorStore(db_path=self.db_path)
@@ -348,17 +368,11 @@ class TestVectorSearchIntegration(unittest.TestCase):
         self.assertIsInstance(score, float)
         mock_search_tools.assert_called_once()
 
-    @mock.patch.object(ATDFVectorStore, "search_tools")
+    @mock.patch.object(ATDFVectorStore, "search_tools_sync")
     def test_select_tool_for_task_with_vector_search(self, mock_search_tools):
         """Probar la selección de herramientas con búsqueda vectorial"""
 
-        # Configurar mock
-        async def mock_search(query, options=None):
-            if query == "traducir un texto":
-                return [SAMPLE_TOOLS[2]]
-            return []
-
-        mock_search_tools.side_effect = mock_search
+        mock_search_tools.return_value = [dict(SAMPLE_TOOLS[2], score=0.92)]
 
         # Crear vector store
         vector_store = ATDFVectorStore(db_path=self.db_path)
@@ -376,15 +390,11 @@ class TestVectorSearchIntegration(unittest.TestCase):
         self.assertEqual(tool.tool_id, "test_tool_3")
         mock_search_tools.assert_called_once()
 
-    @mock.patch.object(ATDFVectorStore, "search_tools")
+    @mock.patch.object(ATDFVectorStore, "search_tools_sync")
     def test_fallback_to_normal_search(self, mock_search_tools):
         """Probar que hay fallback a búsqueda normal si la vectorial falla"""
 
-        # Configurar mock para que lance una excepción
-        async def mock_search_error(query, options=None):
-            raise Exception("Error simulado en búsqueda vectorial")
-
-        mock_search_tools.side_effect = mock_search_error
+        mock_search_tools.side_effect = RuntimeError("Error simulado en búsqueda vectorial")
 
         # Crear vector store
         vector_store = ATDFVectorStore(db_path=self.db_path)

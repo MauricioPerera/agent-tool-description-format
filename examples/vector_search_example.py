@@ -6,7 +6,6 @@ Este script demuestra cómo utilizar el módulo ATDFVectorStore para
 indexar y buscar herramientas ATDF utilizando vectores semánticos.
 """
 
-import asyncio
 import json
 import os
 import sys
@@ -24,7 +23,7 @@ TOOLS_DIR = os.path.join(os.path.dirname(__file__), "..", "examples", "tools")
 DB_PATH = os.path.join(os.path.dirname(__file__), "..", "examples", "vector_db")
 
 
-async def create_index() -> ATDFVectorStore:
+def create_index() -> ATDFVectorStore:
     """
     Crear un índice vectorial a partir de herramientas de ejemplo.
 
@@ -45,21 +44,21 @@ async def create_index() -> ATDFVectorStore:
     vector_store = ATDFVectorStore(db_path=DB_PATH)
 
     # Inicializar y crear índice
-    await vector_store.initialize()
+    vector_store.initialize_sync()
     print("Creando índice vectorial...")
 
-    success = await vector_store.create_from_tools(tools)
+    success = vector_store.create_from_tools_sync(tools)
     if not success:
         print("Error al crear índice vectorial")
         sys.exit(1)
 
-    tool_count = await vector_store.count_tools()
+    tool_count = vector_store.count_tools_sync()
     print(f"Índice creado correctamente con {tool_count} herramientas")
 
     return vector_store
 
 
-async def search_examples(vector_store: ATDFVectorStore) -> None:
+def search_examples(vector_store: ATDFVectorStore) -> None:
     """
     Realizar búsquedas de ejemplo.
 
@@ -84,7 +83,7 @@ async def search_examples(vector_store: ATDFVectorStore) -> None:
         print("-" * 40)
 
         # Realizar búsqueda
-        results = await vector_store.search_tools(query=query, options={"limit": 3})
+        results = vector_store.search_tools_sync(query=query, options={"limit": 3})
 
         if not results:
             print("No se encontraron resultados")
@@ -108,7 +107,7 @@ async def search_examples(vector_store: ATDFVectorStore) -> None:
     print(f"\nConsulta: '{query}' (filtrado por categoría 'data')")
     print("-" * 40)
 
-    results = await vector_store.search_tools(
+    results = vector_store.search_tools_sync(
         query=query, options={"limit": 5, "category": "data"}
     )
 
@@ -135,17 +134,17 @@ async def search_examples(vector_store: ATDFVectorStore) -> None:
                     pass
 
 
-async def main():
+def main():
     """Función principal del script de ejemplo."""
     # Crear directorio para la base de datos si no existe
     os.makedirs(DB_PATH, exist_ok=True)
 
     # Crear índice
-    vector_store = await create_index()
+    vector_store = create_index()
 
     # Realizar búsquedas de ejemplo
-    await search_examples(vector_store)
+    search_examples(vector_store)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
