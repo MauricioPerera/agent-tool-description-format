@@ -293,7 +293,7 @@ async def demo_search_features(vector_store: "ATDFVectorStore") -> None:
 
     # Búsqueda con opciones de filtrado
     print("\n🔍 Búsqueda filtrada por categoría 'communication'")
-    results = await vector_store.search_tools(
+    results = await vector_store.search_async(
         "send a message", options={"category": "communication", "limit": 3}
     )
 
@@ -307,7 +307,7 @@ async def demo_search_features(vector_store: "ATDFVectorStore") -> None:
 
     # Búsqueda en español
     print("\n🔍 Búsqueda en español")
-    results = await vector_store.search_tools(
+    results = await vector_store.search_async(
         "recordar una tarea importante", options={"language": "es", "limit": 2}
     )
 
@@ -321,7 +321,7 @@ async def demo_search_features(vector_store: "ATDFVectorStore") -> None:
 
     # Encontrar la mejor herramienta
     print("\n🎯 Encontrar la mejor herramienta para 'check current forecast'")
-    best_tool = await vector_store.find_best_tool("check current forecast")
+    best_tool = await vector_store.find_best_tool_async("check current forecast")
 
     if best_tool:
         tool = ATDFTool(best_tool)
@@ -349,7 +349,7 @@ async def main() -> None:
         # Paso 1: Crear e inicializar vector store
         print("\n1️⃣  Inicializando almacén vectorial...")
         vector_store = ATDFVectorStore(db_path=db_path)
-        await vector_store.initialize()
+        await vector_store.initialize_async()
         print("   ✅ Almacén vectorial inicializado correctamente")
 
         # Paso 2: Crear toolbox con vector store

@@ -52,7 +52,7 @@ class ATDFSearchCLI:
             collection_name=self.collection_name,
         )
 
-        return await self.vector_store.initialize()
+        return await self.vector_store.initialize_async()
 
     async def index_directory(self, directory_path: str) -> bool:
         """
@@ -76,7 +76,7 @@ class ATDFSearchCLI:
             logger.error("No se encontraron herramientas para indexar")
             return False
 
-        return await self.vector_store.create_from_tools(tools)
+        return await self.vector_store.create_from_tools_async(tools)
 
     async def search(self, query: str, limit: int = 5) -> List[Dict[str, Any]]:
         """
@@ -94,7 +94,7 @@ class ATDFSearchCLI:
                 return []
 
         options = {"limit": limit}
-        results = await self.vector_store.search_tools(query, options)
+        results = await self.vector_store.search_async(query, options)
         return results
 
 
@@ -165,8 +165,10 @@ async def main(args) -> int:
         result = await cli.index_directory(args.index)
 
         if result:
-            count = await cli.vector_store.count_tools()
-            logger.info(f"Indexación completada. {count} herramientas indexadas")
+            tools = await cli.vector_store.get_all_tools_async()
+            logger.info(
+                f"Indexación completada. {len(tools)} herramientas indexadas"
+            )
         else:
             logger.error("Error al indexar herramientas")
             return 1

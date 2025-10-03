@@ -133,10 +133,10 @@ async def index_tools(args) -> None:
     vector_store = ATDFVectorStore(db_path=args.db_path, model_name=args.model)
 
     logger.info(f"Inicializando almacén vectorial en {args.db_path}...")
-    await vector_store.initialize()
+    await vector_store.initialize_async()
 
     logger.info(f"Indexando {len(atdf_tools)} herramientas...")
-    success = await vector_store.create_from_tools(atdf_tools)
+    success = await vector_store.create_from_tools_async(atdf_tools)
 
     if success:
         logger.info("✅ Indexación completada con éxito")
@@ -167,7 +167,7 @@ async def search_tools(args) -> None:
     vector_store = ATDFVectorStore(db_path=args.db_path, model_name=args.model)
 
     logger.info(f"Inicializando almacén vectorial en {args.db_path}...")
-    await vector_store.initialize()
+    await vector_store.initialize_async()
 
     # Configurar opciones de búsqueda
     options = {"limit": args.limit}
@@ -183,7 +183,7 @@ async def search_tools(args) -> None:
 
     # Realizar búsqueda
     logger.info(f"Buscando: '{args.query}'")
-    results = await vector_store.search_tools(args.query, options)
+    results = await vector_store.search_async(args.query, options)
 
     # Mostrar resultados
     if not results:
@@ -239,7 +239,7 @@ async def manage_db(args) -> None:
         # Inicializar vector store
         vector_store = ATDFVectorStore(db_path=args.db_path, model_name=args.model)
 
-        await vector_store.initialize()
+        await vector_store.initialize_async()
 
         # Mostrar información
         db_size = sum(
@@ -254,8 +254,8 @@ async def manage_db(args) -> None:
 
         if vector_store.table:
             # Contar registros
-            count = await vector_store.count_tools()
-            print(f"Herramientas indexadas: {count}")
+            tools = await vector_store.get_all_tools_async()
+            print(f"Herramientas indexadas: {len(tools)}")
 
         print("-" * 80)
 
