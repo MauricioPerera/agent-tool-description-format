@@ -379,6 +379,46 @@ class ATDFVectorStore:
         results = await self.search_tools(query, options)
         return results[0] if results else None
 
+    async def count_tools(self) -> int:
+        await self._ensure_ready()
+
+        if self.table is None:
+            raise RuntimeError("La tabla LanceDB no está lista")
+
+        count_method = getattr(self.table, "count_rows", None)
+        if callable(count_method):
+            try:
+                count = count_method()
+                if inspect.isawaitable(count):
+                    count = await count  # type: ignore[assignment]
+                return int(count)
+            except (TypeError, ValueError):
+                logger.debug("No se pudo obtener el conteo via count_rows")
+
+        try:
+            if hasattr(self.table, "__len__"):
+                return int(len(self.table))  # type: ignore[arg-type]
+        except TypeError:
+            logger.debug("No se pudo obtener el conteo via len(table)")
+
+        raw_results = None
+        if hasattr(self.table, "to_pandas"):
+            raw_results = self.table.to_pandas()
+        elif hasattr(self.table, "to_df"):
+            raw_results = self.table.to_df()
+
+        if raw_results is not None:
+            try:
+                return int(len(raw_results))
+            except TypeError:
+                try:
+                    return int(raw_results.shape[0])  # type: ignore[index]
+                except (AttributeError, TypeError):
+                    logger.debug("No se pudo obtener el conteo del dataframe")
+
+        all_tools = await self.get_all_tools()
+        return len(all_tools)
+
     async def get_all_tools(self) -> List[Dict[str, Any]]:
         await self._ensure_ready()
 
@@ -492,6 +532,9 @@ class ATDFVectorStore:
 
     def get_all_tools_sync(self) -> List[Dict[str, Any]]:
         return self._run_blocking(self.get_all_tools())
+
+    def count_tools_sync(self) -> int:
+        return self._run_blocking(self.count_tools())
 
     def get_tool_by_id_sync(self, tool_id: str) -> Optional[Dict[str, Any]]:
         return self._run_blocking(self.get_tool_by_id(tool_id))
