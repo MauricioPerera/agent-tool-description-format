@@ -42,7 +42,7 @@
 - id: ATDF-EPIC-004
   name: ATDF Server Profile
   objective: Publicar perfil oficial de endpoints ATDF y servidor FastAPI de referencia.
-  status: in_progress
+  status: completed
   tasks:
   - id: ATDF-TASK-007
     description: Definir especificación de endpoints y métricas.
@@ -51,4 +51,4 @@
   - id: ATDF-TASK-008
     description: Actualizar ejemplo FastAPI para cumplir con el perfil.
     owner: Dev
-    status: planned
+    status: completed
