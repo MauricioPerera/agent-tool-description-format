@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "commonjs",
+    "lib": ["ES2021"],
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@ardf/core": ["packages/core/src"],
+      "@ardf/search": ["packages/search/src"],
+      "@ardf/mcp": ["packages/mcp/src"],
+      "@ardf/types": ["packages/core/src/types"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "build"]
+}

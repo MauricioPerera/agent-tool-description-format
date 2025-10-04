@@ -1,0 +1,24 @@
+{
+  "name": "@ardf/search",
+  "version": "0.1.0",
+  "description": "Hybrid search toolkit (lexical + vector) for ARDF Manager.",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "lint": "eslint src --ext .ts",
+    "test": "vitest",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "ml-distance": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.6.0",
+    "eslint": "^8.57.0"
+  }
+}

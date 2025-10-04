@@ -1,0 +1,22 @@
+{
+  "name": "ardf-manager",
+  "private": true,
+  "version": "0.1.0",
+  "description": "ARDF Manager monorepo for cataloging, ranking, and analyzing ARDF resources with MCP integration.",
+  "license": "MIT",
+  "packageManager": "npm@10.8.0",
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "dev": "npm run dev --workspaces",
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces",
+    "format": "npm run format --workspaces"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=18.18.0"
+  }
+}

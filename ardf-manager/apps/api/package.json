@@ -1,0 +1,31 @@
+{
+  "name": "@ardf/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ARDF Manager API service",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "ts-node-dev --respawn --transpile-only src/main.ts",
+    "lint": "eslint src --ext .ts",
+    "test": "vitest",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@ardf/core": "*",
+    "@ardf/mcp": "*",
+    "@ardf/search": "*",
+    "@modelcontextprotocol/sdk": "^0.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.0.0",
+    "@types/cors": "^2.8.17",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3",
+    "eslint": "^8.57.0",
+    "vitest": "^1.6.0"
+  }
+}

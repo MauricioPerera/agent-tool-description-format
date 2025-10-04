@@ -1,0 +1,26 @@
+{
+  "": "https://json-schema.org/draft/2020-12/schema",
+  "": "https://example.org/ardf/enhanced.schema.json",
+  "title": "ARDF Enhanced Resource",
+  "type": "object",
+  "required": ["schema_version", "resource_id", "resource_type", "description"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "resource_id": { "type": "string" },
+    "resource_type": { "type": "string" },
+    "description": { "type": "string" },
+    "when_to_use": { "type": "string" },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "localization": { "type": "object" },
+    "examples": { "type": "array" },
+    "feedback": { "type": "object" }
+  },
+  "additionalProperties": true
+}

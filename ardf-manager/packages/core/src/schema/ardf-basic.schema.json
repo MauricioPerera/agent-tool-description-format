@@ -1,0 +1,16 @@
+{
+  "": "https://json-schema.org/draft/2020-12/schema",
+  "": "https://example.org/ardf/basic.schema.json",
+  "title": "ARDF Basic Resource",
+  "type": "object",
+  "required": ["schema_version", "resource_id", "resource_type", "description"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "resource_id": { "type": "string" },
+    "resource_type": { "type": "string" },
+    "description": { "type": "string" },
+    "when_to_use": { "type": "string" },
+    "metadata": { "type": "object" }
+  },
+  "additionalProperties": true
+}
