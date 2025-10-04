@@ -1,70 +1,71 @@
 {
-    "name":  "n8n-nodes-atdf-mcp",
-    "version":  "1.0.0",
-    "description":  "n8n nodes for ATDF (Agent Tool Description Format) and MCP (Model Context Protocol) integration",
-    "keywords":  [
-                     "n8n-community-node-package",
-                     "n8n",
-                     "atdf",
-                     "mcp",
-                     "model-context-protocol",
-                     "agent-tools"
-                 ],
-    "license":  "MIT",
-    "homepage":  "https://github.com/your-org/n8n-nodes-atdf-mcp",
-    "author":  {
-                   "name":  "ATDF Team",
-                   "email":  "contact@atdf.dev"
-               },
-    "repository":  {
-                       "type":  "git",
-                       "url":  "https://github.com/your-org/n8n-nodes-atdf-mcp.git"
-                   },
-    "engines":  {
-                    "node":  "\u003e=18.10",
-                    "pnpm":  "\u003e=8.1"
-                },
-    "packageManager":  "pnpm@8.1.0",
-    "main":  "index.js",
-    "scripts":  {
-                    "build":  "tsc \u0026\u0026 gulp build:icons",
-                    "dev":  "tsc --watch",
-                    "format":  "prettier nodes credentials --write",
-                    "lint":  "eslint nodes credentials package.json",
-                    "lintfix":  "eslint nodes credentials package.json --fix",
-                    "prepublishOnly":  "npm run build \u0026\u0026 npm run lint -s"
-                },
-    "files":  [
-                  "dist"
-              ],
-    "n8n":  {
-                "n8nNodesApiVersion":  1,
-                "credentials":  [
-                                    "dist/credentials/AtdfMcpApi.credentials.js",
-                                    "dist/credentials/AtdfSelectorApi.credentials.js"
-                                ],
-                "nodes":  [
-                              "dist/nodes/AtdfMcpClient/AtdfMcpClient.node.js",
-                              "dist/nodes/AtdfMcpServer/AtdfMcpServer.node.js",
-                              "dist/nodes/AtdfToolSelector/AtdfToolSelector.node.js"
-                          ]
-            },
-    "devDependencies":  {
-                            "@types/node":  "^18.16.16",
-                            "@typescript-eslint/parser":  "^5.59.7",
-                            "eslint":  "^8.41.0",
-                            "eslint-plugin-n8n-nodes-base":  "^1.11.0",
-                            "gulp":  "^4.0.2",
-                            "n8n-workflow":  "*",
-                            "prettier":  "^2.8.8",
-                            "typescript":  "^5.1.3"
-                        },
-    "peerDependencies":  {
-                             "n8n-workflow":  "*"
-                         },
-    "dependencies":  {
-                         "axios":  "^1.4.0",
-                         "ws":  "^8.13.0",
-                         "eventsource":  "^2.0.2"
-                     }
+    "name": "n8n-nodes-atdf-mcp",
+    "version": "1.0.0",
+    "description": "n8n nodes for ATDF (Agent Tool Description Format) and MCP (Model Context Protocol) integration",
+    "keywords": [
+        "n8n-community-node-package",
+        "n8n",
+        "atdf",
+        "mcp",
+        "model-context-protocol",
+        "agent-tools"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/your-org/n8n-nodes-atdf-mcp",
+    "author": {
+        "name": "ATDF Team",
+        "email": "contact@atdf.dev"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/your-org/n8n-nodes-atdf-mcp.git"
+    },
+    "engines": {
+        "node": ">=18.10",
+        "pnpm": ">=8.1"
+    },
+    "packageManager": "pnpm@8.1.0",
+    "main": "index.js",
+    "scripts": {
+        "build": "tsc && gulp build:icons",
+        "dev": "tsc --watch",
+        "format": "prettier nodes credentials --write",
+        "lint": "eslint nodes credentials package.json",
+        "lintfix": "eslint nodes credentials package.json --fix",
+        "prepublishOnly": "npm run build && npm run lint -s"
+    },
+    "files": [
+        "dist"
+    ],
+    "n8n": {
+        "n8nNodesApiVersion": 1,
+        "credentials": [
+            "dist/credentials/AtdfMcpApi.credentials.js",
+            "dist/credentials/AtdfSelectorApi.credentials.js"
+        ],
+        "nodes": [
+            "dist/nodes/AtdfMcpClient/AtdfMcpClient.node.js",
+            "dist/nodes/AtdfMcpServer/AtdfMcpServer.node.js",
+            "dist/nodes/AtdfToolSelector/AtdfToolSelector.node.js",
+            "dist/nodes/ArdfFilter/ArdfFilter.node.js"
+        ]
+    },
+    "devDependencies": {
+        "@types/node": "^18.16.16",
+        "@typescript-eslint/parser": "^5.59.7",
+        "eslint": "^8.41.0",
+        "eslint-plugin-n8n-nodes-base": "^1.11.0",
+        "gulp": "^4.0.2",
+        "n8n-workflow": "*",
+        "prettier": "^2.8.8",
+        "typescript": "^5.1.3"
+    },
+    "peerDependencies": {
+        "n8n-workflow": "*"
+    },
+    "dependencies": {
+        "axios": "^1.4.0",
+        "ws": "^8.13.0",
+        "eventsource": "^2.0.2"
+    }
 }
