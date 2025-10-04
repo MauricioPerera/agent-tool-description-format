@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0.0",
+  "resource_id": "symptom_classifier",
+  "resource_type": "model",
+  "description": "HTTP endpoint that classifies patient symptom summaries into triage levels.",
+  "when_to_use": "Run before booking urgent visits to determine appropriate routing.",
+  "content": {
+    "type": "model/spec",
+    "data": {
+      "interface": "http",
+      "endpoint": "https://ml.example.org/models/symptom-classifier",
+      "signature": {
+        "inputs": [{"name": "symptoms", "type": "string"}],
+        "outputs": [{"name": "triage_level", "type": "string"}, {"name": "confidence", "type": "number"}]
+      },
+      "capabilities": ["classification", "triage"]
+    }
+  },
+  "metadata": {
+    "version": "2.0.1",
+    "author": "MedML Lab",
+    "domain": "healthcare",
+    "tags": ["model", "triage"],
+    "maturity": "beta"
+  },
+  "prerequisites": {
+    "credentials": ["symptom_classifier_api_key"]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "resource_id": "patient_privacy_policy",
+  "resource_type": "policy",
+  "description": "Defines patient privacy and compliance rules.",
+  "content": {
+    "type": "policy/rules",
+    "data": {
+      "rules": [
+        {
+          "id": "p1",
+          "statement": "Do not disclose PII without consent.",
+          "effect": "deny"
+        },
+        {
+          "id": "p2",
+          "statement": "Ensure encrypted transmission of sensitive data.",
+          "effect": "allow"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "domain": "compliance",
+    "tags": [
+      "policy",
+      "privacy"
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0.0",
+  "resource_id": "appointment_coordinator",
+  "resource_type": "prompt",
+  "description": "Guide the agent through the full medical appointment coordination workflow.",
+  "when_to_use": "Use when a patient needs to book, modify, or cancel an appointment.",
+  "content": {
+    "type": "prompt/template",
+    "data": {
+      "role": "system",
+      "input_variables": ["patient_name", "requested_service", "preferred_date"],
+      "template_text": "You are a clinical scheduling orchestrator. Verify privacy policy compliance, confirm patient identity, propose available slots, and summarize the outcome. Patient: ${patient_name}. Service: ${requested_service}. Preferred date: ${preferred_date}."
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "author": "HealthAI Team",
+    "domain": "healthcare",
+    "tags": ["prompt", "coordination"],
+    "maturity": "beta"
+  },
+  "prerequisites": {
+    "policies": ["patient_privacy_policy"],
+    "resources": ["patient_lookup", "appointment_create"]
+  }
+}

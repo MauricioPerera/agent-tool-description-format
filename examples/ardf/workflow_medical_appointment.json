@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0.0",
+  "resource_id": "medical_appointment_flow",
+  "resource_type": "workflow",
+  "description": "Conditional orchestration for booking clinical appointments with privacy checks.",
+  "content": {
+    "type": "workflow/steps",
+    "data": {
+      "steps": [
+        {
+          "step": "enforce_privacy",
+          "description": "Apply patient privacy guardrails before processing.",
+          "policy_id": "patient_privacy_policy"
+        },
+        {
+          "step": "verify_patient",
+          "description": "Check patient identity and eligibility.",
+          "tool_id": "patient_lookup",
+          "on_error": "notify_failure"
+        },
+        {
+          "step": "search_slots",
+          "description": "Retrieve available appointment slots matching the request.",
+          "tool_id": "appointment_search"
+        },
+        {
+          "step": "book_slot",
+          "description": "Create the appointment using the selected slot.",
+          "tool_id": "appointment_create"
+        },
+        {
+          "step": "notify_success",
+          "description": "Send confirmation message to the patient.",
+          "tool_id": "notification_send"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "version": "0.9.0",
+    "author": "HealthAI Team",
+    "domain": "healthcare",
+    "tags": ["workflow", "appointments"],
+    "maturity": "beta"
+  }
+}

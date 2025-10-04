@@ -1,0 +1,445 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/ardf.schema.json",
+  "title": "Agent Resource Description Format (ARDF) v1.0.0",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "resource_id",
+    "resource_type",
+    "description"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "resource_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resource_type": {
+      "type": "string",
+      "enum": [
+        "tool",
+        "prompt",
+        "document",
+        "workflow",
+        "policy",
+        "model",
+        "dataset",
+        "connector",
+        "custom"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "when_to_use": {
+      "type": "string"
+    },
+    "content": {
+      "$ref": "#/$defs/Content"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "version": {"type": "string"},
+        "author": {"type": "string"},
+        "domain": {"type": "string"},
+        "category": {"type": "string"},
+        "tags": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "maturity": {
+          "type": "string",
+          "enum": ["experimental", "beta", "stable", "deprecated"]
+        },
+        "licenses": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      },
+      "additionalProperties": true
+    },
+    "localization": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z]{2}(-[A-Z]{2})?$": {
+          "type": "object",
+          "properties": {
+            "description": {"type": "string"},
+            "when_to_use": {"type": "string"}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "prerequisites": {
+      "type": "object",
+      "properties": {
+        "resources": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "policies": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "credentials": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      },
+      "additionalProperties": false
+    },
+    "examples": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "input": {},
+          "output": {},
+          "narrative": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "feedback": {
+      "type": "object",
+      "properties": {
+        "success_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "last_updated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "notes": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"resource_type": {"const": "tool"}}},
+      "then": {
+        "required": ["content"],
+        "properties": {
+          "content": {
+            "properties": {
+              "type": {
+                "const": "tool/io"
+              }
+            },
+            "required": ["type", "data"]
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"resource_type": {"const": "prompt"}}},
+      "then": {
+        "required": ["content"],
+        "properties": {
+          "content": {
+            "properties": {
+              "type": {
+                "enum": ["prompt/template", "prompt/flow"]
+              }
+            },
+            "required": ["type", "data"]
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"resource_type": {"const": "document"}}},
+      "then": {
+        "required": ["content"],
+        "properties": {
+          "content": {
+            "properties": {
+              "type": {
+                "const": "document/ref"
+              }
+            },
+            "required": ["type", "data"]
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"resource_type": {"const": "workflow"}}},
+      "then": {
+        "required": ["content"],
+        "properties": {
+          "content": {
+            "properties": {
+              "type": {
+                "const": "workflow/steps"
+              }
+            },
+            "required": ["type", "data"]
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"resource_type": {"const": "policy"}}},
+      "then": {
+        "required": ["content"],
+        "properties": {
+          "content": {
+            "properties": {
+              "type": {
+                "const": "policy/rules"
+              }
+            },
+            "required": ["type", "data"]
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"resource_type": {"const": "model"}}},
+      "then": {
+        "required": ["content"],
+        "properties": {
+          "content": {
+            "properties": {
+              "type": {
+                "const": "model/spec"
+              }
+            },
+            "required": ["type", "data"]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "Content": {
+      "type": "object",
+      "required": ["type", "data"],
+      "properties": {
+        "type": {"type": "string"},
+        "data": {"type": "object"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"type": {"const": "tool/io"}}},
+          "then": {
+            "properties": {
+              "data": {
+                "type": "object",
+                "required": ["inputs", "outputs"],
+                "properties": {
+                  "inputs": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["name", "type", "description"],
+                      "properties": {
+                        "name": {"type": "string"},
+                        "type": {"type": "string"},
+                        "description": {"type": "string"},
+                        "required": {"type": "boolean"},
+                        "format": {"type": "string"}
+                      },
+                      "additionalProperties": true
+                    }
+                  },
+                  "outputs": {
+                    "type": "object",
+                    "properties": {
+                      "success": {"type": "string"},
+                      "failure": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": ["code", "description"],
+                          "properties": {
+                            "code": {"type": "string"},
+                            "description": {"type": "string"},
+                            "suggested_value": {},
+                            "context": {"type": "object"}
+                          },
+                          "additionalProperties": true
+                        }
+                      }
+                    },
+                    "additionalProperties": true
+                  }
+                },
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"type": {"const": "prompt/template"}}},
+          "then": {
+            "properties": {
+              "data": {
+                "type": "object",
+                "required": ["input_variables", "template_text"],
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "enum": ["system", "user", "assistant"]
+                  },
+                  "input_variables": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                  },
+                  "template_text": {"type": "string"}
+                },
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"type": {"const": "document/ref"}}},
+          "then": {
+            "properties": {
+              "data": {
+                "type": "object",
+                "required": ["access", "format"],
+                "properties": {
+                  "access": {
+                    "type": "string",
+                    "enum": ["read-only", "read-write", "execute"]
+                  },
+                  "format": {"type": "string"},
+                  "endpoint": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "selectors": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                  }
+                },
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"type": {"const": "workflow/steps"}}},
+          "then": {
+            "properties": {
+              "data": {
+                "type": "object",
+                "required": ["steps"],
+                "properties": {
+                  "control_flow": {
+                    "type": "string",
+                    "enum": ["sequential", "parallel", "conditional"]
+                  },
+                  "steps": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["step", "description"],
+                      "properties": {
+                        "step": {"type": "string"},
+                        "description": {"type": "string"},
+                        "tool_id": {"type": "string"},
+                        "prompt_id": {"type": "string"},
+                        "policy_id": {"type": "string"},
+                        "on_error": {"type": "string"}
+                      },
+                      "additionalProperties": true
+                    }
+                  }
+                },
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"type": {"const": "policy/rules"}}},
+          "then": {
+            "properties": {
+              "data": {
+                "type": "object",
+                "required": ["rules"],
+                "properties": {
+                  "rules": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["id", "statement"],
+                      "properties": {
+                        "id": {"type": "string"},
+                        "statement": {"type": "string"},
+                        "effect": {
+                          "type": "string",
+                          "enum": ["allow", "deny"]
+                        },
+                        "conditions": {"type": "object"}
+                      },
+                      "additionalProperties": true
+                    }
+                  }
+                },
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"type": {"const": "model/spec"}}},
+          "then": {
+            "properties": {
+              "data": {
+                "type": "object",
+                "required": ["interface"],
+                "properties": {
+                  "interface": {
+                    "type": "string",
+                    "enum": ["http", "grpc", "local", "mcp"]
+                  },
+                  "endpoint": {"type": "string"},
+                  "signature": {"type": "object"},
+                  "capabilities": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                  }
+                },
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"type": {"const": "dataset/spec"}}},
+          "then": {
+            "properties": {
+              "data": {
+                "type": "object",
+                "required": ["schema"],
+                "properties": {
+                  "schema": {"type": "object"},
+                  "query": {"type": "string"},
+                  "connector": {"type": "string"}
+                },
+                "additionalProperties": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

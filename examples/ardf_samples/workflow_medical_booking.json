@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0.0",
+  "resource_id": "workflow_medical_booking",
+  "resource_type": "workflow",
+  "description": "Multi-step flow for booking and confirming appointments.",
+  "content": {
+    "type": "workflow/steps",
+    "data": {
+      "steps": [
+        {
+          "step": "verify_patient",
+          "description": "Check patient record",
+          "tool_id": "patient_lookup"
+        },
+        {
+          "step": "find_slot",
+          "description": "Check availability",
+          "tool_id": "appointment_search"
+        },
+        {
+          "step": "book",
+          "description": "Reserve slot",
+          "tool_id": "appointment_create"
+        },
+        {
+          "step": "notify",
+          "description": "Send confirmation",
+          "tool_id": "notification_send"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "domain": "healthcare",
+    "tags": [
+      "workflow",
+      "appointment",
+      "flow"
+    ]
+  }
+}

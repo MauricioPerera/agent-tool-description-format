@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "resource_id": "medical_guidelines",
+  "resource_type": "document",
+  "description": "Official treatment guidelines document.",
+  "when_to_use": "Use when verifying treatment or medication procedures.",
+  "content": {
+    "type": "document/ref",
+    "data": {
+      "access": "read-only",
+      "format": "markdown",
+      "endpoint": "https://example.org/medical-guidelines"
+    }
+  },
+  "metadata": {
+    "domain": "healthcare",
+    "tags": [
+      "guidelines",
+      "document",
+      "reference"
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0.0",
+  "resource_id": "flight_booking",
+  "resource_type": "tool",
+  "description": "Reserve commercial flights with fare validation and automatic policy checks.",
+  "when_to_use": "Use when the user requests flight availability, pricing, or booking.",
+  "content": {
+    "type": "tool/io",
+    "data": {
+      "inputs": [
+        {"name": "origin", "type": "string", "description": "IATA origin code", "required": true},
+        {"name": "destination", "type": "string", "description": "IATA destination code", "required": true},
+        {"name": "departure_date", "type": "string", "description": "ISO 8601 departure date", "required": true},
+        {"name": "return_date", "type": "string", "description": "ISO 8601 return date"},
+        {"name": "passengers", "type": "integer", "description": "Number of passengers", "required": true}
+      ],
+      "outputs": {
+        "success": "Returns ranked travel itineraries including fare rules and carrier details.",
+        "failure": [
+          {"code": "NO_AVAILABILITY", "description": "No itineraries found for the requested dates."},
+          {"code": "POLICY_BLOCKED", "description": "The requested fare violates corporate policy."}
+        ]
+      }
+    }
+  },
+  "metadata": {
+    "version": "1.4.0",
+    "author": "TravelOps Team",
+    "domain": "travel",
+    "tags": ["booking", "air"],
+    "maturity": "stable"
+  },
+  "examples": [
+    {
+      "name": "Round trip business",
+      "input": {
+        "origin": "SFO",
+        "destination": "JFK",
+        "departure_date": "2025-11-03",
+        "return_date": "2025-11-07",
+        "passengers": 1
+      },
+      "output": {
+        "itineraries_found": 12,
+        "best_option": "SFO-JFK UA 512"
+      }
+    }
+  ]
+}

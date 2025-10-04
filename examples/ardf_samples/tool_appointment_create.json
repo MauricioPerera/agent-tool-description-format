@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0.0",
+  "resource_id": "appointment_create",
+  "resource_type": "tool",
+  "description": "Create a medical appointment for a patient.",
+  "when_to_use": "Use when the user requests to schedule a new appointment.",
+  "content": {
+    "type": "tool/io",
+    "data": {
+      "inputs": [
+        {
+          "name": "patient_id",
+          "type": "string",
+          "description": "Unique patient identifier.",
+          "required": true
+        },
+        {
+          "name": "slot_id",
+          "type": "string",
+          "description": "Chosen appointment slot.",
+          "required": true
+        }
+      ],
+      "outputs": {
+        "success": "Appointment successfully created.",
+        "failure": [
+          {
+            "code": "SLOT_UNAVAILABLE",
+            "description": "Selected slot is no longer available."
+          }
+        ]
+      }
+    }
+  },
+  "metadata": {
+    "domain": "healthcare",
+    "tags": [
+      "appointment",
+      "tool",
+      "schedule"
+    ]
+  }
+}

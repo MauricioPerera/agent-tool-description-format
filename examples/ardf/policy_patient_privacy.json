@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "resource_id": "patient_privacy_policy",
+  "resource_type": "policy",
+  "description": "Mandatory privacy guardrails for handling patient identifiable information.",
+  "content": {
+    "type": "policy/rules",
+    "data": {
+      "rules": [
+        {
+          "id": "privacy-001",
+          "statement": "Never expose patient identifiers in public responses.",
+          "effect": "deny"
+        },
+        {
+          "id": "privacy-010",
+          "statement": "Encrypt patient identifiers at rest and in transit.",
+          "effect": "allow",
+          "conditions": {"requires_tag": "phi"}
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "version": "2025.06",
+    "author": "Compliance Office",
+    "domain": "compliance",
+    "tags": ["privacy", "policy"],
+    "maturity": "stable"
+  }
+}

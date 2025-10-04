@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0.0",
+  "resource_id": "medical_guidelines",
+  "resource_type": "document",
+  "description": "Official treatment guidelines for family medicine including medication tables and procedures.",
+  "when_to_use": "Consult when validating recommended treatments or dosing guidance.",
+  "content": {
+    "type": "document/ref",
+    "data": {
+      "access": "read-only",
+      "format": "markdown",
+      "endpoint": "https://clinical.example.org/guidelines/family-medicine",
+      "selectors": ["pediatrics", "hypertension", "vaccination"]
+    }
+  },
+  "metadata": {
+    "version": "3.2",
+    "author": "World Health Partners",
+    "domain": "healthcare",
+    "tags": ["guidelines", "reference"],
+    "licenses": ["CC-BY-4.0"]
+  },
+  "localization": {
+    "es": {
+      "description": "Guia oficial de tratamientos para medicina familiar.",
+      "when_to_use": "Consultar al validar tratamientos o dosificaciones."
+    }
+  }
+}

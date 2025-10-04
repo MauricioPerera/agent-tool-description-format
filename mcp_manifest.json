@@ -1,0 +1,17 @@
+{
+  "name": "ARDF Resource Server",
+  "version": "1.0.0",
+  "description": "MCP-compatible server exposing ARDF resources for agents.",
+  "resources": [
+    { "type": "tool", "path": "/tools" },
+    { "type": "prompt", "path": "/prompts" },
+    { "type": "document", "path": "/documents" },
+    { "type": "workflow", "path": "/workflows" },
+    { "type": "policy", "path": "/policies" },
+    { "type": "model", "path": "/models" }
+  ],
+  "meta": {
+    "ardf_schema": "/schema/ardf.schema.json",
+    "contact": "support@example.org"
+  }
+}

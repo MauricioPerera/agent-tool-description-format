@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0.0",
+  "resource_id": "appointment_coordinator",
+  "resource_type": "prompt",
+  "description": "Coordinates multiple tools to book a medical appointment.",
+  "when_to_use": "When a patient requests a new appointment.",
+  "content": {
+    "type": "prompt/template",
+    "data": {
+      "role": "system",
+      "input_variables": [
+        "patient_name",
+        "desired_date"
+      ],
+      "template_text": "You are a scheduling assistant. Use tools {patient_lookup}, {appointment_search}, {appointment_create}, and {notification_send} to complete the booking for ${patient_name} on ${desired_date}."
+    }
+  },
+  "metadata": {
+    "domain": "healthcare",
+    "tags": [
+      "prompt",
+      "coordination"
+    ]
+  }
+}
