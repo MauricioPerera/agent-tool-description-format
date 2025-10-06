@@ -1,4 +1,6 @@
-import { Client } from '@modelcontextprotocol/sdk';
+import type { McpCatalogResult, McpSource, McpSyncResult } from './types';
+
+export * from './types';
 
 export interface McpEndpointConfig {
   id: string;
@@ -10,26 +12,47 @@ export interface McpEndpointConfig {
 export class McpManager {
   constructor(private readonly config: McpEndpointConfig) {}
 
-  private get client(): Client {
-    return new Client({ baseUrl: this.config.baseUrl, apiKey: this.config.apiKey });
-  }
-
-  async listResources(type?: string) {
-    const client = this.client;
-    if (type) {
-      return client.resources.list({ type });
+  private async fetchJson(path: string): Promise<any> {
+    const url = new URL(path, this.config.baseUrl).toString();
+    const res = await fetch(url, {
+      headers: this.config.apiKey ? { Authorization: `Bearer ${this.config.apiKey}` } : undefined,
+    });
+    if (!res.ok) {
+      throw new Error(`MCP request failed ${res.status} ${res.statusText}`);
     }
-    return client.resources.list();
+    return res.json();
   }
 
-  async getResource(resourceId: string) {
-    const client = this.client;
-    const { resources } = await client.resources.list();
-    return resources.find((res) => res.resource_id === resourceId);
+  async syncCatalog(): Promise<McpSyncResult> {
+    const [tools, prompts, resources] = await Promise.all([
+      this.fetchOptional('/tools').then((data) => data?.tools ?? data ?? []).catch(() => []),
+      this.fetchOptional('/prompts').then((data) => data?.prompts ?? data ?? []).catch(() => []),
+      this.fetchOptional('/resources').then((data) => data?.resources ?? data ?? []).catch(() => []),
+    ]);
+
+    return { tools, prompts, resources };
   }
 
-  async fetchManifest() {
-    const client = this.client;
-    return client.manifest.get();
+  async listResources(type?: string): Promise<McpCatalogResult> {
+    const query = type ? `?type=${encodeURIComponent(type)}` : '';
+    const resources = await this.fetchOptional(`/resources${query}`).then((data) => data?.resources ?? data ?? []);
+    return { resources };
+  }
+
+  private async fetchOptional(path: string): Promise<any> {
+    try {
+      return await this.fetchJson(path);
+    } catch {
+      return [];
+    }
+  }
+
+  get source(): McpSource {
+    return {
+      id: this.config.id,
+      baseUrl: this.config.baseUrl,
+      label: this.config.label ?? this.config.baseUrl,
+      lastSyncAt: new Date().toISOString(),
+    };
   }
 }

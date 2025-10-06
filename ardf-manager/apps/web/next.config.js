@@ -1,1 +1,8 @@
-/** @type {import('next').NextConfig} */\nconst nextConfig = {\n  reactStrictMode: true,\n  output: 'standalone'\n};\n\nmodule.exports = nextConfig;\n
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  output: 'standalone'
+};
+
+module.exports = nextConfig;
+

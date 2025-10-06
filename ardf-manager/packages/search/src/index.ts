@@ -1,5 +1,3 @@
-import { distance } from 'ml-distance';
-
 export interface EmbeddingProvider {
   embed(texts: string[]): Promise<number[][]>;
   name: string;
@@ -58,4 +56,16 @@ export class HybridRanker<T extends { description?: string }> {
     return dot / (normA * normB);
   }
 }
-\nexport class IdentityEmbeddingProvider implements EmbeddingProvider {\n  name = 'identity';\n\n  async embed(texts: string[]): Promise<number[][]> {\n    return texts.map((text) => {\n      const tokens = text.toLowerCase().split(/\s+/).filter(Boolean);\n      const unique = Array.from(new Set(tokens));\n      return unique.map((token) => (tokens.includes(token) ? 1 : 0));\n    });\n  }\n}\n
+
+export class IdentityEmbeddingProvider implements EmbeddingProvider {
+  name = 'identity';
+
+  async embed(texts: string[]): Promise<number[][]> {
+    return texts.map((text) => {
+      const tokens = text.toLowerCase().split(/\s+/).filter(Boolean);
+      const unique = Array.from(new Set(tokens));
+      return unique.map((token) => (tokens.includes(token) ? 1 : 0));
+    });
+  }
+}
+

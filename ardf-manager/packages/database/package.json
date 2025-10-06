@@ -1,24 +1,25 @@
 {
-  "name": "@ardf/mcp",
+  "name": "@ardf/database",
   "version": "0.1.0",
-  "description": "Utilities for interacting with MCP endpoints within ARDF Manager.",
+  "description": "Database layer (Prisma) for ARDF Manager",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "clean": "rimraf dist",
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
     "lint": "eslint src --ext .ts",
-    "test": "vitest",
-    "clean": "rimraf dist"
+    "seed": "ts-node src/seed.ts"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.19.1"
+    "better-sqlite3": "^9.4.0"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.0.0",
     "eslint": "^8.57.0",
-    "typescript": "^5.3.3",
-    "vitest": "^1.6.0"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   }
 }

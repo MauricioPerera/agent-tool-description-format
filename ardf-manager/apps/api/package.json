@@ -15,9 +15,10 @@
     "@ardf/core": "*",
     "@ardf/mcp": "*",
     "@ardf/search": "*",
-    "@modelcontextprotocol/sdk": "^0.2.0",
+    "@modelcontextprotocol/sdk": "^1.19.1",
     "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "@ardf/database": "*"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",

@@ -2,7 +2,9 @@
   "compilerOptions": {
     "target": "ES2021",
     "module": "commonjs",
-    "lib": ["ES2021"],
+    "lib": [
+      "ES2021"
+    ],
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
@@ -14,11 +16,26 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "@ardf/core": ["packages/core/src"],
-      "@ardf/search": ["packages/search/src"],
-      "@ardf/mcp": ["packages/mcp/src"],
-      "@ardf/types": ["packages/core/src/types"]
+      "@ardf/core": [
+        "packages/core/src"
+      ],
+      "@ardf/search": [
+        "packages/search/src"
+      ],
+      "@ardf/mcp": [
+        "packages/mcp/src"
+      ],
+      "@ardf/types": [
+        "packages/core/src/types"
+      ],
+      "@ardf/database": [
+        "packages/database/src"
+      ]
     }
   },
-  "exclude": ["node_modules", "dist", "build"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build"
+  ]
 }

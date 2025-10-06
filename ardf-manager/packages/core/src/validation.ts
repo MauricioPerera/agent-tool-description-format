@@ -6,8 +6,8 @@ import { schemas } from './schemas';
 const ajv = new Ajv({ allErrors: true, allowUnionTypes: true });
 addFormats(ajv);
 
-const basicValidator = ajv.compile<ArdfResource>(schemas.basic as JSONSchemaType<ArdfResource>);
-const enhancedValidator = ajv.compile<ArdfResource>(schemas.enhanced as JSONSchemaType<ArdfResource>);
+const basicValidator = ajv.compile<ArdfResource>(schemas.basic as unknown as JSONSchemaType<ArdfResource>);
+const enhancedValidator = ajv.compile<ArdfResource>(schemas.enhanced as unknown as JSONSchemaType<ArdfResource>);
 
 export type ValidationMode = 'auto' | 'basic' | 'enhanced';
 
@@ -32,6 +32,6 @@ export const validateResource = (resource: ArdfResource, mode: ValidationMode = 
     valid,
     errors: valid
       ? undefined
-      : (validator.errors ?? []).map((err) => ${err.instancePath || '/'} ),
+      : (validator.errors ?? []).map((err) => `${err.instancePath || '/'}`),
   };
 };

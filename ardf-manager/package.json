@@ -10,7 +10,11 @@
     "dev": "npm run dev --workspaces",
     "lint": "npm run lint --workspaces",
     "test": "npm run test --workspaces",
-    "format": "npm run format --workspaces"
+    "format": "npm run format --workspaces",
+    "db:up": "docker-compose up -d",
+    "db:down": "docker-compose down",
+    "db:seed": "npm run seed --workspace @ardf/database",
+    "clean": "node -e \"const fs=require('fs'), path=require('path'); const dirs=['apps/web/.next','apps/web/dist','apps/api/dist','packages/core/dist','packages/search/dist','packages/mcp/dist','packages/database/dist']; dirs.forEach(d=>{try{fs.rmSync(path.join(__dirname,d),{recursive:true,force:true});}catch(e){}});\""
   },
   "workspaces": [
     "apps/*",
@@ -18,5 +22,11 @@
   ],
   "engines": {
     "node": ">=18.18.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^7.16.1",
+    "@typescript-eslint/parser": "^7.16.1",
+    "eslint-config-next": "^14.2.5"
   }
 }

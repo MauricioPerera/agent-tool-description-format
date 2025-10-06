@@ -6,3 +6,8 @@ dist
 .next
 .DS_Store
 .env
+**/dev.db
+**/dev.db-shm
+**/dev.db-wal
+packages/*/dist
+packages/database/node_modules/

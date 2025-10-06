@@ -8,8 +8,41 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "lib": ["dom", "dom.iterable", "esnext"]
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "baseUrl": "./",
+    "paths": {
+      "@ardf/core": [
+        "../../packages/core/src"
+      ],
+      "@ardf/search": [
+        "../../packages/search/src"
+      ],
+      "@ardf/mcp": [
+        "../../packages/mcp/src"
+      ],
+      "@ardf/database": [
+        "../../packages/database/src"
+      ]
+    }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "dist/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

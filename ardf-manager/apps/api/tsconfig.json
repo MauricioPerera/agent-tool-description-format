@@ -2,8 +2,25 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "./",
+    "composite": true,
+    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo"
   },
-  "include": ["src/**/*"],
-  "exclude": ["src/**/*.test.ts"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "src/**/*.test.ts"
+  ],
+  "references": [
+    {
+      "path": "../../packages/database"
+    },
+    {
+      "path": "../../packages/mcp"
+    },
+    {
+      "path": "../../packages/search"
+    }
+  ]
 }
