@@ -102,7 +102,7 @@ export default function HomePage() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_#1d4ed8_0%,_transparent_55%)] opacity-40" />
-      <section className="relative mx-auto flex min-h-screen max-w-6xl flex-col gap-10 px-6 py-10 lg:flex-row lg:pt-16">
+      <section id="recomendacion" className="relative mx-auto flex min-h-screen max-w-6xl flex-col gap-10 px-6 py-10 lg:flex-row lg:pt-16">
         <div className="flex w-full flex-col gap-8 lg:w-2/5">
           <header className="space-y-4 rounded-2xl border border-slate-800/60 bg-slate-900/70 p-6 shadow-lg shadow-slate-900/30 backdrop-blur">
             <span className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-3 py-1 text-xs uppercase tracking-wide text-slate-300">
@@ -261,7 +261,7 @@ export default function HomePage() {
           </form>
         </div>
 
-        <section className="flex w-full flex-1 flex-col gap-6 rounded-2xl border border-slate-800/60 bg-slate-900/70 p-6 shadow-lg shadow-slate-900/30 backdrop-blur">
+        <section id="recursos" className="flex w-full flex-1 flex-col gap-6 rounded-2xl border border-slate-800/60 bg-slate-900/70 p-6 shadow-lg shadow-slate-900/30 backdrop-blur">
           <header className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-xl font-semibold text-slate-100">Recursos sincronizados</h2>

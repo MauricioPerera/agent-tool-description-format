@@ -1,1 +1,13 @@
 body { margin: 0; font-family: system-ui, sans-serif; background: #020617; color: #e2e8f0; }
+/* WordPress-like UI styles */
+.wp-body { background: #0b1220; color: #e2e8f0; }
+.wp-sidebar { width: 260px; background: #0f172a; }
+.wp-sidebar .wp-nav a { color: #cbd5e1; text-decoration: none; display:block }
+.wp-sidebar .wp-nav a:hover { color: #ffffff; }
+.wp-sidebar .wp-nav a.active { background: #1e293b; color: #fff; }
+main { padding: 1rem; }
+code { background: #0b1a2b; border-radius: 6px; }
+@media (max-width: 1024px) {
+  .wp-sidebar { position: fixed; left: 0; top: 0; bottom: 0; z-index: 20; transform: translateX(0); }
+  main { margin-left: 260px; }
+}
