@@ -20,6 +20,19 @@ Esta guía resume decisiones arquitectónicas, dependencias clave y próximas tarea
 | Analítica | ClickHouse/TimescaleDB, Apache Superset (opcional) | Métricas y visualización |
 | Streaming | Kafka/NATS, BullMQ | Ingesta de eventos y jobs |
 
+## Configuracion de embeddings
+
+La API permite seleccionar el proveedor de embeddings mediante variables de entorno. Por defecto se usa `identity`, pero puede apuntar a cualquier endpoint compatible con la API de OpenAI.
+
+- `ARDF_EMBEDDING_PROVIDER`: `identity` (default) o `openai`/`openai-compatible`.
+- `ARDF_EMBEDDING_API_URL`: URL base del endpoint de embeddings; se agrega `/embeddings` si no esta presente.
+- `ARDF_EMBEDDING_MODEL`: Modelo a solicitar (default `text-embedding-3-small`).
+- `ARDF_EMBEDDING_API_KEY`: Token Bearer enviado en `Authorization`.
+- `ARDF_EMBEDDING_ORG`: Valor opcional para `OpenAI-Organization`.
+- `ARDF_EMBEDDING_API_HEADERS`: JSON con cabeceras adicionales (por ejemplo `{ "X-Client": "ardf" }`).
+
+Si la configuracion es invalida o el endpoint devuelve error, el servidor vuelve automaticamente al proveedor `identity` para mantener el ranking activo.
+
 ## Próximos pasos (MVP)
 
 1. **Bootstrap API**: Express + TypeScript, endpoints /api/catalog, /api/mcp/sync, /api/search (stub).
@@ -44,3 +57,4 @@ Esta guía resume decisiones arquitectónicas, dependencias clave y próximas tarea
 - **MCP Federation**: caché multi-tenant + scheduler de sincronización con diff y alertas.
 
 Documentar cualquier decisión adicional en esta guía para mantener alineado al equipo.
+

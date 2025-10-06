@@ -2,10 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import { db } from '@ardf/database';
 import { McpManager } from '@ardf/mcp';
-import { HybridRanker, IdentityEmbeddingProvider } from '@ardf/search';
+import { HybridRanker } from '@ardf/search';
+import { resolveEmbeddingProvider } from './embedding';
 
-const app = express();
-const ranker = new HybridRanker(new IdentityEmbeddingProvider());
+export const app = express();
+const embeddingProvider = resolveEmbeddingProvider(process.env, { logger: console });
+const ranker = new HybridRanker(embeddingProvider);
 app.use(cors());
 app.use(express.json());
 
@@ -166,7 +168,12 @@ app.post('/api/catalog/resources', (req, res) => {
 });
 
 const port = Number(process.env.PORT ?? 4000);
-app.listen(port, () => {
-  // eslint-disable-next-line no-console
-  console.log(`ARDF Manager API listening on port ${port}`);
-});
+
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    // eslint-disable-next-line no-console
+    console.log(`ARDF Manager API listening on port ${port}`);
+  });
+}
+
+export default app;
