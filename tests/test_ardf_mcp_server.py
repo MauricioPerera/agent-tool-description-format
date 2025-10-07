@@ -9,7 +9,7 @@ from typing import Any, Dict
 
 from httpx import ASGITransport, AsyncClient, Response
 
-from server_ardf_mcp import app
+from server_ardf_mcp import app, get_validator
 
 TRANSPORT = ASGITransport(app=app)
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -41,3 +41,50 @@ def test_schema_static_route_serves_canonical_descriptor():
     with SCHEMA_PATH.open("r", encoding="utf-8") as handle:
         local_schema = json.load(handle)
     assert served_schema == local_schema
+
+
+def test_dataset_descriptor_rejects_incorrect_content_type():
+    validator = get_validator()
+    invalid_dataset = {
+        "schema_version": "1.0.0",
+        "resource_id": "invalid_dataset_fixture",
+        "resource_type": "dataset",
+        "description": "Dataset with the wrong content type",
+        "content": {
+            "type": "document/ref",
+            "data": {
+                "schema": {
+                    "type": "object",
+                    "properties": {"id": {"type": "string"}},
+                    "required": ["id"],
+                },
+                "query": "SELECT id FROM products",
+                "connector": "connector_crm_v1",
+            },
+        },
+    }
+
+    errors = list(validator.iter_errors(invalid_dataset))
+    assert errors, "Expected validation errors for an invalid dataset descriptor"
+    assert any("dataset/spec" in error.message for error in errors)
+
+
+def test_connector_descriptor_requires_endpoints_payload():
+    validator = get_validator()
+    invalid_connector = {
+        "schema_version": "1.0.0",
+        "resource_id": "invalid_connector_fixture",
+        "resource_type": "connector",
+        "description": "Connector without endpoint definitions",
+        "content": {
+            "type": "connector/spec",
+            "data": {
+                "interface": "http",
+                "base_url": "https://api.example.com",
+            },
+        },
+    }
+
+    errors = list(validator.iter_errors(invalid_connector))
+    assert errors, "Expected validation errors for an invalid connector descriptor"
+    assert any("endpoints" in error.message for error in errors)
