@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0.0",
+  "resource_id": "dataset_products_v1",
+  "resource_type": "dataset",
+  "description": "Structured catalog of products enriched with pricing and inventory signals.",
+  "when_to_use": "Consult when users ask for product availability, pricing comparisons, or SKU metadata.",
+  "content": {
+    "type": "dataset/spec",
+    "data": {
+      "schema": {
+        "type": "object",
+        "properties": {
+          "sku": { "type": "string", "description": "Internal stock keeping unit." },
+          "name": { "type": "string", "description": "Localized product name." },
+          "category": { "type": "string", "description": "Merchandising category path." },
+          "price": { "type": "number", "description": "Current list price in minor currency units." },
+          "currency": { "type": "string", "description": "ISO-4217 currency code." },
+          "inventory_level": { "type": "integer", "description": "Available units ready to ship." },
+          "updated_at": { "type": "string", "format": "date-time", "description": "Last synchronization timestamp." }
+        },
+        "required": ["sku", "name", "price", "currency", "inventory_level"]
+      },
+      "query": "SELECT sku, name, category, price, currency, inventory_level, updated_at FROM analytics.products WHERE sku = :sku",
+      "connector": "connector_crm_v1"
+    }
+  },
+  "metadata": {
+    "domain": "retail",
+    "version": "1.0.0",
+    "owner": "Data Platform",
+    "tags": ["catalog", "pricing", "inventory"],
+    "quality": "gold"
+  },
+  "examples": [
+    {
+      "name": "Check stock for a SKU",
+      "input": "How many units of SKU-90210 do we have available?",
+      "output": "Returns the inventory_level and pricing information for SKU-90210."
+    }
+  ]
+}
