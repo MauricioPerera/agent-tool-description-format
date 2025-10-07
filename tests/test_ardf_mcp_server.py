@@ -61,6 +61,14 @@ def test_validate_endpoint_accepts_valid_descriptors():
     assert body["errors"] == []
 
 
+def test_validate_endpoint_cors_configuration_includes_post():
+    cors_middleware = next((m for m in app.user_middleware if m.cls.__name__ == "CORSMiddleware"), None)
+    assert cors_middleware is not None, "Expected FastAPI app to register CORSMiddleware"
+    allow_methods = cors_middleware.kwargs.get("allow_methods")
+    assert allow_methods, "CORS middleware is missing an allow_methods configuration"
+    assert "POST" in allow_methods, f"Expected POST to be allowed, got: {allow_methods}"
+
+
 def test_dataset_descriptor_rejects_incorrect_content_type():
     validator = get_validator()
     invalid_dataset = {
