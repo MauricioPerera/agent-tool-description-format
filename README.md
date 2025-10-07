@@ -21,6 +21,12 @@
    - 2.x mejorado (`schema/enhanced_atdf_schema.json`): añade `metadata`, `localization`, `prerequisites`, `examples` y `feedback`.
    Consulta la guía de [Compatibilidad de versiones](./docs/en/version_compatibility.md) para elegir.
 
+## ARDF actualizado
+
+- El esquema ARDF v1.0.0 utiliza el identificador canónico [`https://ardf.io/schema/v1`](https://ardf.io/schema/v1). La copia local vive en `schema/ardf.schema.json`.
+- Los recursos `dataset` y `connector` deben establecer `content.type` en `"dataset/spec"` o `"connector/spec"` e incluir su carga estructurada dentro de `content.data`.
+- El manifest MCP (`mcp_manifest.json`) anuncia cada colección con `mediaType` = `application/vnd.ardf+json` y `profile` = `https://ardf.io/spec/v1` para compatibilidad con clientes MCP.
+
 2. **Redacta la descripción / Draft the descriptor**
 
 ```json

@@ -10,10 +10,12 @@ from typing import Dict, List, Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from jsonschema import validators
 
 APP_ROOT = Path(__file__).parent
 SAMPLES_DIR = APP_ROOT / "examples" / "ardf_samples"
+UTF8_BOM_TOLERANT = "utf-8-sig"
 MANIFEST_PATH = APP_ROOT / "mcp_manifest.json"
 SCHEMA_PATH = APP_ROOT / "schema" / "ardf.schema.json"
 
@@ -27,6 +29,8 @@ app.add_middleware(
     allow_methods=["GET", "OPTIONS"],
     allow_headers=["*"]
 )
+
+app.mount("/schema", StaticFiles(directory=APP_ROOT / "schema"), name="schema")
 
 
 # Manejadores de errores para estandarizar el formato de respuesta
@@ -60,7 +64,7 @@ class ResourceIndex:
     def _load_all(self) -> List[Dict[str, object]]:
         resources: List[Dict[str, object]] = []
         for path in sorted(self.directory.glob("*.json")):
-            with path.open("r", encoding="utf-8") as handle:
+            with path.open("r", encoding=UTF8_BOM_TOLERANT) as handle:
                 resources.append(json.load(handle))
         return resources
 
@@ -76,7 +80,7 @@ class ResourceIndex:
         validator = get_validator()
         for path in sorted(self.directory.glob("*.json")):
             try:
-                with path.open("r", encoding="utf-8") as handle:
+                with path.open("r", encoding=UTF8_BOM_TOLERANT) as handle:
                     data = json.load(handle)
             except Exception as e:
                 errors.append({
