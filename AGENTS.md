@@ -120,7 +120,9 @@ ATDF solved the problem of expressing callable tools. Modern agent ecosystems al
 - `how_to_use` becomes a container for contextual blocks: `invocation`, `access`, `composition`, `guardrails`.
 - Keeps cross-cutting structures (`metadata`, `localization`, `examples`, `prerequisites`, `feedback`).
 - Enforces resource-specific requirements (for example, `tool` must supply `how_to_use.invocation`, `document` must provide `how_to_use.access`).
+- Adds hard requirements for datasets and connectors: `content.type` must be `"dataset/spec"` or `"connector/spec"` and `content.data` carries the structured contract.
 - Supports MCP discovery across `/tools`, `/prompts`, `/docs`, `/workflows`, `/policies`, `/models`, and future endpoints.
+- The canonical schema identifier is `https://ardf.io/schema/v1`; keep manifest metadata in sync.
 
 ### Example Resource Catalog (ARDF)
 | ID | Type | Summary |

@@ -2,6 +2,12 @@
   "name": "ARDF Resource Server",
   "version": "1.0.0",
   "description": "MCP-compatible server exposing ARDF resources for agents.",
+  "schema": {
+    "id": "https://ardf.io/schema/v1",
+    "path": "/schema/ardf.schema.json",
+    "mediaType": "application/vnd.ardf+json",
+    "profile": "https://ardf.io/spec/v1"
+  },
   "resources": [
     {
       "type": "tool",
@@ -53,7 +59,6 @@
     }
   ],
   "meta": {
-    "ardf_schema": "/schema/ardf.schema.json",
     "contact": "support@example.org"
   }
 }
