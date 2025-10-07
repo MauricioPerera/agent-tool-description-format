@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.org/ardf.schema.json",
+  "$id": "https://ardf.io/schema/v1",
   "title": "Agent Resource Description Format (ARDF) v1.0.0",
   "type": "object",
   "required": [
