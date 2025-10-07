@@ -1,0 +1,175 @@
+name: ARDF MCP CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    paths:
+      - 'server_ardf_mcp.py'
+      - 'schema/**'
+      - 'examples/ardf_samples/**'
+      - 'tests/**'
+      - '.github/workflows/ardf-ci.yml'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'docs/**'
+
+env:
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '20'
+  N8N_CLI: ${{ vars.N8N_CLI || secrets.N8N_CLI || '0' }}
+
+jobs:
+  ardf:
+    name: Validate ARDF MCP stack
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio httpx requests uvicorn[standard]
+
+      - name: Validate ARDF samples (Python)
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          from jsonschema import Draft202012Validator
+
+          schema = json.loads(Path('schema/ardf.schema.json').read_text(encoding='utf-8'))
+          validator = Draft202012Validator(schema)
+
+          samples = sorted(Path('examples/ardf_samples').glob('*.json'))
+          failures = []
+          for sample in samples:
+              payload = json.loads(sample.read_text(encoding='utf-8'))
+              errors = list(validator.iter_errors(payload))
+              if errors:
+                  failures.append((sample, errors))
+
+          if failures:
+              for sample, errors in failures:
+                  print(f'Errors in {sample}:')
+                  for error in errors:
+                      location = '.'.join(str(p) for p in error.path) or '<root>'
+                      print(f'  - {location}: {error.message}')
+              raise SystemExit(1)
+          else:
+              print(f'Validated {len(samples)} samples with Python jsonschema')
+          PY
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Node validation dependencies
+        run: npm install --prefix examples/ardf_samples --no-save ajv@^8 ajv-formats@^3
+
+      - name: Validate ARDF samples (Node)
+        run: |
+          for sample in examples/ardf_samples/*.json; do
+            echo "Validating $sample with Node"
+            node examples/ardf_samples/validate_node.js "$sample"
+          done
+
+      - name: Start MCP server
+        run: |
+          uvicorn server_ardf_mcp:app --host 0.0.0.0 --port 8000 &
+          echo $! > uvicorn.pid
+          sleep 5
+
+      - name: Check MCP health endpoint
+        run: |
+          for attempt in {1..10}; do
+            if curl -fsS http://127.0.0.1:8000/health > /dev/null; then
+              echo "Server healthy"
+              exit 0
+            fi
+            echo "Waiting for server (attempt $attempt)"
+            sleep 1
+          done
+          echo "Server failed to start" >&2
+          exit 1
+
+      - name: Verify served schema matches canonical file
+        run: |
+          python - <<'PY'
+          import json
+          import pathlib
+          import requests
+
+          base = 'http://127.0.0.1:8000'
+          resp = requests.get(f'{base}/schema/ardf.schema.json', timeout=10)
+          resp.raise_for_status()
+          served = resp.json()
+          local = json.loads(pathlib.Path('schema/ardf.schema.json').read_text(encoding='utf-8'))
+          if served != local:
+              raise SystemExit('Served schema does not match local canonical file')
+          print('Served schema matches local canonical file')
+          PY
+
+      - name: Negative validation checks over HTTP
+        run: |
+          python - <<'PY'
+          import requests
+
+          base = 'http://127.0.0.1:8000/validate'
+
+          invalid_dataset = {
+              "schema_version": "1.0.0",
+              "resource_id": "ci_invalid_dataset",
+              "resource_type": "dataset",
+              "description": "Dataset missing the dataset/spec type",
+              "content": {"type": "document/ref", "data": {}}
+          }
+          invalid_connector = {
+              "schema_version": "1.0.0",
+              "resource_id": "ci_invalid_connector",
+              "resource_type": "connector",
+              "description": "Connector without endpoints",
+              "content": {
+                  "type": "connector/spec",
+                  "data": {"interface": "http", "base_url": "https://api.example.com"}
+              }
+          }
+
+          for payload, expected in [
+              (invalid_dataset, 'dataset/spec'),
+              (invalid_connector, 'endpoints')
+          ]:
+              response = requests.post(base, json=payload, timeout=10)
+              response.raise_for_status()
+              body = response.json()
+              assert body.get('count', 0) > 0, 'Expected validation errors'
+              messages = [error.get('message', '') for error in body.get('errors', [])]
+              if not any(expected in message for message in messages):
+                  raise SystemExit(f'Missing expected marker "{expected}" in errors: {messages}')
+          print('Negative validation checks succeeded')
+          PY
+
+      - name: Run pytest suite
+        run: pytest tests/test_ardf_mcp_server.py -v
+
+      - name: Optional n8n smoke test
+        if: env.N8N_CLI == '1'
+        run: n8n --version
+
+      - name: Stop MCP server
+        if: always()
+        run: |
+          if [ -f uvicorn.pid ]; then
+            kill "$(cat uvicorn.pid)" || true
+          fi

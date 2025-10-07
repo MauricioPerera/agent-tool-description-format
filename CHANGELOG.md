@@ -9,6 +9,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _No hay cambios aún._
 
+## [1.0.0] - 2025-10-07
+
+### ✅ Added
+- Canonical ARDF schema identifier (`https://ardf.io/schema/v1`) and hard requirements for dataset/connector descriptors enforced via JSON Schema `if/then` rules.
+- Sample ARDF descriptors for datasets and connectors demonstrating the stricter invariants.
+- FastAPI validation endpoint coverage for both GET and POST so clients can check descriptors programmatically.
+
+### 🔄 Changed
+- MCP manifest now advertises the canonical schema metadata and explicitly lists dataset/connector resource collections.
+- ARDF MCP server mounts the schema at `/schema/ardf.schema.json` and exposes `/datasets` and `/connectors` resource collections alongside `/resources`.
+
+### 🐛 Fixed
+- Updated CORS middleware configuration to include POST requests so cross-origin browsers can call `/validate`.
+
+### 🧪 Tests
+- `pytest tests/test_ardf_mcp_server.py`
+- Negative HTTP validation checks for dataset/connector invariants via `/validate`.
+
+### 📚 Documentation
+- README and agent guidance updated with canonical schema, dataset/connector rules, manifest expectations, and validation endpoints.
+
+
+---
+
+### Legacy ATDF Releases
+
 ## [2.1.0] - 2025-02-14
 
 ### ⚠️ Breaking (With Migration Path)
@@ -234,8 +260,9 @@ When adding new entries to this changelog, please follow these guidelines:
 
 ## Version History
 
+- **v1.0.0 (2025-10-07)**: Canonical ARDF schema, stricter dataset/connector invariants, MCP alignment, validation endpoints.
 - **v2.0.1**: Global date updates from 2024 to 2025 across all documentation and examples
 - **v2.0.0**: Enriched Response Standard, enhanced schemas, multilingual improvements
 - **v1.2.0**: Multilingual support, basic validation, SDK foundation
 - **v1.1.0**: Basic specification, JSON schemas, documentation
-- **v1.0.0**: Initial release 
+- **v1.0.0 (legacy, 2023-XX-XX)**: Initial release of ATDF 
