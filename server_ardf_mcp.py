@@ -10,6 +10,7 @@ from typing import Dict, List, Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from jsonschema import validators
 
 APP_ROOT = Path(__file__).parent
@@ -28,6 +29,8 @@ app.add_middleware(
     allow_methods=["GET", "OPTIONS"],
     allow_headers=["*"]
 )
+
+app.mount("/schema", StaticFiles(directory=APP_ROOT / "schema"), name="schema")
 
 
 # Manejadores de errores para estandarizar el formato de respuesta

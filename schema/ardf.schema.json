@@ -477,16 +477,31 @@
             "properties": {
               "data": {
                 "type": "object",
-                "required": ["interface", "endpoints"],
+                "required": ["endpoints"],
                 "properties": {
-                  "interface": {"type": "string"},
-                  "base_url": {"type": "string", "format": "uri"},
-                  "auth": {"type": "object"},
+                  "interface": {
+                    "type": "string",
+                    "enum": ["http", "grpc", "mcp"]
+                  },
+                  "base_url": {"type": "string"},
+                  "auth": {
+                    "type": "object",
+                    "properties": {
+                      "type": {"type": "string"},
+                      "scopes": {
+                        "type": "array",
+                        "items": {"type": "string"}
+                      },
+                      "env": {"type": "string"}
+                    },
+                    "additionalProperties": true
+                  },
                   "endpoints": {
                     "type": "array",
+                    "minItems": 1,
                     "items": {
                       "type": "object",
-                      "required": ["name", "method", "path"],
+                      "required": ["method", "path"],
                       "properties": {
                         "name": {"type": "string"},
                         "method": {"type": "string"},
