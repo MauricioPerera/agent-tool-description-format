@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0.0",
+  "resource_id": "connector_crm_v1",
+  "resource_type": "connector",
+  "description": "REST connector that exposes CRM contacts with read/write access.",
+  "when_to_use": "Use to look up, create, or update customer records from the CRM platform.",
+  "content": {
+    "type": "connector/spec",
+    "data": {
+      "interface": "http",
+      "base_url": "https://crm.internal.example.com/api",
+      "auth": {
+        "type": "bearer",
+        "env": "CRM_API_TOKEN"
+      },
+      "endpoints": [
+        {
+          "name": "list_contacts",
+          "method": "GET",
+          "path": "/contacts",
+          "query": {
+            "email": {
+              "type": "string",
+              "description": "Filter contacts by email address."
+            }
+          },
+          "response": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "email": { "type": "string", "format": "email" },
+                "first_name": { "type": "string" },
+                "last_name": { "type": "string" },
+                "lifecycle_stage": { "type": "string" }
+              }
+            }
+          }
+        },
+        {
+          "name": "update_contact",
+          "method": "PATCH",
+          "path": "/contacts/{id}",
+          "body": {
+            "type": "object",
+            "properties": {
+              "first_name": { "type": "string" },
+              "last_name": { "type": "string" },
+              "phone": { "type": "string" }
+            }
+          },
+          "response": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "updated_at": { "type": "string", "format": "date-time" }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "domain": "crm",
+    "version": "1.0.0",
+    "owner": "Sales Operations",
+    "tags": ["contacts", "customer", "connector"],
+    "quality": "beta"
+  },
+  "examples": [
+    {
+      "name": "Lookup contact by email",
+      "input": "Find the CRM record for maria.garcia@example.com",
+      "output": "Returns a contact payload with the matching email address."
+    }
+  ]
+}
