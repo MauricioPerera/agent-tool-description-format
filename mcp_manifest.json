@@ -2,16 +2,63 @@
   "name": "ARDF Resource Server",
   "version": "1.0.0",
   "description": "MCP-compatible server exposing ARDF resources for agents.",
+  "schema": {
+    "id": "https://ardf.io/schema/v1",
+    "path": "/schema/ardf.schema.json",
+    "mediaType": "application/vnd.ardf+json",
+    "profile": "https://ardf.io/spec/v1"
+  },
   "resources": [
-    { "type": "tool", "path": "/tools" },
-    { "type": "prompt", "path": "/prompts" },
-    { "type": "document", "path": "/documents" },
-    { "type": "workflow", "path": "/workflows" },
-    { "type": "policy", "path": "/policies" },
-    { "type": "model", "path": "/models" }
+    {
+      "type": "tool",
+      "path": "/tools",
+      "mediaType": "application/vnd.ardf+json",
+      "profile": "https://ardf.io/spec/v1"
+    },
+    {
+      "type": "prompt",
+      "path": "/prompts",
+      "mediaType": "application/vnd.ardf+json",
+      "profile": "https://ardf.io/spec/v1"
+    },
+    {
+      "type": "document",
+      "path": "/documents",
+      "mediaType": "application/vnd.ardf+json",
+      "profile": "https://ardf.io/spec/v1"
+    },
+    {
+      "type": "workflow",
+      "path": "/workflows",
+      "mediaType": "application/vnd.ardf+json",
+      "profile": "https://ardf.io/spec/v1"
+    },
+    {
+      "type": "policy",
+      "path": "/policies",
+      "mediaType": "application/vnd.ardf+json",
+      "profile": "https://ardf.io/spec/v1"
+    },
+    {
+      "type": "model",
+      "path": "/models",
+      "mediaType": "application/vnd.ardf+json",
+      "profile": "https://ardf.io/spec/v1"
+    },
+    {
+      "type": "dataset",
+      "path": "/datasets",
+      "mediaType": "application/vnd.ardf+json",
+      "profile": "https://ardf.io/spec/v1"
+    },
+    {
+      "type": "connector",
+      "path": "/connectors",
+      "mediaType": "application/vnd.ardf+json",
+      "profile": "https://ardf.io/spec/v1"
+    }
   ],
   "meta": {
-    "ardf_schema": "/schema/ardf.schema.json",
     "contact": "support@example.org"
   }
 }

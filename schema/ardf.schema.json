@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.org/ardf.schema.json",
+  "$id": "https://ardf.io/schema/v1",
   "title": "Agent Resource Description Format (ARDF) v1.0.0",
   "type": "object",
   "required": [
@@ -222,6 +222,38 @@
           }
         }
       }
+    },
+    {
+      "if": {"properties": {"resource_type": {"const": "dataset"}}},
+      "then": {
+        "required": ["content"],
+        "properties": {
+          "content": {
+            "properties": {
+              "type": {
+                "const": "dataset/spec"
+              }
+            },
+            "required": ["type", "data"]
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"resource_type": {"const": "connector"}}},
+      "then": {
+        "required": ["content"],
+        "properties": {
+          "content": {
+            "properties": {
+              "type": {
+                "const": "connector/spec"
+              }
+            },
+            "required": ["type", "data"]
+          }
+        }
+      }
     }
   ],
   "$defs": {
@@ -433,6 +465,39 @@
                   "schema": {"type": "object"},
                   "query": {"type": "string"},
                   "connector": {"type": "string"}
+                },
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"type": {"const": "connector/spec"}}},
+          "then": {
+            "properties": {
+              "data": {
+                "type": "object",
+                "required": ["interface", "endpoints"],
+                "properties": {
+                  "interface": {"type": "string"},
+                  "base_url": {"type": "string", "format": "uri"},
+                  "auth": {"type": "object"},
+                  "endpoints": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["name", "method", "path"],
+                      "properties": {
+                        "name": {"type": "string"},
+                        "method": {"type": "string"},
+                        "path": {"type": "string"},
+                        "query": {"type": "object"},
+                        "body": {"type": "object"},
+                        "response": {"type": "object"}
+                      },
+                      "additionalProperties": true
+                    }
+                  }
                 },
                 "additionalProperties": true
               }
