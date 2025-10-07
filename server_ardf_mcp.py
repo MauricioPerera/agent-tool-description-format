@@ -14,6 +14,7 @@ from jsonschema import validators
 
 APP_ROOT = Path(__file__).parent
 SAMPLES_DIR = APP_ROOT / "examples" / "ardf_samples"
+UTF8_BOM_TOLERANT = "utf-8-sig"
 MANIFEST_PATH = APP_ROOT / "mcp_manifest.json"
 SCHEMA_PATH = APP_ROOT / "schema" / "ardf.schema.json"
 
@@ -60,7 +61,7 @@ class ResourceIndex:
     def _load_all(self) -> List[Dict[str, object]]:
         resources: List[Dict[str, object]] = []
         for path in sorted(self.directory.glob("*.json")):
-            with path.open("r", encoding="utf-8") as handle:
+            with path.open("r", encoding=UTF8_BOM_TOLERANT) as handle:
                 resources.append(json.load(handle))
         return resources
 
@@ -76,7 +77,7 @@ class ResourceIndex:
         validator = get_validator()
         for path in sorted(self.directory.glob("*.json")):
             try:
-                with path.open("r", encoding="utf-8") as handle:
+                with path.open("r", encoding=UTF8_BOM_TOLERANT) as handle:
                     data = json.load(handle)
             except Exception as e:
                 errors.append({
