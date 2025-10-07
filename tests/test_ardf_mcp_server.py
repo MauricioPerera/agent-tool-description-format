@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 from httpx import ASGITransport, AsyncClient, Response
+from starlette.datastructures import Headers
 
 from server_ardf_mcp import app, get_validator
 
@@ -61,12 +62,24 @@ def test_validate_endpoint_accepts_valid_descriptors():
     assert body["errors"] == []
 
 
-def test_validate_endpoint_cors_configuration_includes_post():
+def test_validate_endpoint_cors_preflight_allows_post():
     cors_middleware = next((m for m in app.user_middleware if m.cls.__name__ == "CORSMiddleware"), None)
     assert cors_middleware is not None, "Expected FastAPI app to register CORSMiddleware"
-    allow_methods = cors_middleware.kwargs.get("allow_methods")
-    assert allow_methods, "CORS middleware is missing an allow_methods configuration"
-    assert "POST" in allow_methods, f"Expected POST to be allowed, got: {allow_methods}"
+
+    instance = cors_middleware.cls(app=app, **cors_middleware.kwargs)
+    headers = Headers(
+        {
+            "origin": "https://example.com",
+            "access-control-request-method": "POST",
+        }
+    )
+
+    response = instance.preflight_response(request_headers=headers)
+    allow_methods = response.headers.get("access-control-allow-methods")
+    assert allow_methods, "Preflight response is missing access-control-allow-methods header"
+
+    advertised_methods = {method.strip().upper() for method in allow_methods.split(",")}
+    assert "POST" in advertised_methods, f"Expected POST to be allowed, got: {allow_methods}"
 
 
 def test_dataset_descriptor_rejects_incorrect_content_type():
