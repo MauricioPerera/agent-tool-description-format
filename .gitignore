@@ -97,3 +97,20 @@ test_converter.py
 *.swp
 *.swo
 node_modules
+
+# Data directory (archivos temporales y generados)
+data/
+*.pid
+*.db
+coverage.xml
+
+# Credenciales (no commitear)
+*credentials*.json
+*credenciales*.json
+cred_*.json
+
+# Archivos temporales de dependencias
+email_validator/
+email_validator-*.dist-info/
+httpx/
+prometheus_client/
