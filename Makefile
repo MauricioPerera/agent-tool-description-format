@@ -72,7 +72,7 @@ test: ## Run all tests
 	docker-compose -f docker-compose.dev.yml exec atdf-api-dev pytest tests/ -v
 
 test-coverage: ## Run tests with coverage
-	docker-compose -f docker-compose.dev.yml exec atdf-api-dev pytest tests/ -v --cov=sdk --cov=tools --cov=examples --cov-report=html
+	docker-compose -f docker-compose.dev.yml exec atdf-api-dev pytest tests/ -v --cov=src/sdk --cov=src/tools --cov=examples --cov-report=html
 
 test-integration: ## Run integration tests
 	docker-compose -f docker-compose.dev.yml exec atdf-api-dev pytest tests/integration/ -v
@@ -80,7 +80,7 @@ test-integration: ## Run integration tests
 # Code quality commands
 lint: ## Run linting
 	docker-compose -f docker-compose.dev.yml exec atdf-api-dev flake8 .
-	docker-compose -f docker-compose.dev.yml exec atdf-api-dev mypy sdk/ tools/ examples/
+	docker-compose -f docker-compose.dev.yml exec atdf-api-dev mypy src/sdk/ src/tools/ examples/
 
 format: ## Format code
 	docker-compose -f docker-compose.dev.yml exec atdf-api-dev black .
@@ -121,7 +121,7 @@ health: ## Check service health
 
 setup-monitoring: ## Setup monitoring infrastructure
 	@echo "🔧 Setting up monitoring infrastructure..."
-	@python scripts/setup_monitoring.py
+	@python scripts/dev/setup_monitoring.py
 
 test-metrics: ## Run metrics test
 	@echo "🧪 Running metrics test..."
@@ -152,7 +152,7 @@ docs-serve: ## Serve documentation locally
 # Security commands
 security-scan: ## Run security scan
 	docker-compose -f docker-compose.dev.yml exec atdf-api-dev safety check
-	docker-compose -f docker-compose.dev.yml exec atdf-api-dev bandit -r sdk/ tools/ examples/
+	docker-compose -f docker-compose.dev.yml exec atdf-api-dev bandit -r src/sdk/ src/tools/ examples/
 
 # Backup and restore
 backup: ## Create full backup

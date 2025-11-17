@@ -85,13 +85,13 @@ exclude = '''
 profile = "black"
 multi_line_output = 3
 line_length = 88
-known_first_party = ["atdf", "sdk", "tools", "examples"]
+known_first_party = ["atdf", "src.sdk", "src.tools", "src.cli", "src.server", "examples"]
 known_third_party = ["fastapi", "pydantic", "uvicorn", "httpx", "pytest"]
 
 # pytest configuration
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = "-v -ra --strict-markers --strict-config --cov=sdk --cov=tools --cov=examples --cov-report=xml --cov-report=term-missing"
+addopts = "-v -ra --strict-markers --strict-config --cov=src/sdk --cov=src/tools --cov=src/cli --cov=src/server --cov=examples --cov-report=xml --cov-report=term-missing"
 testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
@@ -104,7 +104,7 @@ markers = [
 
 # Coverage configuration
 [tool.coverage.run]
-source = ["sdk", "tools", "examples"]
+source = ["src/sdk", "src/tools", "src/cli", "src/server", "examples"]
 omit = [
     "*/tests/*",
     "*/test_*",
@@ -155,19 +155,19 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = [
     "examples.*",
-    "tools.*",
+    "src.tools.*",
 ]
 ignore_errors = true
 
 [[tool.mypy.overrides]]
 module = [
-    "sdk.atdf_sdk",
-    "sdk.examples",
-    "sdk.examples.*",
-    "sdk.vector_search.*",
-    "sdk.vector_search_cli",
-    "improved_loader",
+    "src.sdk.atdf_sdk",
+    "src.sdk.examples",
+    "src.sdk.examples.*",
+    "src.sdk.vector_search.*",
+    "src.sdk.vector_search_cli",
+    "src.server.*",
 ]
 ignore_errors = true
 [project.scripts]
-atdf = "cli.__init__.main:cli"
+atdf = "src.cli.main:cli"
