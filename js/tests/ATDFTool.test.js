@@ -75,6 +75,57 @@ describe('ATDFTool', () => {
     });
   });
 
+  describe('Propiedades opcionales y valores por defecto', () => {
+    const optionalToolData = {
+      tool_id: 'optional_tool_v1',
+      description: 'Herramienta con campos opcionales',
+      when_to_use: 'Usar cuando falten campos opcionales',
+      how_to_use: {
+        inputs: [
+          {
+            name: 'optional_param',
+            type: 'string',
+            description: 'Parámetro opcional',
+            required: false
+          }
+        ],
+        outputs: {}
+      },
+      metadata: { category: 'test' },
+      prerequisites: { tools: ['base_tool'] },
+      examples: [{ description: 'Ejemplo opcional' }]
+    };
+
+    const tool = new ATDFTool(optionalToolData);
+
+    test('Debería indicar idiomas soportados cuando no hay localización', () => {
+      expect(tool.supportedLanguages).toEqual(['default']);
+    });
+
+    test('Debería indicar que un idioma no está soportado cuando falta localización', () => {
+      expect(tool.supportsLanguage('es')).toBe(false);
+    });
+
+    test('Debería devolver un arreglo vacío cuando no hay errores definidos', () => {
+      expect(tool.possibleErrors).toEqual([]);
+    });
+
+    test('Debería devolver cadena vacía cuando no hay mensaje de éxito', () => {
+      expect(tool.successMessage).toBe('');
+    });
+
+    test('Debería exponer metadatos, prerequisitos y ejemplos opcionales', () => {
+      expect(tool.metadata).toEqual({ category: 'test' });
+      expect(tool.prerequisites).toEqual({ tools: ['base_tool'] });
+      expect(tool.examples).toEqual([{ description: 'Ejemplo opcional' }]);
+    });
+
+    test('Debería omitir parámetros marcados como no requeridos en el esquema', () => {
+      const schema = tool.getInputSchema();
+      expect(schema.required).not.toContain('optional_param');
+    });
+  });
+
   describe('Soporte multilingüe', () => {
     const tool = new ATDFTool(multilingualToolData);
 
@@ -152,4 +203,4 @@ describe('ATDFTool', () => {
       expect(json).toEqual(basicToolData);
     });
   });
-}); 
+});
